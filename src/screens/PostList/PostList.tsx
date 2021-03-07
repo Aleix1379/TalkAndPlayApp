@@ -81,7 +81,6 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
 
                     {user.id >= 0 && <FAB
                         style={styles.fab}
-                        small
                         icon="plus"
                         onPress={() => navigation.navigate('PostCreate')}
                     />}
