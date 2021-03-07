@@ -32,9 +32,8 @@ const SettingsScreen: React.FC<SettingsProperties> = ({navigation, theme, logout
         },
     })
 
-    const disconnet = () => {
+    const disconnect = () => {
         logout()
-        navigation.goBack()
     }
 
     return (
@@ -49,7 +48,7 @@ const SettingsScreen: React.FC<SettingsProperties> = ({navigation, theme, logout
 
                 <View style={styles.actions}>
 
-                    <ButtonComponent label="Logout" icon="logout" onPress={() => disconnet()} theme={theme}/>
+                    <ButtonComponent label="Logout" icon="logout" onPress={() => disconnect()} theme={theme}/>
 
                 </View>
 
