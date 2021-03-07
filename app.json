@@ -1,0 +1,6 @@
+{
+  "name": "TalkAndPlayApp",
+  "displayName": "Talk And Play",
+  "package": "app.talkandplay",
+  "icon":"./assets/icons/icon.png"
+}

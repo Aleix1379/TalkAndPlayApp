@@ -1,0 +1,165 @@
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, View} from "react-native";
+import {Theme} from "react-native-paper/lib/typescript/types";
+import {Option, SelectItem} from "../../types/PostsTypes";
+import TextInputComponent from "../TextInputComponent";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import CheckBoxComponent from "../CheckBoxComponent";
+import {ErrorType} from "../../utils/Validator/types";
+import {Text} from "react-native-paper";
+
+interface CheckBoxListProperties {
+    theme: Theme
+    id: string
+    label: string
+    values: Option[]
+    initialValues?: Option[]
+    singleMode?: boolean
+    error?: ErrorType
+
+
+    onChange(items: SelectItem[]): void
+}
+
+const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
+                                                                     theme,
+                                                                     id,
+                                                                     label,
+                                                                     values,
+                                                                     initialValues,
+                                                                     onChange,
+                                                                     singleMode = false,
+                                                                     error
+                                                                 }) => {
+    const styles = StyleSheet.create({
+        checkboxlist: {
+            borderRadius: 4
+        },
+        header: {},
+        icon: {
+            position: "absolute",
+            top: 26,
+            right: 16,
+        },
+        content: {
+            backgroundColor: theme.colors.primary,
+            marginHorizontal: 10,
+            paddingVertical: 10,
+            position: "relative",
+            bottom: 4,
+            shadowColor: theme.colors.primary,
+            shadowOffset: {
+                width: 0,
+                height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 5,
+            borderBottomRightRadius: 12,
+            borderBottomLeftRadius: 12
+        },
+        error: {
+            color: '#fa4848',
+            marginLeft: 12,
+            marginTop: 2,
+            marginBottom: 10,
+            fontSize: 12
+        }
+    });
+
+    const [items, setItems] = useState<SelectItem[]>([])
+    const [showItems, setShowItems] = useState(false)
+
+    const updateItemStatus = (name: string, value: boolean) => {
+        const data: SelectItem[] = [...items]
+
+        if (singleMode) {
+            data.forEach((it) => (it.value = false))
+        }
+
+        const item = data.find((it) => it.name === name)
+        //if (singleMode) {
+        item!.value = value
+        //} else {
+        //  item!.value = value
+        //}
+        if (singleMode) {
+            onChange(data.filter((it) => it.name === name && it.value))
+        } else {
+            onChange(data)
+        }
+        setItems(data)
+    }
+
+    useEffect(() => {
+        const data: SelectItem[] = []
+        values.forEach((value) => {
+            data.push({
+                id: value.id,
+                name: value.name,
+                image: value.image,
+                value: !!initialValues?.find((it) => it.name === value.name),
+            })
+        })
+
+        setItems(data)
+    }, [values, initialValues])
+
+    const toggleShowItems = () => {
+        setShowItems(!showItems)
+    }
+
+    const getInputTextValue = (): string =>
+        items
+            .filter((it) => it.value)
+            .map((it) => it.name)
+            .join(', ')
+
+    const showErrorMessage = (): boolean => {
+        return error?.touched! && error.message.length > 0
+    }
+
+    return (
+        <View style={styles.checkboxlist}>
+
+            <View style={styles.header} onTouchEnd={toggleShowItems}>
+                <TextInputComponent
+                    id={id}
+                    label={label}
+                    value={getInputTextValue()}
+                    multiLine={true}
+                    maxLength={1000}
+                    style={{marginTop: 30, marginLeft: 8, marginRight: 8, paddingRight: 50}}
+                    theme={theme}
+                />
+                {showErrorMessage() && <Text style={styles.error}>{error?.message}</Text>}
+                <View style={styles.icon}>
+                    <MaterialCommunityIcons
+                        name="chevron-down"
+                        color={theme.colors.accent}
+                        size={50}
+                        style={{transform: [{rotateZ: showItems ? "180deg" : "0deg"}]}}
+                    />
+                </View>
+            </View>
+
+            {showItems && <View style={styles.content}>
+                {
+                    items.map(item =>
+                        <View key={item.id}>
+                            <CheckBoxComponent theme={theme}
+                                               name={item.name}
+                                               label={item.name}
+                                               imageName={item.image}
+                                               value={item.value}
+                                               onChange={updateItemStatus}
+                            />
+                        </View>)
+                }
+            </View>}
+
+        </View>
+    )
+}
+
+export default CheckBoxListComponent
