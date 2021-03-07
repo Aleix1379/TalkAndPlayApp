@@ -48,7 +48,7 @@ const SettingsScreen: React.FC<SettingsProperties> = ({navigation, theme, logout
 
                 <View style={styles.actions}>
 
-                    <ButtonComponent label="Logout" icon="logout" onPress={() => disconnect()} theme={theme}/>
+                    <ButtonComponent label="Logout" icon="logout" onPress={() => disconnect()}/>
 
                 </View>
 

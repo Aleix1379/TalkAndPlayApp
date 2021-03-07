@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
-import {Text} from 'react-native-paper';
-import {StyleProp, StyleSheet, TextInput, View, ViewStyle} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {ErrorType} from "../../utils/Validator/types";
+import React, {useState} from 'react'
+import {Text, withTheme} from 'react-native-paper'
+import {StyleProp, StyleSheet, TextInput, View, ViewStyle} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {ErrorType} from "../../utils/Validator/types"
 
 interface TextInputProperties {
     id: string
@@ -116,4 +116,4 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
     )
 }
 
-export default TextInputComponent
+export default withTheme(TextInputComponent)

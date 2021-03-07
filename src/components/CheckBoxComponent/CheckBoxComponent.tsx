@@ -1,8 +1,8 @@
-import React from 'react';
-import {Image, StyleSheet, View} from "react-native";
-import {Text} from 'react-native-paper';
-import {Theme} from "react-native-paper/lib/typescript/types";
-import CheckBox from "@react-native-community/checkbox";
+import React from 'react'
+import {Image, StyleSheet, View} from "react-native"
+import {Text, withTheme} from 'react-native-paper'
+import {Theme} from "react-native-paper/lib/typescript/types"
+import CheckBox from "@react-native-community/checkbox"
 
 
 interface CheckBoxProperties {
@@ -37,7 +37,7 @@ const CheckBoxComponent: React.FC<CheckBoxProperties> = ({theme, name, label, im
             marginLeft: 4,
             marginRight: 12
         }
-    });
+    })
 
     const images = [
         {
@@ -68,7 +68,7 @@ const CheckBoxComponent: React.FC<CheckBoxProperties> = ({theme, name, label, im
             id: 'xbox',
             image: require('../../assets/images/xbox.png'),
         },
-    ];
+    ]
 
     return (
         <View
@@ -90,4 +90,4 @@ const CheckBoxComponent: React.FC<CheckBoxProperties> = ({theme, name, label, im
     )
 }
 
-export default CheckBoxComponent
+export default withTheme(CheckBoxComponent)

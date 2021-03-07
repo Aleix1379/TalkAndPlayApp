@@ -1,7 +1,8 @@
-import React from 'react';
-import {Image, StyleSheet, View} from "react-native";
-import ImageUtils from "../../utils/UserUtils";
-import {Theme} from "react-native-paper/lib/typescript/types";
+import React from 'react'
+import {Image, StyleSheet, View} from "react-native"
+import ImageUtils from "../../utils/UserUtils"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {withTheme} from "react-native-paper"
 
 interface AdButtonProperties {
     image: string
@@ -10,7 +11,7 @@ interface AdButtonProperties {
 }
 
 const AdButtons: React.FC<AdButtonProperties> = ({image, url, theme}) => {
-    const imageSize = 45;
+    const imageSize = 45
     const styles = StyleSheet.create({
         adButton: {
             padding: 8,
@@ -30,7 +31,7 @@ const AdButtons: React.FC<AdButtonProperties> = ({image, url, theme}) => {
             width: imageSize,
             borderRadius: imageSize / 2
         }
-    });
+    })
 
     return (
         <View style={styles.adButton}>
@@ -39,4 +40,4 @@ const AdButtons: React.FC<AdButtonProperties> = ({image, url, theme}) => {
     )
 }
 
-export default AdButtons;
+export default withTheme(AdButtons)

@@ -303,20 +303,20 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme}) =
                 {
                     post &&
                     <View>
-                        <Info style={styles.postDetail} theme={theme} label="Game" value={post.game}/>
-                        <Info style={styles.postDetail} theme={theme} label="Language" value={post.language.name}/>
-                        <Info style={styles.postDetail} theme={theme} label="Platforms"
+                        <Info style={styles.postDetail} label="Game" value={post.game}/>
+                        <Info style={styles.postDetail} label="Language" value={post.language.name}/>
+                        <Info style={styles.postDetail} label="Platforms"
                               value={post.platforms.map((platform: Option) => platform.name).join(' ')}/>
-                        <Info style={styles.postDetail} theme={theme} label="User" value={post.user!.name}/>
+                        <Info style={styles.postDetail} label="User" value={post.user!.name}/>
 
                         <View style={styles.ads}>
                             <AdButton image="instant-gaming.png"
                                       url={`https://www.instant-gaming.com/en/search/?q=${post.game}&igr=TalkAndPlay`}
-                                      theme={theme}/>
+                            />
 
                             <AdButton image="eneba.png"
                                       url={`https://www.eneba.com/marketplace?text=${post?.game}&aff=602c24685aea7&sortBy=RELEVANCE_DESC`}
-                                      theme={theme}/>
+                            />
 
                         </View>
 
@@ -333,7 +333,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme}) =
                                 number={currentPage}
                                 totalPages={page?.totalPages}
                                 onPageChange={(newPage: number) => fetchComments('top', newPage)}
-                                theme={theme}
+
                             />
                         }
 
@@ -343,9 +343,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme}) =
                                       marginTop: index === 0 ? 10 : 8,
                                       marginBottom: index === comments.length - 1 ? 10 : 2
                                   }}>
-                                <CommentComponent key={comment.id}
-                                                  comment={comment}
-                                                  theme={theme}/>
+                                <CommentComponent key={comment.id} comment={comment}/>
                             </View>)}
 
                         {
@@ -354,7 +352,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme}) =
                                 number={currentPage}
                                 totalPages={page?.totalPages}
                                 onPageChange={(newPage: number) => fetchComments('top', newPage)}
-                                theme={theme}
                             />
                         }
                     </View>
@@ -366,7 +363,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme}) =
                 send={sendComment}
                 message={message}
                 onChange={(value: string) => setMessage(value)}
-                theme={theme}
             />}
 
             {isModalEnabled &&

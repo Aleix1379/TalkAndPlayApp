@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {Option, SelectItem} from "../../types/PostsTypes";
-import TextInputComponent from "../TextInputComponent";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import CheckBoxComponent from "../CheckBoxComponent";
-import {ErrorType} from "../../utils/Validator/types";
-import {Text} from "react-native-paper";
+import React, {useEffect, useState} from 'react'
+import {StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {Option, SelectItem} from "../../types/PostsTypes"
+import TextInputComponent from "../TextInputComponent"
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
+import CheckBoxComponent from "../CheckBoxComponent"
+import {ErrorType} from "../../utils/Validator/types"
+import {Text, withTheme} from "react-native-paper"
 
 interface CheckBoxListProperties {
     theme: Theme
@@ -65,7 +65,7 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
             marginBottom: 10,
             fontSize: 12
         }
-    });
+    })
 
     const [items, setItems] = useState<SelectItem[]>([])
     const [showItems, setShowItems] = useState(false)
@@ -130,7 +130,7 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
                     multiLine={true}
                     maxLength={1000}
                     style={{marginTop: 30, marginLeft: 8, marginRight: 8, paddingRight: 50}}
-                    theme={theme}
+
                 />
                 {showErrorMessage() && <Text style={styles.error}>{error?.message}</Text>}
                 <View style={styles.icon}>
@@ -147,12 +147,12 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
                 {
                     items.map(item =>
                         <View key={item.id}>
-                            <CheckBoxComponent theme={theme}
-                                               name={item.name}
-                                               label={item.name}
-                                               imageName={item.image}
-                                               value={item.value}
-                                               onChange={updateItemStatus}
+                            <CheckBoxComponent
+                                name={item.name}
+                                label={item.name}
+                                imageName={item.image}
+                                value={item.value}
+                                onChange={updateItemStatus}
                             />
                         </View>)
                 }
@@ -162,4 +162,4 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
     )
 }
 
-export default CheckBoxListComponent
+export default withTheme(CheckBoxListComponent)

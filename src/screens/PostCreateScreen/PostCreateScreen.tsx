@@ -229,7 +229,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                                         style={styles.input}
                                         onChange={update}
                                         error={errors.game}
-                                        theme={theme}/>
+                    />
 
                     <TextInputComponent id="title"
                                         label="Title"
@@ -237,7 +237,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                                         style={styles.input}
                                         onChange={update}
                                         error={errors.title}
-                                        theme={theme}/>
+                    />
 
                     <TextInputComponent id="text"
                                         label="Message"
@@ -246,25 +246,25 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                                         multiLine={true}
                                         error={errors.text}
                                         onChange={update}
-                                        theme={theme}/>
-
-                    <CheckBoxListComponent theme={theme}
-                                           id="languages"
-                                           label="Language"
-                                           values={Languages.sortLanguages(user.languages)}
-                                           initialValues={[post.language]}
-                                           singleMode={true}
-                                           error={errors.language}
-                                           onChange={(items) => handleChange(items, 'language')}
                     />
 
-                    <CheckBoxListComponent theme={theme}
-                                           id="platforms"
-                                           label="Platforms"
-                                           values={availablePlatforms}
-                                           initialValues={post.platforms}
-                                           error={errors.platforms}
-                                           onChange={(items) => handleChange(items, 'platforms')}
+                    <CheckBoxListComponent
+                        id="languages"
+                        label="Language"
+                        values={Languages.sortLanguages(user.languages)}
+                        initialValues={[post.language]}
+                        singleMode={true}
+                        error={errors.language}
+                        onChange={(items) => handleChange(items, 'language')}
+                    />
+
+                    <CheckBoxListComponent
+                        id="platforms"
+                        label="Platforms"
+                        values={availablePlatforms}
+                        initialValues={post.platforms}
+                        error={errors.platforms}
+                        onChange={(items) => handleChange(items, 'platforms')}
                     />
 
                 </ScrollView>
@@ -273,7 +273,6 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                                  icon="content-save"
                                  onPress={() => save()}
                                  style={styles.button}
-                                 theme={theme}
                                  disabled={
                                      untouched ||
                                      !!errors.game.message ||

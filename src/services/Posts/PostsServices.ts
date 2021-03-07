@@ -23,8 +23,7 @@ class PostsService extends Api {
             platforms = filter.platforms.map((platform) => platform.id);
             language = filter.languages.map((language) => language.id);
         }
-        console.log('url get')
-        console.log(`${this.getUrl()}?page=${page}&title=${title}&game=${game}&platforms=${platforms}&languages=${language}`)
+
         return this.http
             .get(
                 `${this.getUrl()}?page=${page}&title=${title}&game=${game}&platforms=${platforms}&languages=${language}`

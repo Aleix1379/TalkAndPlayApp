@@ -1,15 +1,16 @@
-import React, {useState} from 'react';
-import {StyleSheet, View} from "react-native";
-import TextInputComponent from "../TextInputComponent";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import AvatarComponent from "../AvatarComponent";
-import {UserState} from "../../store/user/types";
-import {shallowEqual, useSelector} from "react-redux";
-import {ApplicationState} from "../../store";
-import ImageUtils from "../../utils/UserUtils";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Validator from "../../utils/Validator/Validator";
-import {ErrorType} from "../../utils/Validator/types";
+import React, {useState} from 'react'
+import {StyleSheet, View} from "react-native"
+import TextInputComponent from "../TextInputComponent"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import AvatarComponent from "../AvatarComponent"
+import {UserState} from "../../store/user/types"
+import {shallowEqual, useSelector} from "react-redux"
+import {ApplicationState} from "../../store"
+import ImageUtils from "../../utils/UserUtils"
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
+import Validator from "../../utils/Validator/Validator"
+import {ErrorType} from "../../utils/Validator/types"
+import {withTheme} from "react-native-paper"
 
 interface Errors {
     message: ErrorType
@@ -105,7 +106,7 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, messa
             shadowRadius: 5,
             elevation: 25,
             transform: [{rotateZ: "-45deg"}]
-        };
+        }
 
         if (isMessageValid()) {
             style.transform = [{rotateZ: "0deg"}]
@@ -117,14 +118,14 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, messa
     return (
         <View style={styles.newComment}>
 
-            <AvatarComponent theme={theme}
-                             style={{
-                                 height: 40,
-                                 width: 40,
-                                 borderRadius: 20,
-                                 borderWidth: 0
-                             }}
-                             uri={ImageUtils.getImageUrl(user)}/>
+            <AvatarComponent
+                style={{
+                    height: 40,
+                    width: 40,
+                    borderRadius: 20,
+                    borderWidth: 0
+                }}
+                uri={ImageUtils.getImageUrl(user)}/>
             <TextInputComponent
                 id="new-comment"
                 value={message}
@@ -132,7 +133,6 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, messa
                 onBlur={onMessageBlur}
                 multiLine={true}
                 maxLength={5000}
-                theme={theme}
                 style={styles.textInput}
                 error={errors.message}
                 placeholder="Write a comment..."
@@ -149,4 +149,4 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, messa
     )
 }
 
-export default NewCommentComponent
+export default withTheme(NewCommentComponent)

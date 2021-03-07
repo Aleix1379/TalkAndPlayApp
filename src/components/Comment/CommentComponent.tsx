@@ -1,12 +1,12 @@
-import React from 'react';
-import {Comment} from "../../types/PostsTypes";
-import {Image, StyleSheet, View} from "react-native";
-import {Text} from 'react-native-paper';
-import ImageUtils from "../../utils/UserUtils";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import Time from "../../utils/Time";
+import React from 'react'
+import {Comment} from "../../types/PostsTypes"
+import {Image, StyleSheet, View} from "react-native"
+import {Text, withTheme} from 'react-native-paper'
+import ImageUtils from "../../utils/UserUtils"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import Time from "../../utils/Time"
 // @ts-ignore
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 
 interface CommentProperties {
     comment: Comment
@@ -15,7 +15,7 @@ interface CommentProperties {
 
 const CommentComponent: React.FC<CommentProperties> = ({comment, theme}) => {
 
-    const imageSize = 50;
+    const imageSize = 50
     const styles = StyleSheet.create({
         comment: {
             backgroundColor: theme.colors.primary,
@@ -54,7 +54,7 @@ const CommentComponent: React.FC<CommentProperties> = ({comment, theme}) => {
             textAlign: "right",
             paddingLeft: 5
         }
-    });
+    })
 
     return (
         <View style={styles.comment}>
@@ -72,4 +72,4 @@ const CommentComponent: React.FC<CommentProperties> = ({comment, theme}) => {
     )
 }
 
-export default CommentComponent;
+export default withTheme(CommentComponent)

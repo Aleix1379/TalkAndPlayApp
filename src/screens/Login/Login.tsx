@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
-import {Appbar, Button, Text, withTheme} from 'react-native-paper';
+import {Appbar, Text, withTheme} from 'react-native-paper';
 import {Theme} from "react-native-paper/lib/typescript/types";
 import TextInputComponent from "../../components/TextInputComponent";
 import ButtonComponent from "../../components/ButtonComponent";
@@ -12,7 +12,6 @@ import {login} from "../../store/user/actions";
 import {setLoading} from "../../store/loading/actions";
 
 interface LoginProperties {
-    navigation: any
     theme: Theme
     login: Function
     setLoading: Function
@@ -28,7 +27,7 @@ interface Form {
     password: string
 }
 
-const LoginScreen: React.FC<LoginProperties> = ({navigation, theme, login, setLoading}) => {
+const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading}) => {
     const userService = new UserService()
     const [form, setForm] = useState<Form>(
         {
@@ -154,7 +153,6 @@ const LoginScreen: React.FC<LoginProperties> = ({navigation, theme, login, setLo
                             label="Email"
                             value={form.email}
                             onChange={update}
-                            theme={theme}
                             error={errors.email}
                         />
                     </View>
@@ -166,18 +164,16 @@ const LoginScreen: React.FC<LoginProperties> = ({navigation, theme, login, setLo
                             value={form.password}
                             onChange={update}
                             password={true}
-                            theme={theme}
                             error={errors.password}
                         />
                     </View>
                 </View>
 
-                <ButtonComponent label="Sign in" icon="account" theme={theme} onPress={signIn}/>
+                <ButtonComponent label="Sign in" icon="account" onPress={signIn}/>
 
                 <Text style={styles.help}>Don't have an account?</Text>
                 <ButtonComponent label="Create and account"
                                  icon="account-plus"
-                                 theme={theme}
                                  onPress={goToCreateAccount}
                 />
             </ScrollView>

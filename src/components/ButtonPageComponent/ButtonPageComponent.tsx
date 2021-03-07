@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react'
-import {Animated, StyleProp, StyleSheet, View, ViewStyle} from "react-native";
-import {Text} from 'react-native-paper';
-import {Theme} from "react-native-paper/lib/typescript/types";
+import {Animated, StyleProp, StyleSheet, View, ViewStyle} from "react-native"
+import {Text, withTheme} from 'react-native-paper'
+import {Theme} from "react-native-paper/lib/typescript/types"
 
 interface ButtonPageProperties {
     label: number
@@ -16,7 +16,7 @@ const ButtonPageComponent: React.FC<ButtonPageProperties> = ({
                                                                  onClick,
                                                                  theme
                                                              }) => {
-    const opacity = useRef(new Animated.Value(0)).current;
+    const opacity = useRef(new Animated.Value(0)).current
 
     useEffect(() => {
         let duration = 0
@@ -29,7 +29,7 @@ const ButtonPageComponent: React.FC<ButtonPageProperties> = ({
             useNativeDriver: true,
             duration,
             toValue
-        }).start();
+        }).start()
     }, [opacity, isCurrentPage])
 
     const styles = StyleSheet.create({
@@ -103,4 +103,4 @@ const ButtonPageComponent: React.FC<ButtonPageProperties> = ({
     )
 }
 
-export default ButtonPageComponent
+export default withTheme(ButtonPageComponent)

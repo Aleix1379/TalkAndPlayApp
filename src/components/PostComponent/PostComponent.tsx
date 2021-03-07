@@ -1,10 +1,10 @@
-import React from 'react';
-import {Image, StyleSheet, View} from "react-native";
-import {Text} from 'react-native-paper';
-import ImageUtils from "../../utils/UserUtils";
-import Time from "../../utils/Time";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {Option, PostInfo} from "../../types/PostsTypes";
+import React from 'react'
+import {Image, StyleSheet, View} from "react-native"
+import {Text, withTheme} from 'react-native-paper'
+import ImageUtils from "../../utils/UserUtils"
+import Time from "../../utils/Time"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {Option, PostInfo} from "../../types/PostsTypes"
 
 interface PostProperties {
     post: PostInfo,
@@ -13,7 +13,7 @@ interface PostProperties {
 }
 
 const PostComponent: React.FC<PostProperties> = ({post, onClick, theme}) => {
-    const {id, title, game, platforms, user, language, lastUpdate} = post;
+    const {id, title, game, platforms, user, language, lastUpdate} = post
 
     const styles = StyleSheet.create({
         post: {
@@ -64,7 +64,7 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme}) => {
             flex: 1,
             color: theme.colors.text
         }
-    });
+    })
 
     return (
         <View
@@ -94,6 +94,6 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme}) => {
         </View>
     )
 
-};
+}
 
-export default PostComponent;
+export default withTheme(PostComponent)

@@ -72,21 +72,20 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
 
                 {user &&
                 <View style={styles.profile}>
-                    <AvatarComponent theme={theme}
-                                     style={{
-                                         marginTop: 8,
-                                         marginBottom: 12,
-                                     }} uri={ImageUtils.getImageUrl(user)}
+                    <AvatarComponent
+                        style={{
+                            marginTop: 8,
+                            marginBottom: 12,
+                        }} uri={ImageUtils.getImageUrl(user)}
                     />
 
-                    <Info label="Email" value={user.email} theme={theme} style={styles.info}/>
+                    <Info label="Email" value={user.email} style={styles.info}/>
                     <Info label="Languages"
                           value={user.languages.map(language => language.name).join(', ')}
-                          theme={theme}
                           style={styles.info}/>
                     <Info label="Platforms"
                           value={user.platforms.map(platform => platform.name).join(', ')}
-                          theme={theme}
+
                           style={styles.info}/>
 
                     <View style={styles.actions}>
@@ -94,13 +93,13 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
                                          icon="account-edit"
                                          onPress={() => navigation.navigate('EditProfile')}
                                          style={styles.button}
-                                         theme={theme}/>
+                        />
 
                         <ButtonComponent label="Settings"
                                          icon="cog"
                                          onPress={() => navigation.navigate('Settings')}
                                          style={styles.button}
-                                         theme={theme}/>
+                        />
                     </View>
                 </View>}
 

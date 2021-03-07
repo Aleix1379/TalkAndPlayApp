@@ -1,7 +1,8 @@
-import React from 'react';
-import {Dimensions, StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import FastImage from "react-native-fast-image";
+import React from 'react'
+import {Dimensions, StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import FastImage from "react-native-fast-image"
+import {withTheme} from "react-native-paper";
 
 interface LoadingProperties {
     theme: Theme
@@ -21,7 +22,7 @@ const LoadingComponent: React.FC<LoadingProperties> = ({theme, visible}) => {
             zIndex: visible ? 10000 : 0,
             backgroundColor: 'rgba(33,33,33,0.666)'
         }
-    });
+    })
 
     return (
         <View style={styles.loading}>
@@ -33,4 +34,4 @@ const LoadingComponent: React.FC<LoadingProperties> = ({theme, visible}) => {
     )
 }
 
-export default LoadingComponent
+export default withTheme(LoadingComponent)

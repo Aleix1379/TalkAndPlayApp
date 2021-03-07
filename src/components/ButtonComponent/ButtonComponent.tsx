@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
-import {Text} from "react-native-paper";
-import {StyleProp, StyleSheet, View, ViewStyle} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
+import React, {useState} from 'react'
+import {Text, withTheme} from "react-native-paper"
+import {StyleProp, StyleSheet, View, ViewStyle} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
 // @ts-ignore
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 interface ButtonProperties {
     label: string
@@ -75,7 +75,7 @@ const ButtonComponent: React.FC<ButtonProperties> = ({
 
         return {
             ...item, ...style as {}
-        };
+        }
     }
 
     return (
@@ -88,4 +88,4 @@ const ButtonComponent: React.FC<ButtonProperties> = ({
     )
 }
 
-export default ButtonComponent
+export default withTheme(ButtonComponent)

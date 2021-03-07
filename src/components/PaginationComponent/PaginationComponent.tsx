@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import ButtonPageComponent from "../ButtonPageComponent";
-import {StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
+import React, {useEffect, useState} from 'react'
+import ButtonPageComponent from "../ButtonPageComponent"
+import {StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {withTheme} from "react-native-paper"
 
 
 export interface PaginationProperties {
@@ -20,8 +21,7 @@ interface DataPage {
 const PaginationComponent: React.FC<PaginationProperties> = ({
                                                                  number,
                                                                  totalPages,
-                                                                 onPageChange,
-                                                                 theme
+                                                                 onPageChange
                                                              }) => {
 
     const styles = StyleSheet.create({
@@ -90,7 +90,6 @@ const PaginationComponent: React.FC<PaginationProperties> = ({
                     label={page.label}
                     isCurrentPage={page.isCurrentPage}
                     onClick={(page: number) => onPageChange(page - 1)}
-                    theme={theme}
                 />
             ))}
         </View>
@@ -98,4 +97,4 @@ const PaginationComponent: React.FC<PaginationProperties> = ({
 
 }
 
-export default PaginationComponent
+export default withTheme(PaginationComponent)

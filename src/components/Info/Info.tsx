@@ -1,7 +1,7 @@
-import React from 'react';
-import {StyleProp, StyleSheet, View, ViewStyle} from "react-native";
-import {Text} from 'react-native-paper';
-import {Theme} from "react-native-paper/lib/typescript/types";
+import React from 'react'
+import {StyleProp, View, ViewStyle} from "react-native"
+import {Text, withTheme} from 'react-native-paper'
+import {Theme} from "react-native-paper/lib/typescript/types"
 
 interface InfoProperties {
     label: string
@@ -29,11 +29,11 @@ const Info: React.FC<InfoProperties> = ({style, theme, label, value}) => {
             shadowOpacity: 0.25,
             shadowRadius: 3.84,
             elevation: 5,
-        };
+        }
 
         return {
             ...item, ...style as {}
-        };
+        }
     }
 
     return (
@@ -44,4 +44,4 @@ const Info: React.FC<InfoProperties> = ({style, theme, label, value}) => {
     )
 }
 
-export default Info;
+export default withTheme(Info)

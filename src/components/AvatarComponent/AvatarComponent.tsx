@@ -1,6 +1,7 @@
-import React from 'react';
-import {Image, ImageStyle, StyleProp, StyleSheet, View, ViewStyle} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
+import React from 'react'
+import {Image, ImageStyle, StyleProp, StyleSheet} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {withTheme} from "react-native-paper"
 
 interface AvatarProperties {
     theme: Theme
@@ -17,7 +18,7 @@ const AvatarComponent: React.FC<AvatarProperties> = ({theme, uri, style}) => {
             borderWidth: 4,
             borderColor: theme.colors.primary,
         }
-    });
+    })
 
     return (
         <Image
@@ -26,4 +27,4 @@ const AvatarComponent: React.FC<AvatarProperties> = ({theme, uri, style}) => {
     )
 }
 
-export default AvatarComponent
+export default withTheme(AvatarComponent)
