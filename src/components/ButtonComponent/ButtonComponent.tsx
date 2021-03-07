@@ -11,7 +11,7 @@ interface ButtonProperties {
     onPress: () => void
     theme: Theme
     style?: StyleProp<ViewStyle>
-    disabled: boolean
+    disabled?: boolean
 }
 
 const ButtonComponent: React.FC<ButtonProperties> = ({
