@@ -9,11 +9,13 @@ import {EMAIL, ErrorType, MAX_LENGTH, MIN_LENGTH, REQUIRED} from "../../utils/Va
 import Validator from "../../utils/Validator/Validator";
 import {connect} from 'react-redux';
 import {login} from "../../store/user/actions";
+import {setLoading} from "../../store/loading/actions";
 
 interface LoginProperties {
-    navigation: any,
-    theme: Theme;
+    navigation: any
+    theme: Theme
     login: Function
+    setLoading: Function
 }
 
 interface Errors {
@@ -26,7 +28,7 @@ interface Form {
     password: string
 }
 
-const LoginScreen: React.FC<LoginProperties> = ({navigation, theme, login}) => {
+const LoginScreen: React.FC<LoginProperties> = ({navigation, theme, login, setLoading}) => {
     const userService = new UserService()
     const [form, setForm] = useState<Form>(
         {
@@ -119,6 +121,7 @@ const LoginScreen: React.FC<LoginProperties> = ({navigation, theme, login}) => {
     }
 
     const signIn = () => {
+        setLoading(true)
         userService.login(form.email, form.password)
             .then(loginResponse => {
                 console.log('loginResponse.user::::')
@@ -130,6 +133,7 @@ const LoginScreen: React.FC<LoginProperties> = ({navigation, theme, login}) => {
                 err.message = 'Your username and/or password do not match'
                 setErrors({...errors, ['email']: err})
             })
+            .finally(() => setLoading(false))
     }
 
     const goToCreateAccount = () => {
@@ -183,4 +187,5 @@ const LoginScreen: React.FC<LoginProperties> = ({navigation, theme, login}) => {
 
 export default connect(null, {
     login: login,
+    setLoading: setLoading
 })(withTheme(LoginScreen))
