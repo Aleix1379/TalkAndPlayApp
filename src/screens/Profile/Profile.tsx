@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Appbar, withTheme} from 'react-native-paper';
+import {withTheme} from 'react-native-paper';
 import {UserState} from "../../store/user/types";
 import UserService from "../../services/User";
 import {login} from "../../store/user/actions";
@@ -10,6 +10,7 @@ import ImageUtils from "../../utils/UserUtils";
 import ButtonComponent from "../../components/ButtonComponent";
 import {connect} from "react-redux";
 import AvatarComponent from "../../components/AvatarComponent";
+import HeaderComponent from "../../components/HeaderComponent";
 
 interface ProfileProperties {
     navigation: any,
@@ -65,10 +66,7 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
 
         return (
             <>
-                <Appbar>
-                    <Appbar.Content title={user?.name} titleStyle={styles.title}/>
-                </Appbar>
-
+                <HeaderComponent title={user?.name}/>
 
                 {user &&
                 <View style={styles.profile}>

@@ -41,7 +41,7 @@ const TopSheetComponent: React.FC<TopSheetProperties> = ({theme, visible = false
             position: "absolute",
             top: getModalHeight() * -1,
             right: 5,
-            width: 140,
+            width: 115,
             borderRadius: 12,
             backgroundColor: theme.colors.surface,
             shadowColor: theme.colors.background,
@@ -61,6 +61,7 @@ const TopSheetComponent: React.FC<TopSheetProperties> = ({theme, visible = false
             justifyContent: "space-between",
             marginVertical: 8,
             marginHorizontal: 12,
+            paddingVertical: 4,
             backgroundColor: theme.colors.surface
         },
         text: {

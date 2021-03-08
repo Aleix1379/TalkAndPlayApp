@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
-import {Appbar, Text, withTheme} from 'react-native-paper';
+import {Text, withTheme} from 'react-native-paper';
 import {Theme} from "react-native-paper/lib/typescript/types";
 import TextInputComponent from "../../components/TextInputComponent";
 import ButtonComponent from "../../components/ButtonComponent";
@@ -10,6 +10,7 @@ import Validator from "../../utils/Validator/Validator";
 import {connect} from 'react-redux';
 import {login} from "../../store/user/actions";
 import {setLoading} from "../../store/loading/actions";
+import HeaderComponent from "../../components/HeaderComponent";
 
 interface LoginProperties {
     theme: Theme
@@ -141,9 +142,7 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading}) => {
 
     return (
         <>
-            <Appbar>
-                <Appbar.Content title="Sign In" titleStyle={styles.title}/>
-            </Appbar>
+            <HeaderComponent title="Log in"/>
 
             <ScrollView style={styles.login}>
                 <View style={styles.inputs}>

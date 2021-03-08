@@ -15,6 +15,7 @@ import {shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import TopSheetComponent from "../../components/TopSheetComponent";
+import HeaderComponent from "../../components/HeaderComponent";
 
 interface PostDetailProperties {
     navigation: any,
@@ -60,13 +61,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme}) =
             backgroundColor: theme.colors.background,
             paddingHorizontal: 6
         },
-        title: {
-            textAlign: 'center',
-            fontFamily: 'Ranchers-Regular',
-            letterSpacing: 3,
-            fontSize: 25,
 
-        },
         postDetail: {
             marginTop: 8
         },
@@ -234,15 +229,17 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme}) =
 
     return (
         <>
-            <Appbar>
-                <Appbar.Action color={theme.colors.accent} icon="arrow-left"
-                               style={{backgroundColor: theme.colors.surface}}
-                               onPress={() => navigation.navigate('App')}/>
-                <Appbar.Content title={title} titleStyle={styles.title}/>
-                <Appbar.Action color={theme.colors.accent} icon="dots-vertical"
-                               style={{backgroundColor: theme.colors.surface}}
-                               onPress={() => toggleModal()}/>
-            </Appbar>
+            <HeaderComponent
+                title={title}
+                leftAction={{
+                    image: "arrow-left",
+                    onPress: () => navigation.navigate('App')
+                }}
+                rightAction={{
+                    image:"dots-vertical",
+                    onPress: () => toggleModal()
+                }}
+            />
 
             <ScrollView style={styles.post} ref={scrollRef}>
 
@@ -314,6 +311,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme}) =
             <TopSheetComponent visible={isModalOpened} options={modalOptions}/>
         </>
     )
-};
+}
 
 export default withTheme(PostDetailScreen)

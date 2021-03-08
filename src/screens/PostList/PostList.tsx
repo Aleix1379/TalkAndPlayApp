@@ -9,6 +9,7 @@ import PostComponent from "../../components/PostComponent"
 import {UserState} from "../../store/user/types"
 import {shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
+import HeaderComponent from "../../components/HeaderComponent";
 
 interface PostListProperties {
     navigation: any,
@@ -55,17 +56,13 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
 
     return (
         <>
-            <Appbar>
-                <Appbar.Action color={theme.colors.primary} icon="magnify" style={{marginLeft: 16}}/>
-                <Appbar.Content title="Talk and play" titleStyle={styles.title}/>
-                <Appbar.Action
-                    color={theme.colors.accent}
-                    icon="magnify"
-                    style={{marginRight: 16}}
-                    onPress={() => {
-                    }}
-                />
-            </Appbar>
+            <HeaderComponent
+                title="Posts"
+                rightAction={{
+                    image: "magnify",
+                    onPress: () => console.log('searching.....')
+                }}
+            />
 
             <View style={styles.postList}>
                 <ScrollView>

@@ -1,10 +1,11 @@
 import React from 'react';
-import {Appbar, withTheme} from 'react-native-paper';
+import {withTheme} from 'react-native-paper';
 import {Theme} from "react-native-paper/lib/typescript/types";
 import {StyleSheet, View} from "react-native";
 import ButtonComponent from "../../components/ButtonComponent";
 import {connect} from "react-redux";
 import {logout} from "../../store/user/actions";
+import HeaderComponent from "../../components/HeaderComponent";
 
 interface SettingsProperties {
     navigation: any,
@@ -38,17 +39,19 @@ const SettingsScreen: React.FC<SettingsProperties> = ({navigation, theme, logout
 
     return (
         <>
-            <Appbar>
-                <Appbar.Action color={theme.colors.accent} icon="arrow-left" onPress={() => navigation.goBack()}/>
-                <Appbar.Content title="Settings" titleStyle={styles.title}/>
-                <Appbar.Action color={theme.colors.primary} icon="magnify"/>
-            </Appbar>
+            <HeaderComponent
+                title="Settings"
+                leftAction={{
+                    image: "arrow-left",
+                    onPress: () => navigation.goBack()
+                }}
+            />
 
             <View style={styles.settings}>
 
                 <View style={styles.actions}>
 
-                    <ButtonComponent label="Logout" icon="logout" onPress={() => disconnect()}/>
+                    <ButtonComponent label="Sign out" icon="logout" onPress={() => disconnect()}/>
 
                 </View>
 

@@ -14,6 +14,7 @@ import ButtonComponent from "../../components/ButtonComponent";
 import Validator from "../../utils/Validator/Validator";
 import {setLoading} from "../../store/loading/actions";
 import PostsService from "../../services/Posts";
+import HeaderComponent from "../../components/HeaderComponent";
 
 interface PostCreateProperties {
     navigation: any,
@@ -215,11 +216,13 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
 
     return (
         <>
-            <Appbar>
-                <Appbar.Action color={theme.colors.accent} icon="arrow-left" onPress={() => navigation.goBack()}/>
-                <Appbar.Content title="Create new post" titleStyle={styles.title}/>
-                <Appbar.Action color={theme.colors.primary} icon="dots-vertical"/>
-            </Appbar>
+            <HeaderComponent
+                title="Create new post"
+                leftAction={{
+                    image: "arrow-left",
+                    onPress: () => navigation.goBack()
+                }}
+            />
 
             <View style={styles.postCreate}>
                 <ScrollView>
