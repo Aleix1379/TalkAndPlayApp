@@ -32,12 +32,6 @@ const HeaderComponent: React.FC<HeaderProperties> = ({
 
     return (
         <Appbar>
-            {/*            <Appbar.Action color={leftAction ? theme.colors.accent : theme.colors.primary}
-                           icon={leftAction ? leftAction.image : "arrow-left"}
-                           style={{backgroundColor: leftAction ? theme.colors.surface : theme.colors.primary}}
-                           onPress={() => leftAction && leftAction.onPress()}
-            />*/}
-
             <RoundButtonComponent
                 style={{marginLeft: 5}}
                 icon={leftAction?.image}
