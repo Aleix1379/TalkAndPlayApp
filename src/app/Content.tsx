@@ -37,7 +37,6 @@ const Content: React.FC<ContentProperties> = ({theme, login}) => {
 
     return (
         <View style={{flex: 1, backgroundColor: theme.colors.background}}>
-            <StatusBar barStyle="dark-content"/>
             <LoadingComponent visible={isLoadingVisible}/>
             {user.id >= 0 ? <Container/> : <ContainerAnonymous/>}
         </View>

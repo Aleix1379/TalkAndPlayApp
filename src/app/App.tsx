@@ -17,14 +17,15 @@ import reducers, {ApplicationState} from "../store";
 import {DispatchType} from "../store/user/types";
 import thunk from 'redux-thunk'
 import Content from "./Content";
+import {StatusBar, View} from "react-native";
 
 const App = () => {
     const store: Store<ApplicationState> & {
         dispatch: DispatchType
     } = createStore(reducers, applyMiddleware(thunk))
 
+    let darkTheme = true;
     const getTheme = () => {
-        let darkTheme = true;
         if (darkTheme) {
             return {
                 ...DefaultTheme,
@@ -56,6 +57,10 @@ const App = () => {
         <Provider store={store}>
             <NavigationContainer>
                 <PaperProvider theme={getTheme()}>
+                    <StatusBar
+                        barStyle={darkTheme ? "light-content" : "dark-content"}
+                        backgroundColor={getTheme().colors.surface}
+                    />
                     <Content/>
                 </PaperProvider>
             </NavigationContainer>
