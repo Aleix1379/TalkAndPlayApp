@@ -3,6 +3,7 @@ import {Text, withTheme} from 'react-native-paper'
 import {StyleProp, StyleSheet, TextInput, View, ViewStyle} from "react-native"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {ErrorType} from "../../utils/Validator/types"
+import ErrorHelperComponent from "../ErrorHelperComponent";
 
 interface TextInputProperties {
     id: string
@@ -41,6 +42,7 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
             top: isFocused || value.length > 0 ? -24 : 10,
             paddingHorizontal: 4,
             color: theme.colors.text,
+            marginLeft: 4,
             zIndex: 10
         },
         input: {
@@ -50,12 +52,6 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
             borderRadius: 5,
             color: theme.colors.text,
             backgroundColor: theme.colors.primary
-        },
-        error: {
-            color: '#fa4848',
-            marginLeft: 4,
-            marginBottom: 4,
-            fontSize: 12
         }
     })
 
@@ -111,7 +107,7 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
                        onFocus={() => toggleFocus(true)}
             />
 
-            {showErrorMessage() && <Text style={styles.error}>{error?.message}</Text>}
+            <ErrorHelperComponent visible={showErrorMessage()} message={`😿   ${error?.message}`}/>
         </View>
     )
 }
