@@ -34,7 +34,7 @@ const HeaderComponent: React.FC<HeaderProperties> = ({
     return (
         <Appbar>
             <Appbar.Action color={leftAction ? theme.colors.accent : theme.colors.primary}
-                           icon="arrow-left"
+                           icon={leftAction ? leftAction.image : "arrow-left"}
                            style={{backgroundColor: leftAction ? theme.colors.surface : theme.colors.primary}}
                            onPress={() => leftAction && leftAction.onPress()}
             />
@@ -42,7 +42,7 @@ const HeaderComponent: React.FC<HeaderProperties> = ({
             <Appbar.Content title={title} titleStyle={styles.title}/>
 
             <Appbar.Action color={rightAction ? theme.colors.accent : theme.colors.primary}
-                           icon="dots-vertical"
+                           icon={rightAction ? rightAction.image : "dots-vertical"}
                            style={{backgroundColor: rightAction ? theme.colors.surface : theme.colors.primary}}
                            onPress={() => rightAction && rightAction.onPress()}
             />
