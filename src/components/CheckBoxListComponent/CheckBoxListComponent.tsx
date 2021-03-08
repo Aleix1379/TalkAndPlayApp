@@ -38,8 +38,8 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
         header: {},
         icon: {
             position: "absolute",
-            top: 26,
-            right: 16,
+            top: 34,
+            right: 15,
         },
         content: {
             backgroundColor: theme.colors.primary,
@@ -137,7 +137,7 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
                     <MaterialCommunityIcons
                         name="chevron-down"
                         color={theme.colors.accent}
-                        size={50}
+                        size={35}
                         style={{transform: [{rotateZ: showItems ? "180deg" : "0deg"}]}}
                     />
                 </View>
