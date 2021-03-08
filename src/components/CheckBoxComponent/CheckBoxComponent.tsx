@@ -33,8 +33,8 @@ const CheckBoxComponent: React.FC<CheckBoxProperties> = ({theme, name, label, im
             paddingVertical: 4
         },
         image: {
-            height: 20,
-            width: 20,
+            height: 25,
+            width: 25,
             marginLeft: 4,
             marginRight: 12
         }
