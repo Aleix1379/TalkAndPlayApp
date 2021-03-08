@@ -40,7 +40,7 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
             position: "absolute",
             top: isFocused || value.length > 0 ? -24 : 10,
             paddingHorizontal: 4,
-            color: theme.colors.accent,
+            color: theme.colors.text,
             zIndex: 10
         },
         input: {
