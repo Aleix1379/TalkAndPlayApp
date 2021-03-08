@@ -7,6 +7,7 @@ import {Theme} from "react-native-paper/lib/typescript/types"
 import Time from "../../utils/Time"
 // @ts-ignore
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
+import RoundButtonComponent from "../RoundButtonComponent";
 
 interface CommentProperties {
     comment: Comment
@@ -14,7 +15,6 @@ interface CommentProperties {
 }
 
 const CommentComponent: React.FC<CommentProperties> = ({comment, theme}) => {
-
     const imageSize = 50
     const styles = StyleSheet.create({
         comment: {
@@ -50,9 +50,7 @@ const CommentComponent: React.FC<CommentProperties> = ({comment, theme}) => {
             borderColor: theme.colors.background
         },
         options: {
-            fontSize: 30,
-            textAlign: "right",
-            paddingLeft: 5
+
         }
     })
 
@@ -62,10 +60,11 @@ const CommentComponent: React.FC<CommentProperties> = ({comment, theme}) => {
                 <Image style={styles.image} source={{uri: ImageUtils.getImageUrl(comment.author)}}/>
                 <Text>{comment.author.name}</Text>
                 <Text style={styles.date}>{Time.diff(comment.lastUpdate)}</Text>
-                <MaterialCommunityIcons style={styles.options}
-                                        name="dots-vertical"
-                                        color={theme.colors.accent}
-                                        size={24}/>
+                <RoundButtonComponent
+                    icon="dots-vertical"
+                    style={{marginLeft: 12}}
+                    onPress={() => console.log('open options...')}
+                />
             </View>
             <Text>{comment.text}</Text>
         </View>
