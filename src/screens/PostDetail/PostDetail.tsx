@@ -13,8 +13,8 @@ import NewCommentComponent from "../../components/NewCommentComponent"
 import {UserState} from "../../store/user/types"
 import {shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
-import BottomSheet from 'reanimated-bottom-sheet'
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import TopSheetComponent from "../../components/TopSheetComponent";
 
 interface PostDetailProperties {
     navigation: any,
@@ -46,7 +46,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme}) =
     const scrollRef: MutableRefObject<any> = useRef()
     const postsService = new PostsService()
     const sheetRef = React.useRef(null)
-    const [isModalOpened, setIsModalOpened] = useState(false)
+    const [isModalOpened, setIsModalOpened] = useState(true)
     const [modalOptions, setModalOptions] = useState<ModalOption[]>([])
     const [isModalEnabled, setIsModalEnabled] = useState(false)
     const [message, setMessage] = useState('')
@@ -149,64 +149,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme}) =
         setModalOptions(options)
     }
 
-    const getModalHeight = () => optionModalHeight * modalOptions.length
-
-    const renderContent = () => {
-
-        const modalStyles = {
-            container: {
-                backgroundColor: theme.colors.surface,
-                paddingTop: 8,
-                height: getModalHeight(),
-                borderTopWidth: 2,
-                borderColor: theme.colors.primary,
-                shadowColor: theme.colors.primary,
-                shadowOffset: {
-                    width: 0,
-                    height: 2,
-                },
-                shadowOpacity: 0.25,
-                shadowRadius: 3.84,
-                elevation: 5
-            },
-            option: {
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                paddingLeft: 16,
-                paddingVertical: 8,
-                backgroundColor: theme.colors.surface
-            },
-            text: {
-                marginLeft: 24,
-                fontSize: 18
-            },
-            separator: {
-                height: 1,
-                width: '100%',
-                backgroundColor: '#00ff00'
-            }
-        }
-
-        return (
-            <View
-                style={modalStyles.container}>
-
-                {modalOptions.map((option, index) => (
-                    // @ts-ignore
-                    <View key={option.id}
-                        // @ts-ignore
-                          style={modalStyles.option}
-                          onTouchEnd={() => option.action()}>
-                        <MaterialCommunityIcons name={option.icon} color={theme.colors.accent} size={30}/>
-                        <Text style={modalStyles.text}>{option.title}</Text>
-                    </View>
-                ))}
-
-            </View>
-        )
-    }
-
     const scrollToTop = (scrollTo: 'top' | 'bottom' = 'top') => {
         setTimeout(() => {
             if (scrollTo === 'top') {
@@ -285,6 +227,8 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme}) =
         if (!isModalEnabled) {
             setIsModalEnabled(true)
         }
+        console.log('toggleModal:::: current value :::: ' + isModalOpened)
+        console.log('toggleModal:::: new value :::: ' + !isModalOpened)
         setIsModalOpened(!isModalOpened)
     }
 
@@ -292,9 +236,11 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme}) =
         <>
             <Appbar>
                 <Appbar.Action color={theme.colors.accent} icon="arrow-left"
+                               style={{backgroundColor: theme.colors.surface}}
                                onPress={() => navigation.navigate('App')}/>
                 <Appbar.Content title={title} titleStyle={styles.title}/>
                 <Appbar.Action color={theme.colors.accent} icon="dots-vertical"
+                               style={{backgroundColor: theme.colors.surface}}
                                onPress={() => toggleModal()}/>
             </Appbar>
 
@@ -358,22 +304,14 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme}) =
                 }
             </ScrollView>
 
-            {user.id >= 0 && !isModalOpened &&
+            {user.id >= 0 &&
             <NewCommentComponent
                 send={sendComment}
                 message={message}
                 onChange={(value: string) => setMessage(value)}
             />}
 
-            {isModalEnabled &&
-            <BottomSheet
-                ref={sheetRef}
-                snapPoints={[getModalHeight(), 0]}
-                initialSnap={0}
-                renderContent={renderContent}
-                onCloseStart={() => setIsModalOpened(false)}
-                onCloseEnd={() => setIsModalOpened(false)}
-            />}
+            <TopSheetComponent visible={isModalOpened} options={modalOptions}/>
         </>
     )
 };
