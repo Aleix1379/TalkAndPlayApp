@@ -20,7 +20,7 @@ const CheckBoxComponent: React.FC<CheckBoxProperties> = ({theme, name, label, im
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-            marginVertical: 4,
+            marginVertical: 8,
             paddingHorizontal: 8
         },
         label: {
@@ -29,7 +29,8 @@ const CheckBoxComponent: React.FC<CheckBoxProperties> = ({theme, name, label, im
             paddingHorizontal: 8,
             borderRadius: 2,
             backgroundColor: value ? theme.colors.accent : theme.colors.background,
-            flex: 1
+            flex: 1,
+            paddingVertical: 4
         },
         image: {
             height: 20,
