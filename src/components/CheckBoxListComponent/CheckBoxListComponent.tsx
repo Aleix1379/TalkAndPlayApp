@@ -6,7 +6,7 @@ import TextInputComponent from "../TextInputComponent"
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import CheckBoxComponent from "../CheckBoxComponent"
 import {ErrorType} from "../../utils/Validator/types"
-import {Text, withTheme} from "react-native-paper"
+import {withTheme} from "react-native-paper"
 
 interface CheckBoxListProperties {
     theme: Theme
@@ -31,6 +31,17 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
                                                                      singleMode = false,
                                                                      error
                                                                  }) => {
+    const [err, setErr] = useState<ErrorType>({
+        message: '',
+        touched: false,
+        label: label,
+        validations: [
+            {
+                key: 'REQUIRED',
+            }
+        ],
+    })
+
     const styles = StyleSheet.create({
         checkboxlist: {
             borderRadius: 4
@@ -57,13 +68,6 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
             elevation: 5,
             borderBottomRightRadius: 12,
             borderBottomLeftRadius: 12
-        },
-        error: {
-            color: '#fa4848',
-            marginLeft: 12,
-            marginTop: 2,
-            marginBottom: 10,
-            fontSize: 12
         }
     })
 
@@ -89,6 +93,7 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
             onChange(data)
         }
         setItems(data)
+        checkError()
     }
 
     useEffect(() => {
@@ -105,6 +110,10 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
         setItems(data)
     }, [values, initialValues])
 
+    const checkError = () => {
+        setErr({...err, touched: true, message: error?.message!})
+    }
+
     const toggleShowItems = () => {
         setShowItems(!showItems)
     }
@@ -114,11 +123,7 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
             .filter((it) => it.value)
             .map((it) => it.name)
             .join(', ')
-
-    const showErrorMessage = (): boolean => {
-        return error?.touched! && error.message.length > 0
-    }
-
+    
     return (
         <View style={styles.checkboxlist}>
 
@@ -129,10 +134,11 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
                     value={getInputTextValue()}
                     multiLine={true}
                     maxLength={1000}
+                    error={err}
                     style={{marginTop: 30, marginLeft: 8, marginRight: 8, paddingRight: 50}}
 
                 />
-                {showErrorMessage() && <Text style={styles.error}>{error?.message}</Text>}
+                {/*{showErrorMessage() && <Text style={styles.error}>{error?.message}</Text>}*/}
                 <View style={styles.icon}>
                     <MaterialCommunityIcons
                         name="chevron-down"
