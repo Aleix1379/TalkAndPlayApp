@@ -31,8 +31,8 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading}) => {
     const userService = new UserService()
     const [form, setForm] = useState<Form>(
         {
-            email: 'aleix@gmail.com',
-            password: '1234=asdf'
+            email: '',
+            password: ''
         }
     )
 
