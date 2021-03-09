@@ -1,6 +1,6 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Text, withTheme} from "react-native-paper"
-import {StyleProp, StyleSheet, View, ViewStyle} from "react-native"
+import {Animated, StyleProp, StyleSheet, View, ViewStyle} from "react-native"
 import {Theme} from "react-native-paper/lib/typescript/types"
 // @ts-ignore
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -30,6 +30,27 @@ const ButtonComponent: React.FC<ButtonProperties> = ({
             color: disabled ? '#333333' : '#e0e0e0'
         }
     })
+
+    const [rotationAnimation] = useState(new Animated.Value(0))
+
+    const startAnimation = () => {
+        Animated.timing(rotationAnimation, {
+            useNativeDriver: true,
+            toValue: icon === 'cog' ? 1 : 0,
+            duration: 3000,
+        }).start()
+    }
+
+    const spin = rotationAnimation.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['0deg', '900deg']
+    })
+
+    const animatedStyles = {
+        rotation: {
+            transform: [{rotate: spin}]
+        }
+    }
 
     const onTouchStart = () => {
         if (!disabled) {
@@ -78,11 +99,15 @@ const ButtonComponent: React.FC<ButtonProperties> = ({
         }
     }
 
+    useEffect(() => startAnimation(), [])
+
     return (
         <View style={getStyles()}
               onTouchStart={() => onTouchStart()}
               onTouchEnd={() => onTouchEnd()}>
-            <MaterialCommunityIcons name={icon} color={disabled ? '#333333' : '#e0e0e0'} size={25}/>
+            <Animated.View style={animatedStyles.rotation}>
+                <MaterialCommunityIcons name={icon} color={disabled ? '#333333' : '#e0e0e0'} size={25}/>
+            </Animated.View>
             <Text style={styles.label}>{label}</Text>
         </View>
     )
