@@ -1,5 +1,5 @@
-import React, {useState} from 'react'
-import {StyleSheet, View} from "react-native"
+import React, {useEffect, useState} from 'react'
+import {Animated, StyleSheet, View} from "react-native"
 import TextInputComponent from "../TextInputComponent"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import AvatarComponent from "../AvatarComponent"
@@ -25,7 +25,41 @@ interface NewCommentProperties {
 }
 
 const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, message, onChange}) => {
-    // const [editComment, setEditComment] = useState(false)
+    const [upperAnimation] = useState(new Animated.Value(0))
+    const [colorAnimation] = useState(new Animated.Value(0))
+
+    const startAnimation = () => {
+        Animated.timing(upperAnimation, {
+            useNativeDriver: true,
+            toValue: isMessageValid() ? 1 : 0,
+            duration: 600
+        }).start()
+
+        Animated.timing(colorAnimation, {
+            useNativeDriver: false,
+            toValue: isMessageValid() ? 1 : 0,
+            duration: 1000
+        }).start();
+
+    }
+
+    const spin = upperAnimation.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['-45deg', '0deg']
+    })
+
+    const isMessageValid = (): boolean => message.trim().length > 0 && message.trim().length <= 5000
+
+    const animatedStyles = {
+        upper: {
+            transform: [{rotate: spin}]
+        }
+    }
+
+    const color = colorAnimation.interpolate({
+        inputRange: [0, 1],
+        outputRange: [theme.colors.text, theme.colors.accent]
+    });
 
     const [errors, setFormErrors] = useState<Errors>({
         message: {
@@ -71,14 +105,27 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, messa
             backgroundColor: theme.colors.primary,
             borderRadius: 0,
             marginHorizontal: 12
+        },
+        button: {
+            shadowColor: '#FF00AA',
+            shadowOffset: {
+                width: 10,
+                height: 10,
+            },
+            shadowOpacity: 1,
+            shadowRadius: 5,
+            elevation: 25
         }
     })
 
-    const isMessageValid = (): boolean => message.trim().length > 0 && message.trim().length <= 5000
 
     const update = (id: string, text: string) => {
         onChange(text)
     }
+
+    useEffect(() => {
+        startAnimation()
+    }, [message])
 
     const onMessageBlur = () => {
         /*
@@ -93,26 +140,6 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, messa
             send(message)
             onChange('')
         }
-    }
-
-    const getSendStyles = () => {
-        const style = {
-            shadowColor: theme.colors.primary,
-            shadowOffset: {
-                width: 10,
-                height: 10,
-            },
-            shadowOpacity: 1,
-            shadowRadius: 5,
-            elevation: 25,
-            transform: [{rotateZ: "-45deg"}]
-        }
-
-        if (isMessageValid()) {
-            style.transform = [{rotateZ: "0deg"}]
-        }
-
-        return style
     }
 
     return (
@@ -139,11 +166,13 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, messa
             />
 
             <View onTouchEnd={() => sendComment()}>
-                <MaterialCommunityIcons style={getSendStyles()}
-                                        name="send"
-                                        color={isMessageValid() ? theme.colors.accent : theme.colors.text}
-                                        size={26}
-                />
+                <Animated.View style={[styles.button, animatedStyles.upper]}>
+                    <Animated.Text style={{color: color}}>
+                        <MaterialCommunityIcons name="send"
+                                                size={26}
+                        />
+                    </Animated.Text>
+                </Animated.View>
             </View>
         </View>
     )
