@@ -35,16 +35,20 @@ const RoundButtonComponent: React.FC<RoundButtonProperties> = ({
         }
     });
 
+    const startTouch = () => {
+        setActive(true)
+    }
+
     const endTouch = () => {
+        setActive(false)
         onPress()
-        setTimeout(() => setActive(false), 200)
     }
 
     return (
         <View
             style={{...styles.roundButton, ...style as {}}}
-            onTouchStart={() => setActive(true)}
-            onTouchEnd={() => endTouch()}
+            onTouchStart={startTouch}
+            onTouchEnd={endTouch}
         >
             <MaterialCommunityIcons name={icon}
                                     color={theme.colors.accent}
