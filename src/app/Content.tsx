@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {StatusBar, View} from "react-native";
+import {View} from "react-native";
 import Container from "./Container";
 import ContainerAnonymous from "./ContainerAnonymous";
 import {connect, shallowEqual, useSelector} from "react-redux";
@@ -10,6 +10,8 @@ import {UserState} from "../store/user/types";
 import LocalStorage from "../utils/LocalStorage/LocalStorage";
 import {login} from "../store/user/actions";
 import LoadingComponent from "../components/LoadingComponent";
+import TopSheetComponent from "../components/TopSheetComponent/TopSheetComponent";
+import {TopSheetState} from "../store/topSheet/types";
 
 interface ContentProperties {
     theme: Theme;
@@ -19,6 +21,10 @@ interface ContentProperties {
 const Content: React.FC<ContentProperties> = ({theme, login}) => {
     const user: UserState = useSelector((state: ApplicationState) => {
         return state.user
+    }, shallowEqual)
+
+    const topSheet: TopSheetState = useSelector((state: ApplicationState) => {
+        return state.topSheet
     }, shallowEqual)
 
     const isLoadingVisible: boolean = useSelector((state: ApplicationState) => {
@@ -38,6 +44,10 @@ const Content: React.FC<ContentProperties> = ({theme, login}) => {
     return (
         <View style={{flex: 1, backgroundColor: theme.colors.background}}>
             <LoadingComponent visible={isLoadingVisible}/>
+            <TopSheetComponent
+                visible={topSheet.visible}
+                onChange={topSheet.onChange}
+                options={topSheet.options}/>
             {user.id >= 0 ? <Container/> : <ContainerAnonymous/>}
         </View>
     )
