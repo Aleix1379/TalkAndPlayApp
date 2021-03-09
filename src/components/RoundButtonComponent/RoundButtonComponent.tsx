@@ -7,7 +7,8 @@ import {withTheme} from "react-native-paper";
 interface RoundButtonProperties {
     theme: Theme
     icon?: string
-    iconSize?: number
+    containerSize?: number
+    iconSize?: number,
     style?: StyleProp<ViewStyle>
     onPress: () => void
 }
@@ -15,7 +16,8 @@ interface RoundButtonProperties {
 const RoundButtonComponent: React.FC<RoundButtonProperties> = ({
                                                                    theme,
                                                                    icon,
-                                                                   iconSize = 36,
+                                                                   containerSize = 36,
+                                                                   iconSize = 24,
                                                                    style = {},
                                                                    onPress
                                                                }) => {
@@ -23,30 +25,30 @@ const RoundButtonComponent: React.FC<RoundButtonProperties> = ({
 
     const styles = StyleSheet.create({
         roundButton: {
-            backgroundColor: active ? 'rgba(25,118,210,0.25)' : theme.colors.surface,
-            height: icon ? iconSize : 0,
-            width: iconSize,
-            borderRadius: iconSize / 2,
+            backgroundColor: active ? 'rgba(25,118,210,0.25)' : theme.colors.primary,
+            height: icon ? containerSize : 0,
+            width: containerSize,
+            borderRadius: containerSize / 2,
             display: "flex",
             alignItems: "center",
             justifyContent: "center"
         }
     });
 
-    const startTouch = () => {
-        setActive(true)
+    const endTouch = () => {
+        onPress()
         setTimeout(() => setActive(false), 200)
     }
 
     return (
         <View
             style={{...styles.roundButton, ...style as {}}}
-            onTouchStart={() => startTouch()}
-            onTouchEnd={() => onPress()}
+            onTouchStart={() => setActive(true)}
+            onTouchEnd={() => endTouch()}
         >
             <MaterialCommunityIcons name={icon}
                                     color={theme.colors.accent}
-                                    size={24}
+                                    size={iconSize}
             />
         </View>
     )
