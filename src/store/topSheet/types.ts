@@ -3,7 +3,7 @@ import {ModalOption} from "../../screens/PostDetail/PostDetail";
 export type TopSheetState = {
     visible: boolean
     options: ModalOption[]
-    onChange?: (value: boolean) => void
+    onChange?: () => void
 }
 
 export type TopSheetAction = {
