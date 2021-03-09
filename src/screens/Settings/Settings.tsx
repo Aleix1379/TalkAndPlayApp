@@ -43,7 +43,7 @@ const SettingsScreen: React.FC<SettingsProperties> = ({navigation, theme, logout
                 title="Settings"
                 leftAction={{
                     image: "arrow-left",
-                    onPress: () => navigation.goBack()
+                    onPress: () => navigation.navigate('Profile')
                 }}
             />
 
