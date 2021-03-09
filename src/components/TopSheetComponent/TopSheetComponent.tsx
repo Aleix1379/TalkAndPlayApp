@@ -9,18 +9,16 @@ interface TopSheetProperties {
     theme: Theme
     visible: boolean
     options: ModalOption[]
+    onChange?: () => void
 }
 
-const TopSheetComponent: React.FC<TopSheetProperties> = ({theme, visible = false, options}) => {
-    const optionModalHeight = 40 + 2 * 8
-    const getModalHeight = () => optionModalHeight * options.length
-
+const TopSheetComponent: React.FC<TopSheetProperties> = ({theme, visible = false, options, onChange}) => {
     const [upperAnimation] = useState(new Animated.Value(0))
 
     const startAnimation = () => {
         Animated.timing(upperAnimation, {
             useNativeDriver: true,
-            toValue: visible ? 0 : getModalHeight() + 60,
+            toValue: visible ? 1 : 0,
             duration: 300
         }).start()
     }
@@ -29,7 +27,7 @@ const TopSheetComponent: React.FC<TopSheetProperties> = ({theme, visible = false
         upper: {
             transform: [
                 {
-                    translateY: upperAnimation
+                    scale: upperAnimation
                 }
             ]
         }
@@ -37,13 +35,18 @@ const TopSheetComponent: React.FC<TopSheetProperties> = ({theme, visible = false
 
 
     const styles = StyleSheet.create({
+        container: {
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: '100%',
+            zIndex: 100,
+            height: visible ? '100%' : 0,
+        },
         topSheet: {
             position: "absolute",
-            top: getModalHeight() * -1,
-            right: 5,
-            width: 115,
-            borderRadius: 12,
-            backgroundColor: theme.colors.surface,
+            top: 0,
+            right: 0,
             shadowColor: theme.colors.background,
             shadowOffset: {
                 width: 2.5,
@@ -52,20 +55,22 @@ const TopSheetComponent: React.FC<TopSheetProperties> = ({theme, visible = false
             shadowOpacity: 0.75,
             shadowRadius: 1,
             elevation: 5,
+            backgroundColor: theme.colors.background,
+            paddingHorizontal: 8
 
         },
         option: {
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-            justifyContent: "space-between",
+            justifyContent: "space-around",
             marginVertical: 8,
             marginHorizontal: 12,
-            paddingVertical: 4,
-            backgroundColor: theme.colors.surface
+            paddingVertical: 4
         },
         text: {
             fontSize: 18,
+            marginLeft: 32
         },
         separator: {
             height: 1,
@@ -80,20 +85,21 @@ const TopSheetComponent: React.FC<TopSheetProperties> = ({theme, visible = false
     }, [visible])
 
     return (
-        <Animated.View style={[styles.topSheet, animatedStyles.upper]}>
-            {options.map((option, index) => (
-                <View key={option.id}>
-                    {index > 0 && <View style={styles.separator}/>}
-                    <View
-                        // @ts-ignore
-                        style={styles.option}
-                        onTouchEnd={() => option.action()}>
-                        <MaterialCommunityIcons name={option.icon} color={theme.colors.accent} size={25}/>
-                        <Text style={styles.text}>{option.title}</Text>
+        <View style={styles.container} onTouchEnd={() => onChange && onChange()}>
+            <Animated.View style={[styles.topSheet, animatedStyles.upper]}>
+                {options.map((option) => (
+                    <View key={option.id}>
+                        <View
+                            // @ts-ignore
+                            style={styles.option}
+                            onTouchEnd={() => option.action()}>
+                            <MaterialCommunityIcons name={option.icon} color={theme.colors.accent} size={25}/>
+                            <Text style={styles.text}>{option.title}</Text>
+                        </View>
                     </View>
-                </View>
-            ))}
-        </Animated.View>
+                ))}
+            </Animated.View>
+        </View>
     )
 }
 
