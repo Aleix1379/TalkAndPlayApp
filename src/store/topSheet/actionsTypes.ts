@@ -1,0 +1,2 @@
+export const OPEN_TOP_SHEET = 'OPEN_TOP_SHEET'
+export const CLOSE_TOP_SHEET = 'CLOSE_TOP_SHEET'
