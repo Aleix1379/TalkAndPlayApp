@@ -62,7 +62,9 @@ const CommentComponent: React.FC<CommentProperties> = ({comment, theme}) => {
                 <Text style={styles.date}>{Time.diff(comment.lastUpdate)}</Text>
                 <RoundButtonComponent
                     icon="dots-vertical"
-                    style={{marginLeft: 12}}
+                    style={{marginLeft: 6}}
+                    iconSize={20}
+                    containerSize={25}
                     onPress={() => console.log('open options...')}
                 />
             </View>
