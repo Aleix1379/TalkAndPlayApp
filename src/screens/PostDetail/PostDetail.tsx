@@ -1,5 +1,5 @@
 import React, {MutableRefObject, useEffect, useRef, useState} from 'react'
-import {Appbar, Text, withTheme} from 'react-native-paper'
+import {withTheme} from 'react-native-paper'
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {ScrollView, StyleSheet, View} from "react-native"
 import {Comment, CommentResponse, Option, PostInfo} from "../../types/PostsTypes"
@@ -11,15 +11,16 @@ import PaginationComponent from "../../components/PaginationComponent"
 import LocalStorage from "../../utils/LocalStorage/LocalStorage"
 import NewCommentComponent from "../../components/NewCommentComponent"
 import {UserState} from "../../store/user/types"
-import {shallowEqual, useSelector} from "react-redux"
+import {connect, shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import TopSheetComponent from "../../components/TopSheetComponent";
 import HeaderComponent from "../../components/HeaderComponent";
+import {closeModal, openModal} from "../../store/topSheet/actions";
 
 interface PostDetailProperties {
-    navigation: any,
+    navigation: any
     theme: Theme
+    openModal: (options: ModalOption[], onChange?: () => void) => void
+    closeModal: () => void
 }
 
 interface InfoPage {
@@ -35,8 +36,7 @@ export interface ModalOption {
     action: Function
 }
 
-const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme}) => {
-    const optionModalHeight = 40 + 2 * 8
+const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, openModal, closeModal}) => {
     const {title, id} = navigation.state.params
     const [post, setPost] = useState<PostInfo>(navigation.state.params.post)
     const [comments, setComments] = useState<Comment[]>()
@@ -49,7 +49,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme}) =
     const sheetRef = React.useRef(null)
     const [isModalOpened, setIsModalOpened] = useState(true)
     const [modalOptions, setModalOptions] = useState<ModalOption[]>([])
-    const [isModalEnabled, setIsModalEnabled] = useState(false)
     const [message, setMessage] = useState('')
 
     const user: UserState = useSelector((state: ApplicationState) => {
@@ -219,11 +218,10 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme}) =
     }
 
     const toggleModal = () => {
-        if (!isModalEnabled) {
-            setIsModalEnabled(true)
-        }
-        console.log('toggleModal:::: current value :::: ' + isModalOpened)
-        console.log('toggleModal:::: new value :::: ' + !isModalOpened)
+        console.log('modalOptions:')
+        console.log(modalOptions)
+        console.log('*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#')
+        openModal(modalOptions, () => closeModal())
         setIsModalOpened(!isModalOpened)
     }
 
@@ -235,10 +233,10 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme}) =
                     image: "arrow-left",
                     onPress: () => navigation.navigate('App')
                 }}
-                rightAction={{
-                    image:"dots-vertical",
+                rightAction={user.id >= 0 ? {
+                    image: "dots-vertical",
                     onPress: () => toggleModal()
-                }}
+                } : undefined}
             />
 
             <ScrollView style={styles.post} ref={scrollRef}>
@@ -307,10 +305,13 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme}) =
                 message={message}
                 onChange={(value: string) => setMessage(value)}
             />}
-
-            <TopSheetComponent visible={isModalOpened} options={modalOptions}/>
         </>
     )
 }
 
-export default withTheme(PostDetailScreen)
+export default connect(null,
+    {
+        openModal: openModal,
+        closeModal: closeModal
+    }
+)(withTheme(PostDetailScreen))
