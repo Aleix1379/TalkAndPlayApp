@@ -25,14 +25,15 @@ interface NewCommentProperties {
 }
 
 const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, message, onChange}) => {
-    const [upperAnimation] = useState(new Animated.Value(0))
+    const [rotationAnimation] = useState(new Animated.Value(0))
     const [colorAnimation] = useState(new Animated.Value(0))
+    const [animationStarted, setAnimationStarted] = useState(false)
 
     const startAnimation = () => {
-        Animated.timing(upperAnimation, {
+        Animated.timing(rotationAnimation, {
             useNativeDriver: true,
             toValue: isMessageValid() ? 1 : 0,
-            duration: 600
+            duration: 1000
         }).start()
 
         Animated.timing(colorAnimation, {
@@ -43,7 +44,7 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, messa
 
     }
 
-    const spin = upperAnimation.interpolate({
+    const spin = rotationAnimation.interpolate({
         inputRange: [0, 1],
         outputRange: ['-45deg', '0deg']
     })
@@ -51,7 +52,7 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, messa
     const isMessageValid = (): boolean => message.trim().length > 0 && message.trim().length <= 5000
 
     const animatedStyles = {
-        upper: {
+        rotation: {
             transform: [{rotate: spin}]
         }
     }
@@ -124,7 +125,13 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, messa
     }
 
     useEffect(() => {
-        startAnimation()
+        if (!animationStarted && message.length > 0) {
+            startAnimation()
+            setAnimationStarted(true)
+        } else if (animationStarted && message.length === 0) {
+            startAnimation()
+            setAnimationStarted(false)
+        }
     }, [message])
 
     const onMessageBlur = () => {
@@ -166,7 +173,7 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, messa
             />
 
             <View onTouchEnd={() => sendComment()}>
-                <Animated.View style={[styles.button, animatedStyles.upper]}>
+                <Animated.View style={[styles.button, animatedStyles.rotation]}>
                     <Animated.Text style={{color: color}}>
                         <MaterialCommunityIcons name="send"
                                                 size={26}
