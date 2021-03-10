@@ -218,9 +218,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
     }
 
     const toggleModal = () => {
-        console.log('modalOptions:')
-        console.log(modalOptions)
-        console.log('*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#')
         openModal(modalOptions, () => closeModal())
         setIsModalOpened(!isModalOpened)
     }
