@@ -9,6 +9,7 @@ import ProfileScreen from "../screens/Profile";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import SettingsScreen from "../screens/Settings";
 import PostCreateScreen from "../screens/PostCreateScreen";
+import ProfileEditScreen from "../screens/ProfileEditScreen";
 
 
 const PostStack = createStackNavigator({
@@ -68,6 +69,12 @@ const HomeDetailStack = createStackNavigator({
     },
     PostCreate: {
         screen: PostCreateScreen,
+        navigationOptions: {
+            headerShown: false
+        }
+    },
+    ProfileEdit: {
+        screen: ProfileEditScreen,
         navigationOptions: {
             headerShown: false
         }
