@@ -1,16 +1,16 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {withTheme} from 'react-native-paper';
 import {UserState} from "../../store/user/types";
-import UserService from "../../services/User";
 import {login} from "../../store/user/actions";
 import {Theme} from "react-native-paper/lib/typescript/types";
 import Info from "../../components/Info";
 import ImageUtils from "../../utils/UserUtils";
 import ButtonComponent from "../../components/ButtonComponent";
-import {connect} from "react-redux";
+import {connect, shallowEqual, useSelector} from "react-redux";
 import AvatarComponent from "../../components/AvatarComponent";
 import HeaderComponent from "../../components/HeaderComponent";
+import {ApplicationState} from "../../store";
 
 interface ProfileProperties {
     navigation: any,
@@ -18,18 +18,9 @@ interface ProfileProperties {
 }
 
 const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
-        const userService = new UserService()
-        const [user, setUser] = useState<UserState>()
-
-        useEffect(() => {
-            console.log('downloading user...')
-            userService.getProfile().then((user) => {
-                if (user) {
-                    setUser(user)
-                    login(user)
-                }
-            })
-        }, [])
+        const user: UserState = useSelector((state: ApplicationState) => {
+            return state.user
+        }, shallowEqual)
 
         const styles = StyleSheet.create({
             title: {
@@ -46,8 +37,12 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
                 flex: 1,
                 alignItems: "center"
             },
+            avatar: {
+                marginTop: 8,
+                marginBottom: 24,
+            },
             info: {
-                marginVertical: 8,
+                marginVertical: 16,
                 width: '100%'
             },
             actions: {
@@ -71,10 +66,7 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
                 {user &&
                 <View style={styles.profile}>
                     <AvatarComponent
-                        style={{
-                            marginTop: 8,
-                            marginBottom: 12,
-                        }} uri={ImageUtils.getImageUrl(user)}
+                        style={styles.avatar} uri={ImageUtils.getImageUrl(user)}
                     />
 
                     <Info label="Email" value={user.email} style={styles.info}/>
@@ -89,7 +81,7 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
                     <View style={styles.actions}>
                         <ButtonComponent label="Edit"
                                          icon="account-edit"
-                                         onPress={() => navigation.navigate('EditProfile')}
+                                         onPress={() => navigation.navigate('ProfileEdit')}
                                          style={styles.button}
                         />
 
