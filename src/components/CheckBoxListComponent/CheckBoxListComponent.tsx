@@ -61,19 +61,17 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
             backgroundColor: theme.colors.primary,
             marginHorizontal: 2,
             bottom: 4,
-            //marginHorizontal: 10,
-            //paddingVertical: 10,
-
-            /*            shadowColor: theme.colors.primary,
-                        shadowOffset: {
-                            width: 0,
-                            height: 2,
-                        },
-                        shadowOpacity: 0.25,
-                        shadowRadius: 3.84,
-                        elevation: 5,
-                        borderBottomRightRadius: 12,
-                        borderBottomLeftRadius: 12*/
+            paddingVertical: 10,
+            shadowColor: theme.colors.primary,
+            shadowOffset: {
+                width: 0,
+                height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 5,
+            borderBottomRightRadius: 12,
+            borderBottomLeftRadius: 12
         }
     })
 
