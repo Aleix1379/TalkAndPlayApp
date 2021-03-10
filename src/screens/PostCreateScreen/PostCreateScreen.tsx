@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {ScrollView, StyleSheet, View} from "react-native";
-import {Appbar, withTheme} from 'react-native-paper';
+import {withTheme} from 'react-native-paper';
 import {Theme} from "react-native-paper/lib/typescript/types";
 import TextInputComponent from "../../components/TextInputComponent";
 import {ErrorType} from "../../utils/Validator/types";
@@ -58,8 +58,10 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
             marginHorizontal: 8
         },
         accordion: {
-            marginHorizontal: 0,
-            paddingHorizontal: 0
+            marginHorizontal: 8,
+            paddingHorizontal: 0,
+            marginTop: 30,
+            marginBottom: 8
         },
         button: {
             marginHorizontal: 16,
@@ -259,6 +261,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                         singleMode={true}
                         error={errors.language}
                         onChange={(items) => handleChange(items, 'language')}
+                        style={styles.accordion}
                     />
 
                     <CheckBoxListComponent
@@ -268,6 +271,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                         initialValues={post.platforms}
                         error={errors.platforms}
                         onChange={(items) => handleChange(items, 'platforms')}
+                        style={styles.accordion}
                     />
 
                 </ScrollView>
