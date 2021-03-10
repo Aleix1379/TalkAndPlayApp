@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {StyleSheet, View} from "react-native"
+import {StyleProp, StyleSheet, View, ViewStyle} from "react-native"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {Option, SelectItem} from "../../types/PostsTypes"
 import TextInputComponent from "../TextInputComponent"
@@ -16,6 +16,7 @@ interface CheckBoxListProperties {
     initialValues?: Option[]
     singleMode?: boolean
     error?: ErrorType
+    style?: StyleProp<ViewStyle>
 
 
     onChange(items: SelectItem[]): void
@@ -29,7 +30,8 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
                                                                      initialValues,
                                                                      onChange,
                                                                      singleMode = false,
-                                                                     error
+                                                                     error,
+                                                                     style
                                                                  }) => {
     const [err, setErr] = useState<ErrorType>({
         message: '',
@@ -49,16 +51,17 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
         header: {},
         icon: {
             position: "absolute",
-            top: 34,
-            right: 15,
+            top: 4,
+            right: 10,
         },
         content: {
             backgroundColor: theme.colors.primary,
-            marginHorizontal: 10,
-            paddingVertical: 10,
-            position: "relative",
+            marginHorizontal: 2,
             bottom: 4,
-            shadowColor: theme.colors.primary,
+            //marginHorizontal: 10,
+            //paddingVertical: 10,
+
+/*            shadowColor: theme.colors.primary,
             shadowOffset: {
                 width: 0,
                 height: 2,
@@ -67,7 +70,7 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
             shadowRadius: 3.84,
             elevation: 5,
             borderBottomRightRadius: 12,
-            borderBottomLeftRadius: 12
+            borderBottomLeftRadius: 12*/
         }
     })
 
@@ -123,9 +126,9 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
             .filter((it) => it.value)
             .map((it) => it.name)
             .join(', ')
-    
+
     return (
-        <View style={styles.checkboxlist}>
+        <View style={{...styles.checkboxlist, ...style as {}}}>
 
             <View style={styles.header} onTouchEnd={toggleShowItems}>
                 <TextInputComponent
@@ -135,10 +138,10 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
                     multiLine={true}
                     maxLength={1000}
                     error={err}
-                    style={{marginTop: 30, marginLeft: 8, marginRight: 8, paddingRight: 50}}
+                    style={{marginTop: 0, paddingRight: 50}}
 
                 />
-                {/*{showErrorMessage() && <Text style={styles.error}>{error?.message}</Text>}*/}
+
                 <View style={styles.icon}>
                     <MaterialCommunityIcons
                         name="chevron-down"
