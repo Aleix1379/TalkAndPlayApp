@@ -26,6 +26,11 @@ class UserService extends Api {
             .then((res) => res.data)
     }
 
+    updateProfile(id: number, data: UserState): Promise<UserState> {
+        return this.http.put(`${this.getUrl()}/${id}`, data)
+    }
+
+
 }
 
 export default UserService
