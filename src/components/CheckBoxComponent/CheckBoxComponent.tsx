@@ -20,23 +20,23 @@ const CheckBoxComponent: React.FC<CheckBoxProperties> = ({theme, name, label, im
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-            marginVertical: 8,
+            marginVertical: 2,
             paddingHorizontal: 8
         },
         label: {
-            fontSize: 20,
+            fontSize: 16,
             marginRight: 8,
             paddingHorizontal: 8,
             borderRadius: 2,
             backgroundColor: value ? theme.colors.accent : theme.colors.background,
             flex: 1,
-            paddingVertical: 4
+            paddingVertical: 2
         },
         image: {
-            height: 25,
-            width: 25,
-            marginLeft: 4,
-            marginRight: 12
+            height: 20,
+            width: 20,
+            marginLeft: 0,
+            marginRight: 8
         }
     })
 
@@ -69,6 +69,10 @@ const CheckBoxComponent: React.FC<CheckBoxProperties> = ({theme, name, label, im
             id: 'xbox',
             image: require('../../assets/images/xbox.png'),
         },
+        {
+            id: 'language',
+            image: require('../../assets/images/language.png'),
+        }
     ]
 
     return (
