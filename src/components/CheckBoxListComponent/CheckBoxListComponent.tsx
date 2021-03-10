@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react'
-import {StyleProp, StyleSheet, View, ViewStyle} from "react-native"
+import React, {useEffect, useRef, useState} from 'react'
+import {Animated, StyleProp, StyleSheet, View, ViewStyle} from "react-native"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {Option, SelectItem} from "../../types/PostsTypes"
 import TextInputComponent from "../TextInputComponent"
@@ -33,6 +33,9 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
                                                                      error,
                                                                      style
                                                                  }) => {
+    const fadeAnim = useRef(new Animated.Value(0)).current
+    const [showItemsContent, setShowItemsContent] = useState(false)
+
     const [err, setErr] = useState<ErrorType>({
         message: '',
         touched: false,
@@ -61,16 +64,16 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
             //marginHorizontal: 10,
             //paddingVertical: 10,
 
-/*            shadowColor: theme.colors.primary,
-            shadowOffset: {
-                width: 0,
-                height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5,
-            borderBottomRightRadius: 12,
-            borderBottomLeftRadius: 12*/
+            /*            shadowColor: theme.colors.primary,
+                        shadowOffset: {
+                            width: 0,
+                            height: 2,
+                        },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 3.84,
+                        elevation: 5,
+                        borderBottomRightRadius: 12,
+                        borderBottomLeftRadius: 12*/
         }
     })
 
@@ -121,11 +124,51 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
         setShowItems(!showItems)
     }
 
+    useEffect(() => {
+        startAnimation()
+        if (showItems) {
+            setShowItemsContent(showItems)
+        } else {
+            setTimeout(() => setShowItemsContent(showItems), 500)
+        }
+    }, [showItems])
+
     const getInputTextValue = (): string =>
         items
             .filter((it) => it.value)
             .map((it) => it.name)
             .join(', ')
+
+    const [rotationAnimation] = useState(new Animated.Value(0))
+
+    const startAnimation = () => {
+        Animated.timing(rotationAnimation, {
+            useNativeDriver: true,
+            toValue: showItems ? 1 : 0,
+            duration: 500,
+        }).start()
+
+        Animated.timing(
+            fadeAnim,
+            {
+                toValue: showItems ? 1 : 0,
+                useNativeDriver: true,
+                duration: 500
+            }
+        ).start();
+    }
+
+    const spin = rotationAnimation.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['180deg', '0deg']
+    })
+
+    const animatedStyles = {
+        rotation: {
+            transform: [{rotate: spin}]
+        }
+    }
+
 
     return (
         <View style={{...styles.checkboxlist, ...style as {}}}>
@@ -142,17 +185,26 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
 
                 />
 
-                <View style={styles.icon}>
+                <Animated.View style={[styles.icon, animatedStyles.rotation]}>
                     <MaterialCommunityIcons
                         name="chevron-down"
                         color={theme.colors.accent}
                         size={35}
-                        style={{transform: [{rotateZ: showItems ? "180deg" : "0deg"}]}}
+                        style={
+                            {
+                                transform:
+                                    [
+                                        showItems ?
+                                            {rotateZ: showItems ? "180deg" : "0deg"} :
+                                            {rotateZ: showItems ? "0deg" : "180deg"}
+                                    ]
+                            }
+                        }
                     />
-                </View>
+                </Animated.View>
             </View>
 
-            {showItems && <View style={styles.content}>
+            {showItemsContent && <Animated.View style={{...styles.content, opacity: fadeAnim}}>
                 {
                     items.map(item =>
                         <View key={item.id}>
@@ -165,7 +217,7 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
                             />
                         </View>)
                 }
-            </View>}
+            </Animated.View>}
 
         </View>
     )
