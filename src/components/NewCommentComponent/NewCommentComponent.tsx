@@ -153,12 +153,8 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, messa
         <View style={styles.newComment}>
 
             <AvatarComponent
-                style={{
-                    height: 40,
-                    width: 40,
-                    borderRadius: 20,
-                    borderWidth: 0
-                }}
+                borderWidth={0}
+                size={40}
                 uri={ImageUtils.getImageUrl(user)}/>
             <TextInputComponent
                 id="new-comment"
