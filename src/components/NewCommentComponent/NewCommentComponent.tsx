@@ -6,7 +6,7 @@ import AvatarComponent from "../AvatarComponent"
 import {UserState} from "../../store/user/types"
 import {shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
-import ImageUtils from "../../utils/UserUtils"
+import UserUtils from "../../utils/UserUtils"
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import Validator from "../../utils/Validator/Validator"
 import {ErrorType} from "../../utils/Validator/types"
@@ -155,7 +155,7 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, messa
             <AvatarComponent
                 borderWidth={0}
                 size={40}
-                uri={ImageUtils.getImageUrl(user)}/>
+                uri={UserUtils.getImageUrl(user)}/>
             <TextInputComponent
                 id="new-comment"
                 value={message}

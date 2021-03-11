@@ -1,7 +1,8 @@
-import {PostUser, User} from "../../types/PostsTypes";
-import {REACT_APP_IMAGES_URL} from "@env";
+import {PostUser, User} from "../../types/PostsTypes"
+import {REACT_APP_IMAGES_URL} from "@env"
 
-class ImageUtils {
+class UserUtils {
+
     public static getImageUrl(user: User | PostUser | null): string {
         if (!user || user.id <= 0) {
             return ''
@@ -14,4 +15,4 @@ class ImageUtils {
     }
 }
 
-export default ImageUtils
+export default UserUtils

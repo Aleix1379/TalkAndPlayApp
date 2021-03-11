@@ -1,1 +1,1 @@
-export {default} from './ImageUtils';
+export {default} from './UserUtils';
