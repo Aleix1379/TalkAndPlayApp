@@ -63,7 +63,7 @@ const TopSheetComponent: React.FC<TopSheetProperties> = ({theme, visible = false
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-            justifyContent: "space-around",
+            justifyContent: "space-between",
             marginVertical: 8,
             marginHorizontal: 12,
             paddingVertical: 4
@@ -71,12 +71,6 @@ const TopSheetComponent: React.FC<TopSheetProperties> = ({theme, visible = false
         text: {
             fontSize: 18,
             marginLeft: 32
-        },
-        separator: {
-            height: 1,
-            width: '90%',
-            marginLeft: '5%',
-            backgroundColor: theme.colors.text
         }
     });
 
@@ -90,7 +84,6 @@ const TopSheetComponent: React.FC<TopSheetProperties> = ({theme, visible = false
                 {options.map((option) => (
                     <View key={option.id}>
                         <View
-                            // @ts-ignore
                             style={styles.option}
                             onTouchEnd={() => option.action()}>
                             <MaterialCommunityIcons name={option.icon} color={theme.colors.accent} size={25}/>
