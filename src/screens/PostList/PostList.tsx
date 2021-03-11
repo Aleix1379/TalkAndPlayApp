@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react'
-import {Appbar, FAB} from 'react-native-paper'
+import {FAB, withTheme} from 'react-native-paper'
 import {ScrollView, StyleSheet, View} from 'react-native'
-import {withTheme} from 'react-native-paper'
 import {Theme} from 'react-native-paper/lib/typescript/types'
 import PostsService from '../../services/Posts'
 import {PostsResponse} from '../../types/PostsTypes'
@@ -49,6 +48,12 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
             setData(response)
         })
     }, [])
+
+    useEffect(() => {
+        postService.get().then((response: PostsResponse) => {
+            setData(response)
+        })
+    }, [user])
 
     const goToDetail = (id: number, title: string) => {
         navigation.navigate('Detail', {title, id})
