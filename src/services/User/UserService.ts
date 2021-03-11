@@ -2,6 +2,8 @@ import Api from "../Api";
 import {LoginResponse} from "../../types/PostsTypes";
 import {UserState} from "../../store/user/types";
 import LocalStorage from "../../utils/LocalStorage/LocalStorage";
+import {Platform} from "react-native";
+import {ImagePickerResponse} from "react-native-image-picker/src/types";
 
 class UserService extends Api {
     constructor() {
@@ -28,6 +30,24 @@ class UserService extends Api {
 
     updateProfile(id: number, data: UserState): Promise<UserState> {
         return this.http.put(`${this.getUrl()}/${id}`, data)
+    }
+
+    async fileUpload(image: ImagePickerResponse, name: string): Promise<number> {
+        const user: UserState | null = await LocalStorage.getUser()
+        const formData = new FormData()
+        formData.append('file', {
+            ...image,
+            name,
+            uri: Platform.OS === 'android' ? image.uri : image.uri?.replace('file://', '')
+        })
+        const config = {
+            headers: {
+                'content-type': 'multipart/form-data',
+            },
+        }
+        return this.http
+            .post(`${this.getUrl()}/${user?.id}/avatar`, formData, config)
+            .then((res) => res.data)
     }
 
 
