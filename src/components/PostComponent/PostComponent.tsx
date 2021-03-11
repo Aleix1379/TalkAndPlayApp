@@ -1,7 +1,7 @@
 import React from 'react'
 import {Image, StyleSheet, View} from "react-native"
 import {Text, withTheme} from 'react-native-paper'
-import ImageUtils from "../../utils/UserUtils"
+import UserUtils from "../../utils/UserUtils"
 import Time from "../../utils/Time"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {Option, PostInfo} from "../../types/PostsTypes"
@@ -74,7 +74,7 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme}) => {
             <View style={styles.user}>
                 <Image
                     style={styles.avatar}
-                    source={{uri: ImageUtils.getImageUrl(user)}}/>
+                    source={{uri: UserUtils.getImageUrl(user)}}/>
                 <Text style={styles.text}>{user?.name}</Text>
             </View>
 

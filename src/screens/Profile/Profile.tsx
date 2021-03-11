@@ -5,7 +5,7 @@ import {UserState} from "../../store/user/types";
 import {login} from "../../store/user/actions";
 import {Theme} from "react-native-paper/lib/typescript/types";
 import Info from "../../components/Info";
-import ImageUtils from "../../utils/UserUtils";
+import UserUtils from "../../utils/UserUtils";
 import ButtonComponent from "../../components/ButtonComponent";
 import {connect, shallowEqual, useSelector} from "react-redux";
 import AvatarComponent from "../../components/AvatarComponent";
@@ -66,7 +66,7 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
                 {user &&
                 <View style={styles.profile}>
                     <AvatarComponent
-                        style={styles.avatar} uri={ImageUtils.getImageUrl(user)}
+                        style={styles.avatar} uri={UserUtils.getImageUrl(user)}
                     />
 
                     <Info label="Email" value={user.email} style={styles.info}/>
