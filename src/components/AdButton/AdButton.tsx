@@ -1,6 +1,6 @@
 import React from 'react'
 import {Image, StyleSheet, View} from "react-native"
-import ImageUtils from "../../utils/UserUtils"
+import UserUtils from "../../utils/UserUtils"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {withTheme} from "react-native-paper"
 
@@ -35,7 +35,7 @@ const AdButtons: React.FC<AdButtonProperties> = ({image, url, theme}) => {
 
     return (
         <View style={styles.adButton}>
-            <Image style={styles.image} source={{uri: ImageUtils.getImageByName(image)}}/>
+            <Image style={styles.image} source={{uri: UserUtils.getImageByName(image)}}/>
         </View>
     )
 }
