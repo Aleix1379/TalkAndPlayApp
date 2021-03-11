@@ -7,7 +7,7 @@ import {withTheme} from "react-native-paper";
 import {UserState} from "../../store/user/types";
 import {ApplicationState} from "../../store";
 import AvatarComponent from "../../components/AvatarComponent/AvatarComponent";
-import ImageUtils from "../../utils/UserUtils";
+import UserUtils from "../../utils/UserUtils";
 import TextInputComponent from "../../components/TextInputComponent";
 import {availablePlatforms, Option, SelectItem} from "../../types/PostsTypes";
 import Validator from "../../utils/Validator/Validator";
@@ -112,7 +112,7 @@ const ProfileEditScreen: React.FC<ProfileEditProperties> = ({theme, navigation, 
             label: 'Platforms',
             validations: [
                 {
-                    key: 'REQUIRED',
+                    key: REQUIRED,
                 },
             ],
         },
@@ -122,13 +122,19 @@ const ProfileEditScreen: React.FC<ProfileEditProperties> = ({theme, navigation, 
             label: 'Language',
             validations: [
                 {
-                    key: 'REQUIRED',
+                    key: REQUIRED,
                 },
             ],
         },
     })
 
     const validator = new Validator(errors, setErrors)
+
+    const updateErrors = (err: Errors, id: string) => {
+        // @ts-ignore
+        err[id].touched = true
+        setErrors(err)
+    }
 
     const update = (id: string, value: string | Option | Option[]) => {
         if (untouched) {
@@ -142,10 +148,22 @@ const ProfileEditScreen: React.FC<ProfileEditProperties> = ({theme, navigation, 
         setForm(data)
         validator.validateForm(data)
 
+
         const err: Errors = {...errors}
-        // @ts-ignore
-        err[id].touched = true
-        setErrors(err)
+
+        if ((id === 'name' && data.name !== userConnected.name) || (id === 'email' && data.email !== userConnected.email)) {
+            userService.checkIfUserExists(id, data[id])
+                .then((exists) => {
+                    if (exists) {
+                        err[id].message = `${err[id].label}: Already exists`
+                        updateErrors(err, id)
+                    } else {
+                        updateErrors(err, id)
+                    }
+                })
+        } else {
+            updateErrors(err, id)
+        }
     }
 
     const handleChange = (value: SelectItem[], field: string): void => {
@@ -201,7 +219,7 @@ const ProfileEditScreen: React.FC<ProfileEditProperties> = ({theme, navigation, 
                     <View style={styles.profileEdit}>
                         <AvatarComponent
                             style={styles.avatar}
-                            uri={image?.uri || ImageUtils.getImageUrl(form)}
+                            uri={image?.uri || UserUtils.getImageUrl(form)}
                             error={errorImage}
                             onPress={() => launchImageLibrary(
                                 {
