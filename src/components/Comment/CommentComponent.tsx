@@ -2,7 +2,7 @@ import React from 'react'
 import {Comment} from "../../types/PostsTypes"
 import {Image, StyleSheet, View} from "react-native"
 import {Text, withTheme} from 'react-native-paper'
-import ImageUtils from "../../utils/UserUtils"
+import UserUtils from "../../utils/UserUtils"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import Time from "../../utils/Time"
 // @ts-ignore
@@ -57,7 +57,7 @@ const CommentComponent: React.FC<CommentProperties> = ({comment, theme}) => {
     return (
         <View style={styles.comment}>
             <View style={styles.details}>
-                <Image style={styles.image} source={{uri: ImageUtils.getImageUrl(comment.author)}}/>
+                <Image style={styles.image} source={{uri: UserUtils.getImageUrl(comment.author)}}/>
                 <Text>{comment.author.name}</Text>
                 <Text style={styles.date}>{Time.diff(comment.lastUpdate)}</Text>
                 <RoundButtonComponent
