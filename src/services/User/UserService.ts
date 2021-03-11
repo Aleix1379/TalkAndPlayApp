@@ -50,6 +50,14 @@ class UserService extends Api {
             .then((res) => res.data)
     }
 
+    checkIfUserExists(field: string, value: string): Promise<boolean> {
+        return new Promise<boolean>((resolve) => {
+            return this.http.get(`${this.getUrl()}?${field}=${value}`).then((res) => {
+                resolve(res.data.length === 1)
+            })
+        })
+    }
+
 
 }
 
