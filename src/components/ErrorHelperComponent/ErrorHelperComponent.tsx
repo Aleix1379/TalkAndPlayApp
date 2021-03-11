@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View} from "react-native";
+import {StyleProp, StyleSheet, TextStyle, View} from "react-native";
 import {Theme} from "react-native-paper/lib/typescript/types";
 import {Text, withTheme} from "react-native-paper";
 
@@ -7,9 +7,10 @@ interface ErrorHelperProperties {
     theme: Theme
     visible: boolean
     message: string
+    style?: StyleProp<TextStyle>
 }
 
-const ErrorHelperComponent: React.FC<ErrorHelperProperties> = ({theme, visible, message}) => {
+const ErrorHelperComponent: React.FC<ErrorHelperProperties> = ({theme, visible, message, style}) => {
     const styles = StyleSheet.create({
         errorHelper: {},
         error: {
@@ -33,7 +34,7 @@ const ErrorHelperComponent: React.FC<ErrorHelperProperties> = ({theme, visible, 
 
     return (
         <View style={styles.errorHelper}>
-            {visible && <Text style={styles.error}>{message}</Text>}
+            {visible && <Text style={{...styles.error, ...style as {}}}>{message}</Text>}
         </View>
     )
 }
