@@ -8,7 +8,6 @@ import {availablePlatforms, Comment, Option, PostInfo, SelectItem} from "../../t
 import {UserState} from "../../store/user/types";
 import {connect, shallowEqual, useSelector} from "react-redux";
 import {ApplicationState} from "../../store";
-import Languages from "../../utils/Languages";
 import CheckBoxListComponent from "../../components/CheckBoxListComponent";
 import ButtonComponent from "../../components/ButtonComponent";
 import Validator from "../../utils/Validator/Validator";
@@ -256,7 +255,10 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                     <CheckBoxListComponent
                         id="languages"
                         label="Language"
-                        values={Languages.sortLanguages(user.languages)}
+                        values={user.languages.map(lang => ({
+                            ...lang,
+                            image: 'language'
+                        }))}
                         initialValues={[post.language]}
                         singleMode={true}
                         error={errors.language}
