@@ -37,13 +37,13 @@ const ButtonComponent: React.FC<ButtonProperties> = ({
         Animated.timing(rotationAnimation, {
             useNativeDriver: true,
             toValue: icon === 'cog' ? 1 : 0,
-            duration: 3000,
+            duration: 5000,
         }).start()
     }
 
     const spin = rotationAnimation.interpolate({
         inputRange: [0, 1],
-        outputRange: ['0deg', '900deg']
+        outputRange: ['0deg', '2160deg']
     })
 
     const animatedStyles = {
