@@ -18,6 +18,8 @@ import ButtonComponent from "../../components/ButtonComponent";
 import {setLoading} from "../../store/loading/actions";
 import UserService from "../../services/User";
 import {login} from "../../store/user/actions";
+import {launchImageLibrary} from 'react-native-image-picker';
+import {ImagePickerResponse} from "react-native-image-picker/src/types";
 
 interface ProfileEditProperties {
     theme: Theme
@@ -36,6 +38,7 @@ interface Errors {
 const ProfileEditScreen: React.FC<ProfileEditProperties> = ({theme, navigation, setLoading, login}) => {
     const [untouched, setUntouched] = useState(true)
     const userService = new UserService()
+    const [errorImage, setErrorImage] = useState('')
 
     const styles = StyleSheet.create({
         profileEdit: {
@@ -69,6 +72,7 @@ const ProfileEditScreen: React.FC<ProfileEditProperties> = ({theme, navigation, 
     });
 
     const [form, setForm] = useState<UserState>()
+    const [image, setImage] = useState<ImagePickerResponse>()
 
     const userConnected: UserState = useSelector((state: ApplicationState) => {
         return state.user
@@ -77,8 +81,6 @@ const ProfileEditScreen: React.FC<ProfileEditProperties> = ({theme, navigation, 
     useEffect(() => {
         setForm({...userConnected})
     }, [])
-
-    const format = (values: Option[]) => values.map(option => option.name).join(', ')
 
     const [errors, setErrors] = useState<Errors>({
         name: {
@@ -157,7 +159,6 @@ const ProfileEditScreen: React.FC<ProfileEditProperties> = ({theme, navigation, 
 
     const finish = () => {
         if (form) {
-            login(form)
             navigation.navigate('Profile')
         }
     }
@@ -167,13 +168,15 @@ const ProfileEditScreen: React.FC<ProfileEditProperties> = ({theme, navigation, 
             try {
                 setLoading(true)
                 await userService.updateProfile(form.id, form)
-           /*     if (imageChanged) {
-                    user.imageVersion = await userService.fileUpload(image)
-                    login(user)
+                if (image) {
+                    const newVersion = await userService.fileUpload(image, `${userConnected.id}_${userConnected.imageVersion}.png`)
+                    setImage(undefined)
+                    login({...userConnected, imageVersion: newVersion})
                     finish()
-                } else {*/
+                } else {
+                    login(form)
                     finish()
-             //   }
+                }
             } catch (err) {
                 console.log('error updating user....')
                 console.error(err)
@@ -197,7 +200,25 @@ const ProfileEditScreen: React.FC<ProfileEditProperties> = ({theme, navigation, 
                     {form &&
                     <View style={styles.profileEdit}>
                         <AvatarComponent
-                            style={styles.avatar} uri={ImageUtils.getImageUrl(form)}
+                            style={styles.avatar}
+                            uri={image?.uri || ImageUtils.getImageUrl(form)}
+                            error={errorImage}
+                            onPress={() => launchImageLibrary(
+                                {
+                                    mediaType: "photo"
+                                },
+                                (result) => {
+                                    if (!result.didCancel) {
+                                        if (result.fileSize && result.fileSize >= 5242880) {
+                                            setErrorImage('Maximum upload file size: 5MB')
+                                        } else {
+                                            setErrorImage('')
+                                            setUntouched(false)
+                                            setImage(result)
+                                        }
+                                    }
+                                }
+                            )}
                         />
 
                         <TextInputComponent
@@ -221,7 +242,10 @@ const ProfileEditScreen: React.FC<ProfileEditProperties> = ({theme, navigation, 
                         <CheckBoxListComponent
                             id="languages"
                             label="Language"
-                            values={Languages.sortLanguages(userConnected.languages)}
+                            values={Languages.sortLanguages(userConnected.languages).map(lang => ({
+                                ...lang,
+                                image: 'language'
+                            }))}
                             initialValues={form.languages}
                             error={errors.languages}
                             onChange={(items) => handleChange(items, 'languages')}
@@ -247,7 +271,7 @@ const ProfileEditScreen: React.FC<ProfileEditProperties> = ({theme, navigation, 
                     style={styles.button}
                     onPress={updateUser}
                     disabled={
-                        untouched || !!errors.name.message || !!errors.email.message
+                        untouched || !!errorImage || !!errors.name.message || !!errors.email.message
                     }
                 />
             </View>
