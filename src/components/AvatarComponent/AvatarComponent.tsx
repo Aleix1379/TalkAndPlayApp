@@ -1,29 +1,68 @@
 import React from 'react'
-import {Image, ImageStyle, StyleProp, StyleSheet} from "react-native"
+import {Image, ImageStyle, StyleProp, StyleSheet, View} from "react-native"
 import {Theme} from "react-native-paper/lib/typescript/types"
-import {withTheme} from "react-native-paper"
+import {Text, withTheme} from "react-native-paper"
+import ErrorHelperComponent from "../ErrorHelperComponent";
 
 interface AvatarProperties {
     theme: Theme
     style?: StyleProp<ImageStyle>
     uri: string
+    onPress?: () => void
+    size?: number
+    borderWidth?: number
+    error?: string
 }
 
-const AvatarComponent: React.FC<AvatarProperties> = ({theme, uri, style}) => {
+const AvatarComponent: React.FC<AvatarProperties> = ({
+                                                         theme,
+                                                         uri,
+                                                         style,
+                                                         onPress,
+                                                         size = 120,
+                                                         borderWidth = 4,
+                                                         error = ''
+                                                     }) => {
     const styles = StyleSheet.create({
+        container: {
+            display: "flex",
+            alignItems: "center"
+        },
         image: {
-            borderRadius: 60,
-            width: 120,
-            height: 120,
-            borderWidth: 4,
+            borderRadius: size / 2,
+            width: size,
+            height: size,
+            borderWidth: borderWidth,
             borderColor: theme.colors.primary,
+        },
+        label: {
+            backgroundColor: theme.colors.primary,
+            shadowColor: theme.colors.primary,
+            shadowOffset: {
+                width: 0,
+                height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 4,
+            paddingVertical: 4,
+            borderRadius: 2,
+            marginTop: 16,
+            fontSize: 10,
+            textAlign: "center",
+            width: 90
         }
     })
 
     return (
-        <Image
-            style={{...styles.image, ...style as {}}}
-            source={{uri}}/>
+        <View style={{...styles.container, ...style as {}}} onTouchEnd={() => onPress && onPress()}>
+            <Image
+                style={styles.image}
+                source={{uri}}
+            />
+            {!error && onPress && <Text style={styles.label}>Choose a image</Text>}
+            <ErrorHelperComponent style={{marginTop: 16,}} visible={!!error} message={error}/>
+        </View>
     )
 }
 
