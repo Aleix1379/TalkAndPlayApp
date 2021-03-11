@@ -168,9 +168,15 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading}) => {
                     </View>
                 </View>
 
-                <ButtonComponent label="Sign in" icon="account" onPress={signIn}/>
+                <ButtonComponent
+                    label="Sign in"
+                    icon="account"
+                    onPress={signIn}
+                    disabled={form.email.length === 0 && form.password.length === 0}
+                />
 
                 <Text style={styles.help}>Don't have an account?</Text>
+
                 <ButtonComponent label="Create and account"
                                  icon="account-plus"
                                  onPress={goToCreateAccount}
