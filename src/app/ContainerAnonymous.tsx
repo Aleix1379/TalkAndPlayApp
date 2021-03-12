@@ -4,11 +4,10 @@ import PostListScreen from "../screens/PostList/PostList";
 import PostDetailScreen from "../screens/PostDetail";
 import {createAppContainer, createSwitchNavigator} from "react-navigation";
 import {createMaterialBottomTabNavigator} from "react-navigation-material-bottom-tabs";
-import ProfileScreen from "../screens/Profile";
 // @ts-ignore
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import LoginScreen from "../screens/Login";
-import PostCreateScreen from "../screens/PostCreateScreen";
+import RegisterScreen from "../screens/RegisterScreen";
 
 
 const PostStack = createStackNavigator({
@@ -57,8 +56,8 @@ const HomeDetailStack = createStackNavigator({
             headerShown: false
         }
     },
-    PostCreate: {
-        screen: PostCreateScreen,
+    Register: {
+        screen: RegisterScreen,
         navigationOptions: {
             headerShown: false
         }
