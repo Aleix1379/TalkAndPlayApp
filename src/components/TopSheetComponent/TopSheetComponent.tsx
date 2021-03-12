@@ -42,11 +42,12 @@ const TopSheetComponent: React.FC<TopSheetProperties> = ({theme, visible = false
             width: '100%',
             zIndex: 100,
             height: visible ? '100%' : 0,
+            backgroundColor: 'rgba(22,22,22, .22)'
         },
         topSheet: {
             position: "absolute",
-            top: 0,
-            right: 0,
+            top: 4,
+            right: 6,
             shadowColor: theme.colors.background,
             shadowOffset: {
                 width: 2.5,
