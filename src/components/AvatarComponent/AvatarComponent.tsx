@@ -56,10 +56,16 @@ const AvatarComponent: React.FC<AvatarProperties> = ({
 
     return (
         <View style={{...styles.container, ...style as {}}} onTouchEnd={() => onPress && onPress()}>
-            <Image
+            {uri.length > 0 && <Image
                 style={styles.image}
                 source={{uri}}
-            />
+            />}
+
+            {!uri && <Image
+                style={styles.image}
+                source={require('../../assets/images/spinner.png')}
+            />}
+
             {!error && onPress && <Text style={styles.label}>Choose a image</Text>}
             <ErrorHelperComponent style={{marginTop: 16,}} visible={!!error} message={error}/>
         </View>
