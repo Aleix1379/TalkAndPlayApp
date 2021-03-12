@@ -124,11 +124,7 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
 
     useEffect(() => {
         startAnimation()
-        if (showItems) {
-            setShowItemsContent(showItems)
-        } else {
-            setTimeout(() => setShowItemsContent(showItems), 500)
-        }
+        setShowItemsContent(showItems)
     }, [showItems])
 
     const getInputTextValue = (): string =>
@@ -140,12 +136,6 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
     const [rotationAnimation] = useState(new Animated.Value(0))
 
     const startAnimation = () => {
-        Animated.timing(rotationAnimation, {
-            useNativeDriver: true,
-            toValue: showItems ? 1 : 0,
-            duration: 500,
-        }).start()
-
         Animated.timing(
             fadeAnim,
             {
@@ -154,6 +144,12 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
                 duration: 500
             }
         ).start();
+
+        Animated.timing(rotationAnimation, {
+            useNativeDriver: true,
+            toValue: showItems ? 1 : 0,
+            duration: 500,
+        }).start()
     }
 
     const spin = rotationAnimation.interpolate({
