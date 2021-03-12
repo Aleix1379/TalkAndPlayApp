@@ -16,6 +16,7 @@ interface LoginProperties {
     theme: Theme
     login: Function
     setLoading: Function
+    navigation: any
 }
 
 interface Errors {
@@ -28,7 +29,7 @@ interface Form {
     password: string
 }
 
-const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading}) => {
+const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading, navigation}) => {
     const userService = new UserService()
     const [form, setForm] = useState<Form>(
         {
@@ -137,7 +138,7 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading}) => {
     }
 
     const goToCreateAccount = () => {
-
+        navigation.navigate('Register')
     }
 
     return (
