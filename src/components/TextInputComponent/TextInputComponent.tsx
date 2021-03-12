@@ -1,6 +1,6 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Text, withTheme} from 'react-native-paper'
-import {StyleProp, StyleSheet, TextInput, View, ViewStyle} from "react-native"
+import {Animated, Easing, StyleProp, StyleSheet, TextInput, View, ViewStyle} from "react-native"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {ErrorType} from "../../utils/Validator/types"
 import ErrorHelperComponent from "../ErrorHelperComponent";
@@ -35,11 +35,35 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
                                                                onBlur
                                                            }) => {
     const [isFocused, setIsFocused] = useState(false)
+    const [transformAnimation] = useState(new Animated.Value(0))
+
+    const isInputFilled = () => isFocused || value.length > 0
+
+    const translation = transformAnimation.interpolate({
+        inputRange: [0, 1],
+        outputRange: [35, 0]
+    })
+
+    const animatedStyles = {
+        translate: {
+            transform: [{translateY: translation}]
+        }
+    }
+
+    const startAnimation = (focus: boolean = false) => {
+        Animated.timing(transformAnimation, {
+            useNativeDriver: true,
+            toValue: focus || isInputFilled() ? 1 : 0,
+            duration: 1000,
+            easing: Easing.in(Easing.bounce)
+        }).start()
+    }
+
 
     const styles = StyleSheet.create({
         label: {
             position: "absolute",
-            top: isFocused || value.length > 0 ? -24 : 10,
+            top: -24, //isInputFilled() ? -24 : 10,
             paddingHorizontal: 4,
             color: theme.colors.text,
             marginLeft: 4,
@@ -49,15 +73,13 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
             paddingHorizontal: 10,
             paddingVertical: 8,
             paddingBottom: 4,
-            borderRadius: 5,
+            borderRadius: 3,
             color: theme.colors.text,
             backgroundColor: theme.colors.primary
         }
     })
 
-    const showErrorMessage = (): boolean => {
-        return error?.touched! && error.message.length > 0
-    }
+    const showErrorMessage = (): boolean => (error?.touched! && error.message.length > 0) && !isFocused
 
     const toggleFocus = (focus: boolean) => {
         setIsFocused(focus)
@@ -66,12 +88,12 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
         }
     }
 
-    const getStlyes = (): StyleProp<ViewStyle> => {
+    const getStyles = (): StyleProp<ViewStyle> => {
         let item: StyleProp<ViewStyle> = {
             marginTop: label ? 10 : 0,
             display: "flex",
             borderWidth: 2,
-            borderRadius: 5,
+            borderRadius: 3,
             borderColor: theme?.colors.background,
             backgroundColor: theme.colors.primary
         }
@@ -91,9 +113,18 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
         return item
     }
 
+    useEffect(() => {
+        startAnimation(isFocused)
+    }, [value, isFocused])
+
     return (
-        <View style={getStlyes()}>
-            {label && <Text style={styles.label}>{label}</Text>}
+        <View style={getStyles()}>
+            {
+                label &&
+                <Animated.View style={[styles.label, animatedStyles.translate]}>
+                    <Text>{label}</Text>
+                </Animated.View>
+            }
             <TextInput style={styles.input}
                        secureTextEntry={password}
                        value={value}
