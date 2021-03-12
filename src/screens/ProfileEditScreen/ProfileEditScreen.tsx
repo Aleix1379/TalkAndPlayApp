@@ -154,7 +154,7 @@ const ProfileEditScreen: React.FC<ProfileEditProperties> = ({theme, navigation, 
         if ((id === 'name' && data.name !== userConnected.name) || (id === 'email' && data.email !== userConnected.email)) {
             userService.checkIfUserExists(id, data[id])
                 .then((exists) => {
-                    if (exists) {
+                    if (exists && data[id].length > 0) {
                         err[id].message = `${err[id].label}: Already exists`
                         updateErrors(err, id)
                     } else {
