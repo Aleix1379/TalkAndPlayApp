@@ -44,7 +44,7 @@ const BottomTabNavigator = createMaterialBottomTabNavigator(
     {
         activeColor: '#1976d2',
         inactiveColor: '#888888',
-        barStyle: { borderTopColor: '#0f0f0f', borderTopWidth: 0.5 },
+        barStyle: {borderTopColor: '#0f0f0f', borderTopWidth: 0.5},
     },
 )
 
@@ -91,5 +91,4 @@ export default createAppContainer(
             initialRouteName: 'App',
         },
     ),
-
 );
