@@ -43,35 +43,39 @@ const CheckBoxComponent: React.FC<CheckBoxProperties> = ({theme, name, label, im
     const images = [
         {
             id: 'android',
-            image: require('../../assets/images/android.png'),
+            image: require('../../assets/images/android.png')
         },
         {
             id: 'gamepad',
-            image: require('../../assets/images/gamepad.png'),
+            image: require('../../assets/images/gamepad.png')
         },
         {
             id: 'iphone',
-            image: require('../../assets/images/iphone.png'),
+            image: require('../../assets/images/iphone.png')
         },
         {
             id: 'nintendo',
-            image: require('../../assets/images/nintendo-switch.png'),
+            image: require('../../assets/images/nintendo-switch.png')
         },
         {
             id: 'pc',
-            image: require('../../assets/images/pc.png'),
+            image: require('../../assets/images/pc.png')
         },
         {
             id: 'ps4',
-            image: require('../../assets/images/ps4.png'),
+            image: require('../../assets/images/ps4.png')
         },
         {
             id: 'xbox',
-            image: require('../../assets/images/xbox.png'),
+            image: require('../../assets/images/xbox.png')
         },
         {
             id: 'language',
-            image: require('../../assets/images/language.png'),
+            image: require('../../assets/images/language.png')
+        },
+        {
+            id: 'spinner',
+            image: require('../../assets/images/spinner.png')
         }
     ]
 
