@@ -40,7 +40,7 @@ const ButtonPageComponent: React.FC<ButtonPageProperties> = ({
             alignItems: "center",
             justifyContent: "center",
             borderRadius: 4,
-            backgroundColor: isCurrentPage ? theme.colors.accent : theme.colors.primary
+            backgroundColor: isCurrentPage ? theme.colors.primary : theme.colors.accent
         }
     })
 
@@ -48,7 +48,7 @@ const ButtonPageComponent: React.FC<ButtonPageProperties> = ({
         return {
             height: 40,
             width: 40,
-            backgroundColor: theme.colors.primary,
+            backgroundColor: theme.colors.accent,
             shadowColor: theme.colors.primary,
             shadowOffset: {
                 width: 0,
@@ -64,7 +64,8 @@ const ButtonPageComponent: React.FC<ButtonPageProperties> = ({
     const getNumberStyles = () => {
         return {
             fontFamily: 'Ranchers-Regular',
-            fontSize: 26
+            fontSize: 26,
+            color: isCurrentPage ? theme.colors.accent : theme.colors.text
         }
     }
 
