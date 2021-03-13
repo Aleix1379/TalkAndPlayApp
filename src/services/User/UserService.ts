@@ -10,6 +10,12 @@ class UserService extends Api {
         super('/users')
     }
 
+    add<UserState>(user: UserState): Promise<LoginResponse> {
+        return this.http.post(this.getUrl(), user).then((res) => {
+            return res.data
+        })
+    }
+
     async getProfile(): Promise<UserState> {
         const user: UserState | null = await LocalStorage.getUser()
         if (user) {
