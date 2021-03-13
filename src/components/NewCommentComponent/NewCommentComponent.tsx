@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {Animated, StyleSheet, View} from "react-native"
+import {Animated, Easing, StyleSheet, View} from "react-native"
 import TextInputComponent from "../TextInputComponent"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import AvatarComponent from "../AvatarComponent"
@@ -33,6 +33,7 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, messa
         Animated.timing(rotationAnimation, {
             useNativeDriver: true,
             toValue: isMessageValid() ? 1 : 0,
+            easing: Easing.in(Easing.bounce),
             duration: 1000
         }).start()
 
@@ -46,7 +47,7 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, messa
 
     const spin = rotationAnimation.interpolate({
         inputRange: [0, 1],
-        outputRange: ['-45deg', '0deg']
+        outputRange: ['-90deg', '0deg']
     })
 
     const isMessageValid = (): boolean => message.trim().length > 0 && message.trim().length <= 5000
@@ -108,7 +109,6 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, messa
             marginHorizontal: 12
         },
         button: {
-            shadowColor: '#FF00AA',
             shadowOffset: {
                 width: 10,
                 height: 10,
@@ -120,9 +120,7 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, messa
     })
 
 
-    const update = (id: string, text: string) => {
-        onChange(text)
-    }
+    const update = (id: string, text: string) => onChange(text)
 
     useEffect(() => {
         if (!animationStarted && message.length > 0) {
