@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, View} from "react-native";
 import {withTheme} from 'react-native-paper';
 import {Theme} from "react-native-paper/lib/typescript/types";
@@ -158,6 +158,20 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
         },
     })
 
+    useEffect(() => {
+        const data: PostInfo = {...post}
+
+        if (user.languages.length === 1) {
+            data.language = user.languages[0]
+        }
+
+        if (user.platforms.length === 1) {
+            data.platforms = user.platforms
+        }
+
+        setPost(data)
+    }, [])
+
     const validator = new Validator(errors, setFormErrors)
 
     const update = (id: string, value: string | Option | Option[]): void => {
@@ -269,7 +283,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                     <CheckBoxListComponent
                         id="platforms"
                         label="Platforms"
-                        values={availablePlatforms}
+                        values={user.platforms}
                         initialValues={post.platforms}
                         error={errors.platforms}
                         onChange={(items) => handleChange(items, 'platforms')}
