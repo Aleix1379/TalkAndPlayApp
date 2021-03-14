@@ -32,6 +32,7 @@ const BottomTabNavigator = createMaterialBottomTabNavigator(
         Login: {
             screen: LoginScreen,
             navigationOptions: {
+                title: 'Log in',
                 tabBarIcon: ({tintColor}) => {
                     return <MaterialCommunityIcons name="login" color={tintColor} size={24}/>;
                 }
