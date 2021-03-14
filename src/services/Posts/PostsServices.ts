@@ -52,6 +52,12 @@ class PostsService extends Api {
             .post(`${this.getUrl(postId)}/comments`, comment)
             .then((res) => res.data)
     }
+
+    getNumberOfCommentsByPost(ids: number[]): Promise<number> {
+        return this.http
+            .get(`${this.getUrl()}/comments?ids=${ids}`)
+            .then((res) => res.data)
+    }
 }
 
 export default PostsService;
