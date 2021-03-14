@@ -16,7 +16,7 @@ const ButtonPageComponent: React.FC<ButtonPageProperties> = ({
                                                                  onClick,
                                                                  theme
                                                              }) => {
-    const opacity = useRef(new Animated.Value(0)).current
+    const opacity = useRef(new Animated.Value(1)).current
 
     useEffect(() => {
         let duration = 0
@@ -65,7 +65,6 @@ const ButtonPageComponent: React.FC<ButtonPageProperties> = ({
         return {
             fontFamily: 'Ranchers-Regular',
             fontSize: 26,
-            color: isCurrentPage ? theme.colors.accent : theme.colors.text
         }
     }
 
