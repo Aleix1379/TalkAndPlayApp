@@ -165,10 +165,6 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
             data.language = user.languages[0]
         }
 
-        if (user.platforms.length === 1) {
-            data.platforms = user.platforms
-        }
-
         setPost(data)
     }, [])
 
@@ -283,7 +279,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                     <CheckBoxListComponent
                         id="platforms"
                         label="Platforms"
-                        values={user.platforms}
+                        values={availablePlatforms}
                         initialValues={post.platforms}
                         error={errors.platforms}
                         onChange={(items) => handleChange(items, 'platforms')}
