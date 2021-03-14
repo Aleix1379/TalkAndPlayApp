@@ -14,21 +14,14 @@ const ErrorHelperComponent: React.FC<ErrorHelperProperties> = ({theme, visible, 
     const styles = StyleSheet.create({
         errorHelper: {},
         error: {
-            color: '#fa4848',
-            marginHorizontal: 6,
+            color: theme.colors.error,
+            marginHorizontal: 3,
             paddingHorizontal: 6,
-            marginBottom: 6,
+            marginTop: 3,
+            marginBottom: 3,
             paddingVertical: 2,
-            backgroundColor: theme.colors.surface,
+            backgroundColor: 'rgba(0,0,0, 0.22)',
             fontSize: 12,
-            shadowColor: theme.colors.primary,
-            shadowOffset: {
-                width: 0,
-                height: 1,
-            },
-            shadowOpacity: 0.15,
-            shadowRadius: 2.20,
-            elevation: 1,
         }
     });
 
