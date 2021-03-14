@@ -99,6 +99,8 @@ export interface PostsResponse {
   numberOfElements: number;
   first: boolean;
   empty: boolean;
+  unreadComments?: number;
+  totalComments?: number;
 }
 
 export interface CommentResponse {
