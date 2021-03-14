@@ -7,7 +7,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 interface ButtonProperties {
     label: string
-    icon: string
+    icon?: string
     onPress: () => void
     theme: Theme
     style?: StyleProp<ViewStyle>
@@ -26,7 +26,6 @@ const ButtonComponent: React.FC<ButtonProperties> = ({
     const styles = StyleSheet.create({
         label: {
             fontSize: 20,
-            marginLeft: 12,
             color: disabled ? '#333333' : '#e0e0e0'
         }
     })
@@ -69,11 +68,11 @@ const ButtonComponent: React.FC<ButtonProperties> = ({
 
     const getStyles = (): StyleProp<ViewStyle> => {
         let item: StyleProp<ViewStyle> = {
-            height: 40,
+            height: 50,
             backgroundColor: disabled ? '#c1c1c1' : theme.colors.onSurface,
             paddingVertical: 6,
             paddingHorizontal: 8,
-            borderRadius: 4,
+            borderRadius: 20,
             shadowColor: theme.colors.primary,
             display: "flex",
             flexDirection: "row",
@@ -87,10 +86,10 @@ const ButtonComponent: React.FC<ButtonProperties> = ({
                     width: 0,
                     height: 2,
                 },
-                shadowOpacity: 0.25,
+                shadowOpacity: 0.5,
                 shadowRadius: 3.84,
-                elevation: disabled ? 0 : 5,
-                backgroundColor: disabled ? '#c1c1c1' : theme.colors.accent,
+                elevation: disabled ? 0 : 8,
+                backgroundColor: disabled ? 'rgba(110,174,255,0.2)' : theme.colors.accent,
             }
         }
 
@@ -105,9 +104,9 @@ const ButtonComponent: React.FC<ButtonProperties> = ({
         <View style={getStyles()}
               onTouchStart={() => onTouchStart()}
               onTouchEnd={() => onTouchEnd()}>
-            <Animated.View style={animatedStyles.rotation}>
+            {icon && <Animated.View style={[animatedStyles.rotation, {marginRight: 12}]}>
                 <MaterialCommunityIcons name={icon} color={disabled ? '#333333' : '#e0e0e0'} size={25}/>
-            </Animated.View>
+            </Animated.View>}
             <Text style={styles.label}>{label}</Text>
         </View>
     )
