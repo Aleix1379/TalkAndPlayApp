@@ -1,8 +1,7 @@
 import React, {useState} from 'react';
-import {ScrollView, StyleSheet, View} from "react-native";
+import {Image, ScrollView, StyleSheet, View} from "react-native";
 import {Theme} from "react-native-paper/lib/typescript/types";
-import {withTheme} from "react-native-paper";
-import HeaderComponent from "../../components/HeaderComponent";
+import {Text, withTheme} from "react-native-paper";
 import {UserState} from "../../store/user/types";
 import AvatarComponent from "../../components/AvatarComponent/AvatarComponent";
 import TextInputComponent from "../../components/TextInputComponent/TextInputComponent";
@@ -62,10 +61,34 @@ const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login,
     const styles = StyleSheet.create({
         register: {
             backgroundColor: theme.colors.background,
-            paddingHorizontal: 8,
-            paddingTop: 8,
             display: "flex",
             flex: 1,
+            zIndex: 100
+        },
+        title: {
+            textAlign: 'center',
+            fontFamily: 'Ranchers-Regular',
+            letterSpacing: 4,
+            fontSize: 50,
+            marginTop: 20,
+            zIndex: 10,
+            color: theme.colors.text,
+            marginHorizontal: 16
+        },
+        image: {
+            width: '100%',
+            height: '100%',
+            resizeMode: 'cover',
+            position: "absolute",
+            top: 0,
+            left: 0,
+            opacity: 0.5,
+        },
+        content: {
+            paddingTop: 8,
+            paddingHorizontal: 12,
+            display: "flex",
+            flex: 1
         },
         avatar: {
             marginTop: 8,
@@ -76,10 +99,21 @@ const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login,
             marginBottom: 16
         },
         button: {
-            marginHorizontal: 8,
+            marginHorizontal: 12,
             marginTop: 'auto',
             marginBottom: 24,
-        }
+        },
+        noAccount: {
+            display: "flex",
+            flexDirection: "row",
+            fontSize: 20,
+            marginHorizontal: 16,
+            marginBottom: 24
+        },
+        singUp: {
+            marginLeft: 8,
+            color: theme.colors.accent
+        },
     })
 
     const [errors, setErrors] = useState<Errors>({
@@ -170,7 +204,9 @@ const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login,
                 clearTimeout(timeoutId)
             }
             const newTimeoutId = setTimeout(() => {
-                checkUserExists(id, value as string)
+                if (!err[id].message) {
+                    checkUserExists(id, value as string)
+                }
             }, 1000)
 
             // @ts-ignore
@@ -200,10 +236,13 @@ const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login,
 
     return (
         <>
-            <HeaderComponent title="Create your account"/>
-
             <View style={styles.register}>
-                <ScrollView style={{flex: 1, backgroundColor: theme.colors.background}}>
+                <Image style={styles.image} source={require('../../assets/images/controller.png')}/>
+
+                <Text style={styles.title}>Talk & Play</Text>
+
+
+                <ScrollView style={styles.content}>
 
                     <AvatarComponent
                         style={styles.avatar}
@@ -269,7 +308,7 @@ const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login,
 
                 <ButtonComponent
                     label="Create account"
-                    icon="content-save"
+                    icon="account-plus"
                     onPress={createAccount}
                     style={styles.button}
                     disabled={
@@ -282,6 +321,15 @@ const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login,
                         !image
                     }
                 />
+
+                <View style={styles.noAccount}>
+                    <Text>Already have an account?</Text>
+                    <Text
+                        style={styles.singUp}
+                        onPress={() => navigation.navigate('Login')}>Sign in 😎
+                    </Text>
+                </View>
+
             </View>
         </>
     )
