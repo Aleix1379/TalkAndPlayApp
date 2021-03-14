@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {Image, StyleSheet, View} from 'react-native';
 import {Text, withTheme} from 'react-native-paper';
 import {Theme} from "react-native-paper/lib/typescript/types";
 import TextInputComponent from "../../components/TextInputComponent";
@@ -10,7 +10,6 @@ import Validator from "../../utils/Validator/Validator";
 import {connect} from 'react-redux';
 import {login} from "../../store/user/actions";
 import {setLoading} from "../../store/loading/actions";
-import HeaderComponent from "../../components/HeaderComponent";
 
 interface LoginProperties {
     theme: Theme
@@ -71,37 +70,68 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading, navig
 
     const styles = StyleSheet.create({
         login: {
-            backgroundColor: theme.colors.background,
-            paddingHorizontal: 6,
-            paddingTop: 8
+            flex: 1,
+            backgroundColor: theme.colors.background
         },
         title: {
             textAlign: 'center',
             fontFamily: 'Ranchers-Regular',
-            letterSpacing: 3,
-            fontSize: 25
+            letterSpacing: 4,
+            fontSize: 50,
+            marginTop: 20,
+            zIndex: 10,
+            color: theme.colors.text,
+            marginHorizontal: 16
+        },
+        image: {
+            width: '100%',
+            height: '100%',
+            resizeMode: 'cover',
+            position: "absolute",
+            zIndex: 0,
+            top: 0,
+            left: 0,
+            opacity: 0.5
+        },
+        content: {
+            borderTopLeftRadius: 30,
+            borderTopRightRadius: 30,
+            paddingHorizontal: 12,
+            bottom: 25,
+            display: "flex",
+            flex: 1,
         },
         inputs: {
+            marginTop: 'auto',
             marginBottom: 8
         },
         input: {
             marginTop: 16,
-            marginBottom: 16,
-            backgroundColor: theme.colors.background,
+            marginBottom: 16
         },
         signInButton: {
-            backgroundColor: theme.colors.accent,
-            marginTop: 16,
-            marginBottom: 32
-        },
-        help: {
-            fontSize: 20,
-            marginTop: 24,
-            marginBottom: 8
+            marginTop: 32,
+            marginBottom: 32,
+            marginHorizontal: 0
         },
         registerButton: {
             backgroundColor: theme.colors.accent,
             marginTop: 8,
+            marginHorizontal: 8
+        },
+        noAccount: {
+            display: "flex",
+            flexDirection: "row",
+            fontSize: 20,
+            marginHorizontal: 8,
+        },
+        singUp: {
+            marginLeft: 8,
+            color: theme.colors.accent
+        },
+        icon: {
+            width: 18,
+            height: 18
         }
     });
 
@@ -143,46 +173,55 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading, navig
 
     return (
         <>
-            <HeaderComponent title="Log in"/>
+            <View style={styles.login}>
 
-            <ScrollView style={styles.login}>
-                <View style={styles.inputs}>
-                    <View style={styles.input}>
-                        <TextInputComponent
-                            id='email'
-                            label="Email"
-                            value={form.email}
-                            onChange={update}
-                            error={errors.email}
-                        />
+                <Text style={styles.title}>Talk & Play</Text>
+
+                <Image style={styles.image} source={require('../../assets/images/controller.png')}/>
+
+                <View style={styles.content}>
+
+                    <View style={styles.inputs}>
+                        <View style={styles.input}>
+                            <TextInputComponent
+                                id='email'
+                                label="Email"
+                                value={form.email}
+                                onChange={update}
+                                error={errors.email}
+                            />
+                        </View>
+
+                        <View style={styles.input}>
+                            <TextInputComponent
+                                id='password'
+                                label="Password"
+                                value={form.password}
+                                onChange={update}
+                                password={true}
+                                error={errors.password}
+                            />
+                        </View>
                     </View>
 
-                    <View style={styles.input}>
-                        <TextInputComponent
-                            id='password'
-                            label="Password"
-                            value={form.password}
-                            onChange={update}
-                            password={true}
-                            error={errors.password}
-                        />
+                    <ButtonComponent
+                        label="Sign in"
+                        icon="account"
+                        onPress={signIn}
+                        style={styles.signInButton}
+                        disabled={
+                            (form.email.length === 0 && form.password.length === 0) ||
+                            !!errors.email.message ||
+                            !!errors.password.message
+                        }
+                    />
+
+                    <View style={styles.noAccount}>
+                        <Text>Don't have an account?</Text>
+                        <Text style={styles.singUp} onPress={() => goToCreateAccount()}>Sign up  😜</Text>
                     </View>
                 </View>
-
-                <ButtonComponent
-                    label="Sign in"
-                    icon="account"
-                    onPress={signIn}
-                    disabled={form.email.length === 0 && form.password.length === 0}
-                />
-
-                <Text style={styles.help}>Don't have an account?</Text>
-
-                <ButtonComponent label="Create and account"
-                                 icon="account-plus"
-                                 onPress={goToCreateAccount}
-                />
-            </ScrollView>
+            </View>
         </>
     );
 };
