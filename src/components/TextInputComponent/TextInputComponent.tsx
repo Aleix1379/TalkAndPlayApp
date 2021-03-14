@@ -4,6 +4,7 @@ import {Animated, Easing, StyleProp, StyleSheet, TextInput, View, ViewStyle} fro
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {ErrorType} from "../../utils/Validator/types"
 import ErrorHelperComponent from "../ErrorHelperComponent";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 interface TextInputProperties {
     id: string
@@ -34,6 +35,7 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
                                                                maxLength,
                                                                onBlur
                                                            }) => {
+    const [showText, setShowText] = useState(!password)
     const [isFocused, setIsFocused] = useState(false)
     const [transformAnimation] = useState(new Animated.Value(0))
 
@@ -59,13 +61,13 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
         }).start()
     }
 
-
+    const showErrorMessage = (): boolean => (error?.touched! && error.message.length > 0) && !isFocused
+    
     const styles = StyleSheet.create({
         label: {
             position: "absolute",
             top: -24, //isInputFilled() ? -24 : 10,
             paddingHorizontal: 4,
-            color: theme.colors.text,
             marginLeft: 4,
             zIndex: 10
         },
@@ -74,12 +76,17 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
             paddingVertical: 8,
             paddingBottom: 4,
             borderRadius: 3,
+            paddingRight: password ? 40 : 0,
             color: theme.colors.text,
-            backgroundColor: theme.colors.primary
+            backgroundColor: 'rgba(20,20,20, 0.6)',
+            lineHeight: 15
+        },
+        icon: {
+            position: "absolute",
+            top: 8,
+            right: 12
         }
     })
-
-    const showErrorMessage = (): boolean => (error?.touched! && error.message.length > 0) && !isFocused
 
     const toggleFocus = (focus: boolean) => {
         setIsFocused(focus)
@@ -95,7 +102,7 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
             borderWidth: 2,
             borderRadius: 3,
             borderColor: theme?.colors.background,
-            backgroundColor: theme.colors.primary
+            backgroundColor: 'rgba(20,20,20, 0.6)'
         }
 
         // @ts-ignore
@@ -117,6 +124,10 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
         startAnimation(isFocused)
     }, [value, isFocused])
 
+    const toggleShowText = () => {
+        setShowText(!showText)
+    }
+
     return (
         <View style={getStyles()}>
             {
@@ -126,7 +137,7 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
                 </Animated.View>
             }
             <TextInput style={styles.input}
-                       secureTextEntry={password}
+                       secureTextEntry={!showText}
                        value={value}
                        placeholder={placeholder}
                        multiline={multiLine}
@@ -137,6 +148,17 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
                        onBlur={() => toggleFocus(false)}
                        onFocus={() => toggleFocus(true)}
             />
+
+            {password &&
+            <View style={styles.icon}
+                  onTouchEnd={() => toggleShowText()}
+            >
+                <MaterialCommunityIcons
+                    name={showText ? 'lock' : 'eye'}
+                    color={theme.colors.text}
+                    size={22}
+                />
+            </View>}
 
             <ErrorHelperComponent visible={showErrorMessage()} message={`😿   ${error?.message}`}/>
         </View>
