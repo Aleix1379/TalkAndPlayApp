@@ -38,6 +38,8 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
 
     const [data, setData] = useState<PostsResponse>()
     const postService = new PostsService()
+    const [unreadMessages, setUnreadMessages] = useState<any>({})
+    const [totalMessages, setTotalMessages] = useState<any>({})
 
     const user: UserState = useSelector((state: ApplicationState) => {
         return state.user
@@ -54,6 +56,38 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
             setData(response)
         })
     }, [user])
+
+    useEffect(() => {
+        let isMounted = true; // note this flag denote mount status
+        const ids = data?.content.map(item => item.id)
+        if (ids) {
+            postService.getNumberOfCommentsByPost(ids)
+                .then(numberOfCommentsByPost => {
+                    if (isMounted) {
+                        setTotalMessages(numberOfCommentsByPost)
+                    }
+                })
+                .catch(err => console.log(err))
+        }
+        return () => {
+            isMounted = false
+        }; // use effect cleanup to set flag false, if unmounted
+    }, [data])
+
+    useEffect(() => {
+        if (user.id >= 0) {
+            setUnreadMessages(
+                data?.content.reduce(
+                    (result, item) => {
+                        // @ts-ignore
+                        result[item.id] = Math.floor(Math.random() * totalMessages[item.id])
+                        return result
+                    },
+                    {}
+                )
+            )
+        }
+    }, [totalMessages])
 
     const goToDetail = (id: number, title: string) => {
         navigation.navigate('Detail', {title, id})
@@ -77,7 +111,13 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
                                   marginTop: index === 0 ? 10 : 8,
                                   marginBottom: index === data?.content.length - 1 ? 10 : 2
                               }}>
-                            <PostComponent key={post.id} post={post} onClick={goToDetail}/>
+                            <PostComponent
+                                key={post.id}
+                                post={post}
+                                unreadMessages={unreadMessages ? unreadMessages[post.id] : -1}
+                                totalMessages={totalMessages[post.id]}
+                                onClick={goToDetail}
+                            />
                         </View>)}
                 </ScrollView>
 
