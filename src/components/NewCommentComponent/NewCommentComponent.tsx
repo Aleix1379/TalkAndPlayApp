@@ -109,6 +109,7 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, messa
             marginHorizontal: 12
         },
         button: {
+            right: 5,
             shadowOffset: {
                 width: 10,
                 height: 10,
