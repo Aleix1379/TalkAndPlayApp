@@ -15,6 +15,7 @@ import {connect, shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
 import HeaderComponent from "../../components/HeaderComponent";
 import {closeModal, openModal} from "../../store/topSheet/actions";
+import DialogComponent from "../../components/DialogComponent";
 
 interface PostDetailProperties {
     navigation: any
@@ -50,6 +51,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
     const [isModalOpened, setIsModalOpened] = useState(true)
     const [modalOptions, setModalOptions] = useState<ModalOption[]>([])
     const [message, setMessage] = useState('')
+    const [showDialog, setShowDialog] = useState(false)
 
     const user: UserState = useSelector((state: ApplicationState) => {
         return state.user
@@ -112,8 +114,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
 
     const editPost = () => console.log('click.... editPost ......................')
 
-    const deletepost = () => console.log('click.... deletepost ......................')
-
     const reportPost = () => console.log('click.... reportPost ......................')
 
     const loadPostOptions = () => {
@@ -130,7 +130,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
                 id: 'delete',
                 icon: 'trash-can-outline',
                 title: 'Delete',
-                action: deletepost
+                action: () => setShowDialog(true)
             })
         } else if (user.id >= 0) {
             options.push({
@@ -302,6 +302,24 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
                 message={message}
                 onChange={(value: string) => setMessage(value)}
             />}
+
+            <DialogComponent
+                visible={showDialog} onDismiss={() => setShowDialog(false)}
+                title="Delete post"
+                content={["Permanently delete this post and all the comments?", "You can't undo this"]}
+                actions={[
+                    {
+                        label: "Cancel",
+                        onPress: () => setShowDialog(false)
+                    },
+                    {
+                        label: "Delete",
+                        backgroundColor: theme.colors.error,
+                        onPress: () => setShowDialog(false)
+                    }
+                ]}
+            />
+
         </>
     )
 }
