@@ -5,14 +5,17 @@ import UserUtils from "../../utils/UserUtils"
 import Time from "../../utils/Time"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {Option, PostInfo} from "../../types/PostsTypes"
+import MessageCounterComponent from "../MessageCounterComponent/MessageCounterComponent";
 
 interface PostProperties {
     post: PostInfo,
     onClick: (id: number, title: string) => void,
     theme: Theme
+    unreadMessages: number
+    totalMessages: number
 }
 
-const PostComponent: React.FC<PostProperties> = ({post, onClick, theme}) => {
+const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMessages, totalMessages}) => {
     const {id, title, game, platforms, user, language, lastUpdate} = post
 
     const styles = StyleSheet.create({
@@ -57,13 +60,19 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme}) => {
             flexDirection: "row",
             justifyContent: "space-between",
         },
+        title: {
+            color: theme.colors.text,
+        },
         text: {
-            color: theme.colors.text
+            color: theme.colors.text,
+            textAlign: "right",
+            flex: 1
         },
         label: {
             flex: 1,
             color: theme.colors.text
-        }
+        },
+        counter: {}
     })
 
     return (
@@ -79,7 +88,23 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme}) => {
             </View>
 
             <View style={styles.game}>
-                <Text style={styles.text}>{title}</Text>
+
+                <View style={styles.details}>
+                    <Text style={[styles.title, {marginRight: 'auto'}]}>{title}</Text>
+
+
+                    {unreadMessages >= 0 && <MessageCounterComponent
+                        icon={'email-mark-as-unread'}
+                        color={'#ff9900'}
+                        value={unreadMessages}
+                    />}
+
+                    {totalMessages && <MessageCounterComponent
+                        icon={'email'}
+                        color={'#32ff46'}
+                        value={totalMessages}
+                    />}
+                </View>
 
                 <View style={styles.details}>
                     <Text style={styles.label}>{game}</Text>
