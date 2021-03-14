@@ -66,7 +66,7 @@ const TopSheetComponent: React.FC<TopSheetProperties> = ({theme, visible = false
             alignItems: "center",
             justifyContent: "space-between",
             marginVertical: 8,
-            marginHorizontal: 12,
+            marginHorizontal: 6,
             paddingVertical: 4
         },
         text: {
@@ -83,11 +83,9 @@ const TopSheetComponent: React.FC<TopSheetProperties> = ({theme, visible = false
         <View style={styles.container} onTouchEnd={() => onChange && onChange()}>
             <Animated.View style={[styles.topSheet, animatedStyles.upper]}>
                 {options.map((option) => (
-                    <View key={option.id}>
-                        <View
-                            style={styles.option}
-                            onTouchEnd={() => option.action()}>
-                            <MaterialCommunityIcons name={option.icon} color={theme.colors.accent} size={25}/>
+                    <View key={option.id} style={{backgroundColor: 'rgba(0,0,0,0)'}} onTouchEnd={() => option.action()}>
+                        <View style={styles.option}>
+                            <MaterialCommunityIcons name={option.icon} color={theme.colors.text} size={25}/>
                             <Text style={styles.text}>{option.title}</Text>
                         </View>
                     </View>
