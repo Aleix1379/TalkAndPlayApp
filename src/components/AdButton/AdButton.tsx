@@ -6,12 +6,11 @@ import {withTheme} from "react-native-paper"
 
 interface AdButtonProperties {
     image: string
-    url: string
     theme: Theme
 }
 
-const AdButtons: React.FC<AdButtonProperties> = ({image, url, theme}) => {
-    const imageSize = 45
+const AdButtons: React.FC<AdButtonProperties> = ({image, theme}) => {
+    const imageSize = 20
     const styles = StyleSheet.create({
         adButton: {
             padding: 8,
