@@ -75,7 +75,6 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
                           style={styles.info}/>
                     <Info label="Platforms"
                           value={user.platforms.map(platform => platform.name).join(', ')}
-
                           style={styles.info}/>
 
                     <View style={styles.actions}>

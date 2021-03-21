@@ -61,6 +61,7 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
             justifyContent: "space-between",
         },
         title: {
+            flex: 1,
             color: theme.colors.text,
         },
         text: {
@@ -90,25 +91,26 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
             <View style={styles.game}>
 
                 <View style={styles.details}>
-                    <Text style={[styles.title, {marginRight: 'auto'}]}>{title}</Text>
+                    <Text style={styles.title}>{title}</Text>
 
 
-                    {unreadMessages >= 0 && <MessageCounterComponent
+                    {unreadMessages >= 0 &&
+                    <MessageCounterComponent
                         icon={'email-mark-as-unread'}
-                        color={'#ff9900'}
+                        color={'#c87a26'}
                         value={unreadMessages}
                     />}
 
                     {totalMessages && <MessageCounterComponent
                         icon={'email'}
-                        color={'#32ff46'}
+                        color={'#267a26'}
                         value={totalMessages}
                     />}
                 </View>
 
                 <View style={styles.details}>
                     <Text style={styles.label}>{game}</Text>
-                    <Text style={styles.text}>{platforms.map((platform: Option) => platform.name).join(', ')}</Text>
+                    <Text style={{...styles.text, alignSelf: 'center'}}>{platforms.map((platform: Option) => platform.name).join(', ')}</Text>
                 </View>
 
                 <View style={styles.details}>

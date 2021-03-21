@@ -104,7 +104,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                 },
                 {
                     key: 'MAX_LENGTH',
-                    value: 24,
+                    value: 40,
                 },
             ],
         },
@@ -118,7 +118,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                 },
                 {
                     key: 'MAX_LENGTH',
-                    value: 30,
+                    value: 40,
                 },
             ],
         },
@@ -237,20 +237,20 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
 
             <View style={styles.postCreate}>
                 <ScrollView>
-                    <TextInputComponent id="game"
-                                        label="Game"
-                                        value={post.game}
-                                        style={styles.input}
-                                        onChange={update}
-                                        error={errors.game}
-                    />
-
                     <TextInputComponent id="title"
                                         label="Title"
                                         value={post.title}
                                         style={styles.input}
                                         onChange={update}
                                         error={errors.title}
+                    />
+
+                    <TextInputComponent id="game"
+                                        label="Game"
+                                        value={post.game}
+                                        style={styles.input}
+                                        onChange={update}
+                                        error={errors.game}
                     />
 
                     <TextInputComponent id="text"

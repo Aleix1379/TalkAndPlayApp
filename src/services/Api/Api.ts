@@ -11,7 +11,7 @@ abstract class Api {
         this.init(path).catch(error => console.log(error));
     }
 
-    private async init(path: string) {
+    private async init(path: string): Promise<void> {
         this.path = path
         this.http.defaults.headers.common['Authorization'] = await LocalStorage.getAuthToken()
         this.http.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
@@ -22,6 +22,7 @@ abstract class Api {
                 // whatever you want to do with the error
                 const statusCode = error.response ? error.response.status : null
                 if (statusCode === 403) {
+                    console.log('statusCode === 403...........................................')
                     LocalStorage.removeAuthToken();
                     // LocalStorage.setUserDisConnected()
                     // LocalStorage.removeUserId()

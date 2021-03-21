@@ -58,6 +58,18 @@ class PostsService extends Api {
             .get(`${this.getUrl()}/comments?ids=${ids}`)
             .then((res) => res.data)
     }
+
+    delete(postId: number): Promise<boolean> {
+        return this.http.delete(this.getUrl(postId))
+    }
+
+    getCommentsUnseen(values: any): Promise<any> {
+        return this.http.get(`${this.getUrl()}/comments/unseen`, {
+            params: {
+                data: JSON.stringify(values)
+            }
+        }).then((res) => res.data)
+    }
 }
 
 export default PostsService;

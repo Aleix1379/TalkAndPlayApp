@@ -8,13 +8,16 @@ import Time from "../../utils/Time"
 // @ts-ignore
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import RoundButtonComponent from "../RoundButtonComponent";
+// @ts-ignore
+import InView from "react-native-component-inview";
 
 interface CommentProperties {
     comment: Comment
     theme: Theme
+    checkVisible: (visible: boolean) => void
 }
 
-const CommentComponent: React.FC<CommentProperties> = ({comment, theme}) => {
+const CommentComponent: React.FC<CommentProperties> = ({comment, theme, checkVisible}) => {
     const imageSize = 50
     const styles = StyleSheet.create({
         comment: {
@@ -49,13 +52,11 @@ const CommentComponent: React.FC<CommentProperties> = ({comment, theme}) => {
             borderWidth: 1,
             borderColor: theme.colors.background
         },
-        options: {
-
-        }
+        options: {}
     })
 
     return (
-        <View style={styles.comment}>
+        <InView style={styles.comment} onChange={(isVisible: boolean) => checkVisible(isVisible)}>
             <View style={styles.details}>
                 <Image style={styles.image} source={{uri: UserUtils.getImageUrl(comment.author)}}/>
                 <Text>{comment.author.name}</Text>
@@ -69,7 +70,7 @@ const CommentComponent: React.FC<CommentProperties> = ({comment, theme}) => {
                 />
             </View>
             <Text>{comment.text}</Text>
-        </View>
+        </InView>
     )
 }
 

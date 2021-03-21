@@ -7,6 +7,7 @@ class UserUtils {
         if (!user || user.id <= 0) {
             return ''
         }
+
         return `${REACT_APP_IMAGES_URL}/${user.id}_${user.imageVersion}.png`
     }
 

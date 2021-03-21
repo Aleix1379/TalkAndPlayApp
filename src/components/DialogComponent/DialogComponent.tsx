@@ -27,7 +27,19 @@ const DialogComponent: React.FC<DialogProperties> = ({
                                                          actions
                                                      }) => {
     const styles = StyleSheet.create({
-        dialog: {},
+        dialog: {
+            backgroundColor: theme.colors.surface,
+            shadowColor: theme.colors.surface,
+            shadowOffset: {
+                width: 0,
+                height: 0,
+            },
+            shadowOpacity: 0,
+            shadowRadius: 0,
+            elevation: 0,
+            paddingBottom: 20,
+            borderRadius: 15
+        },
         action: {
             flex: 1,
             marginHorizontal: 24,
@@ -37,6 +49,7 @@ const DialogComponent: React.FC<DialogProperties> = ({
 
     return (
         <Dialog
+            style={styles.dialog}
             visible={visible}
             onDismiss={onDismiss}
         >

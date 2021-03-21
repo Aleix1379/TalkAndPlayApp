@@ -5917,6 +5917,11 @@ react-native-awesome-loading@^1.0.15:
   resolved "https://registry.yarnpkg.com/react-native-awesome-loading/-/react-native-awesome-loading-1.0.15.tgz#9255ebe0be96af5268f6ad3490e5d866c91b9a2f"
   integrity sha512-PkRtL3k/T2jqhiBsUl1Hls7HoNGpg5NS5Ro7RoBcbcR67KgJI7FxLeY+aOJzNZGTJvGTRznqtIsIG6dlGKXTHw==
 
+react-native-component-inview@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-component-inview/-/react-native-component-inview-1.0.2.tgz#da2140bb6c89f40706695ffaed2efbb007f491e7"
+  integrity sha512-BlzgpZDxpGx+5MQD0xA1jKzlej/0tOw72DEIHVb7FOEaGduXkWMIKag+nf50jgbez0S7qAFRH53ctF6q5xrrBw==
+
 react-native-dotenv@^2.5.3:
   version "2.5.3"
   resolved "https://registry.yarnpkg.com/react-native-dotenv/-/react-native-dotenv-2.5.3.tgz#ec70186d2b1491b0519647c53bf91f34395377a3"

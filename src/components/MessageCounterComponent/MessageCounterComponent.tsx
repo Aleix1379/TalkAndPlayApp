@@ -23,7 +23,7 @@ const MessageCounterComponent: React.FC<MessageCounterProperties> = ({style, ico
 
     return (
         <View style={[styles.messageCounter, style]}>
-            <MaterialCommunityIcons name={icon} color={color} size={24}/>
+            <MaterialCommunityIcons name={icon} color={color} size={18}/>
             <Text style={{color, marginLeft: 2}}>{value}</Text>
         </View>
     )

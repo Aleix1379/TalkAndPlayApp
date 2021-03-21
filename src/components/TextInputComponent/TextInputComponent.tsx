@@ -61,7 +61,7 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
         }).start()
     }
 
-    const showErrorMessage = (): boolean => (error?.touched! && error.message.length > 0) && !isFocused
+    const showErrorMessage = (): boolean => (error?.touched! && error.message.length > 0)
     
     const styles = StyleSheet.create({
         label: {

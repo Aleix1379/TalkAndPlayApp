@@ -9,6 +9,7 @@ import {UserState} from "../../store/user/types"
 import {shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
 import HeaderComponent from "../../components/HeaderComponent";
+import LocalStorage from "../../utils/LocalStorage/LocalStorage";
 
 interface PostListProperties {
     navigation: any,
@@ -16,7 +17,6 @@ interface PostListProperties {
 }
 
 const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
-
     const styles = StyleSheet.create({
         postList: {
             flex: 1,
@@ -36,9 +36,9 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
         }
     })
 
+    const [commentsUnSeen, setCommentsUnSeen] = useState<[n: number]>()
     const [data, setData] = useState<PostsResponse>()
     const postService = new PostsService()
-    const [unreadMessages, setUnreadMessages] = useState<any>({})
     const [totalMessages, setTotalMessages] = useState<any>({})
 
     const user: UserState = useSelector((state: ApplicationState) => {
@@ -46,6 +46,13 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
     }, shallowEqual)
 
     useEffect(() => {
+        LocalStorage.getMessagesSeen()
+            .then(data => {
+                postService.getCommentsUnseen(data).then(values => {
+                    setCommentsUnSeen(values)
+                })
+            })
+
         postService.get().then((response: PostsResponse) => {
             setData(response)
         })
@@ -74,21 +81,6 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
         }; // use effect cleanup to set flag false, if unmounted
     }, [data])
 
-    useEffect(() => {
-        if (user.id >= 0) {
-            setUnreadMessages(
-                data?.content.reduce(
-                    (result, item) => {
-                        // @ts-ignore
-                        result[item.id] = Math.floor(Math.random() * totalMessages[item.id])
-                        return result
-                    },
-                    {}
-                )
-            )
-        }
-    }, [totalMessages])
-
     const goToDetail = (id: number, title: string) => {
         navigation.navigate('Detail', {title, id})
     }
@@ -114,7 +106,7 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
                             <PostComponent
                                 key={post.id}
                                 post={post}
-                                unreadMessages={unreadMessages ? unreadMessages[post.id] : -1}
+                                unreadMessages={commentsUnSeen && commentsUnSeen[post.id] ? commentsUnSeen[post.id] : 0}
                                 totalMessages={totalMessages[post.id]}
                                 onClick={goToDetail}
                             />

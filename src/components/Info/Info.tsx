@@ -4,13 +4,20 @@ import {Text, withTheme} from 'react-native-paper'
 import {Theme} from "react-native-paper/lib/typescript/types"
 
 interface InfoProperties {
-    label: string
+    label?: string
     value: string
     theme: Theme
     style: StyleProp<ViewStyle>
+    valueAlign?: 'left' | 'center' | 'right'
 }
 
-const Info: React.FC<InfoProperties> = ({style, theme, label, value}) => {
+const Info: React.FC<InfoProperties> = ({
+                                            style,
+                                            theme,
+                                            label,
+                                            value,
+                                            valueAlign = 'right'
+                                        }) => {
 
     const getStyles = (): StyleProp<ViewStyle> => {
         const item: StyleProp<ViewStyle> = {
@@ -38,8 +45,8 @@ const Info: React.FC<InfoProperties> = ({style, theme, label, value}) => {
 
     return (
         <View style={getStyles()}>
-            <Text>{label}</Text>
-            <Text>{value}</Text>
+            {label && <Text>{label}</Text>}
+            <Text style={{textAlign: valueAlign, flex: 1, marginRight: 4}}>{value}</Text>
         </View>
     )
 }
