@@ -58,6 +58,7 @@ const ButtonPageComponent: React.FC<ButtonPageProperties> = ({
             shadowRadius: 3.84,
             elevation: 5,
             borderRadius: 4,
+            marginHorizontal: 10,
         }
     }
 

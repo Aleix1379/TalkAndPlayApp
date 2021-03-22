@@ -106,7 +106,7 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
                             <PostComponent
                                 key={post.id}
                                 post={post}
-                                unreadMessages={commentsUnSeen && commentsUnSeen[post.id] ? commentsUnSeen[post.id] : 0}
+                                unreadMessages={(commentsUnSeen && commentsUnSeen[post.id] >= 0) ? commentsUnSeen[post.id] : totalMessages[post.id]}
                                 totalMessages={totalMessages[post.id]}
                                 onClick={goToDetail}
                             />

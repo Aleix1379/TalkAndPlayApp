@@ -28,9 +28,7 @@ const PaginationComponent: React.FC<PaginationProperties> = ({
         pagination: {
             display: "flex",
             flexDirection: "row",
-            justifyContent: "space-around",
-            marginTop: 10,
-            marginBottom: 4
+            justifyContent: "flex-end",
         }
     })
 

@@ -53,7 +53,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
     const [modalOptions, setModalOptions] = useState<ModalOption[]>([])
     const [message, setMessage] = useState('')
     const [showDialog, setShowDialog] = useState(false)
-    const [lastCommentSeen, setLastCommentSeen] = useState<number>(-1)
     const user: UserState = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
@@ -97,18 +96,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
 
     useEffect(() => {
             BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick)
-
-            LocalStorage.getMessagesSeen()
-                .then(data => {
-                    let lastId = data[id]
-                    if (lastId) {
-                        setLastCommentSeen(lastId)
-                    }
-                })
-                .catch(error => {
-                    console.log('ERROR GET messages seen')
-                    console.log(error)
-                })
 
             LocalStorage.getCommentsPerPage()
                 .then(value => setElementsPerPage(value))
@@ -295,7 +282,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
 
                         {/*<View style={{display: "flex", flexDirection: "row", justifyContent: "space-around"}}>*/}
                         {/*          <View style={{marginRight: 5}}>*/}
-                        <Info style={{...styles.postDetail, marginTop: 8}}
+                        <Info style={{...styles.postDetail, marginTop: 8, marginBottom: 8}}
                               valueAlign={'right'}
                               label={post.language.name}
                               value={post.platforms.map((platform: Option) => platform.name).join(', ')}
