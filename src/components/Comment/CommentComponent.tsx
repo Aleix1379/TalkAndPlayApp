@@ -14,7 +14,7 @@ import InView from "react-native-component-inview";
 interface CommentProperties {
     comment: Comment
     theme: Theme
-    checkVisible: (visible: boolean) => void
+    checkVisible: () => void
 }
 
 const CommentComponent: React.FC<CommentProperties> = ({comment, theme, checkVisible}) => {
@@ -56,7 +56,7 @@ const CommentComponent: React.FC<CommentProperties> = ({comment, theme, checkVis
     })
 
     return (
-        <InView style={styles.comment} onChange={(isVisible: boolean) => checkVisible(isVisible)}>
+        <View style={styles.comment} onLayout={(event) => checkVisible()}>
             <View style={styles.details}>
                 <Image style={styles.image} source={{uri: UserUtils.getImageUrl(comment.author)}}/>
                 <Text>{comment.author.name}</Text>
@@ -70,7 +70,7 @@ const CommentComponent: React.FC<CommentProperties> = ({comment, theme, checkVis
                 />
             </View>
             <Text>{comment.text}</Text>
-        </InView>
+        </View>
     )
 }
 

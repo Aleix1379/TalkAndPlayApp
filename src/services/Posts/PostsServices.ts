@@ -70,6 +70,10 @@ class PostsService extends Api {
             }
         }).then((res) => res.data)
     }
+
+    getPageFirstUnseenComment(postId: number, commentId: number, itemsPerPage: number = 10): Promise<number> {
+        return this.http.get(`${this.getUrl(postId)}/firstUnseen/${commentId}?itemsPerPage=10`).then((res) => res.data)
+    }
 }
 
 export default PostsService;
