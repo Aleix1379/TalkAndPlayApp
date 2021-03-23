@@ -41,7 +41,7 @@ export interface ModalOption {
 
 const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, openModal, closeModal, setLoading}) => {
     const {title, id} = navigation.state.params
-    const [post, setPost] = useState<PostInfo>(navigation.state.params.post)
+    const [post, setPost] = useState<PostInfo | null>(navigation.state.params.post)
     const [comments, setComments] = useState<Comment[]>()
     const postService = new PostsService()
     const [elementsPerPage, setElementsPerPage] = useState(10)
@@ -161,7 +161,9 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
                 setComments(response.content)
             })
 
-            return () => BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick)
+            return () => {
+                BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick)
+            }
 
         }, []
     )
@@ -185,7 +187,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
         return usr?.id === user.id
     }
 
-    const editPost = () => console.log('click.... editPost ......................')
+    const editPost = () => navigation.navigate('PostEdit', {title, id, updatePost: setPost})
 
     const reportPost = () => console.log('click.... reportPost ......................')
 
@@ -298,12 +300,14 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
             text: message,
             author: user
         }
-        postsService.addComment(post.id, comment)
-            .then(() => fetchComments('bottom'))
-            .catch((error) => {
-                console.log('Error creating comment')
-                console.error(error)
-            })
+        if (post) {
+            postsService.addComment(post.id, comment)
+                .then(() => fetchComments('bottom'))
+                .catch((error) => {
+                    console.log('Error creating comment')
+                    console.error(error)
+                })
+        }
     }
 
     const toggleModal = () => {
@@ -313,16 +317,20 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
 
     const deletePost = () => {
         setLoading(true)
-        postService.delete(post.id)
-            .then(() => navigation.navigate('App'))
-            .catch(error => console.log(error))
-            .finally(() => {
-                setLoading(false)
-            })
+        if (post) {
+            postService.delete(post.id)
+                .then(() => navigation.navigate('App'))
+                .catch(error => console.log(error))
+                .finally(() => {
+                    setLoading(false)
+                })
+        }
     }
 
     const loadComment = async (commentSeen: Comment) => {
-        await LocalStorage.addCommentSeen(post.id, commentSeen.id)
+        if (post) {
+            await LocalStorage.addCommentSeen(post.id, commentSeen.id)
+        }
     }
 
     const gotoFirstUnseenMessage = () => {
@@ -335,7 +343,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
     return (
         <>
             <HeaderComponent
-                title={title}
+                title={post?.title}
                 leftAction={{
                     image: "arrow-left",
                     onPress: () => navigation.navigate('App')
