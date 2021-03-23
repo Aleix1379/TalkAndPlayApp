@@ -72,7 +72,7 @@ class PostsService extends Api {
     }
 
     getPageFirstUnseenComment(postId: number, commentId: number, itemsPerPage: number = 10): Promise<number> {
-        return this.http.get(`${this.getUrl(postId)}/firstUnseen/${commentId}?itemsPerPage=10`).then((res) => res.data)
+        return this.http.get(`${this.getUrl(postId)}/firstUnseen/${commentId}?itemsPerPage=${itemsPerPage}`).then((res) => res.data)
     }
 
     update(post: PostInfo): Promise<Comment> {
