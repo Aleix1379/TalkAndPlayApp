@@ -120,8 +120,6 @@ const CommentComponent: React.FC<CommentProperties> = ({comment, theme, checkVis
 
         specialCharacters = specialCharacters.sort(((a, b) => a.start > b.start ? 1 : a.start < b.start ? -1 : 0))
 
-        console.log(specialCharacters)
-        console.log(text)
         return (
             specialCharacters.map(it => <Text key={it.start} style={getStyleByCharacter(it.type)}>{it.value}</Text>)
         )
