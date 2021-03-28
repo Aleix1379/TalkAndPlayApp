@@ -132,34 +132,56 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
                     postService.getCommentsUnseen(data).then(values => {
                         let lastId = data[id]
                         setLastCommentId(lastId)
-                        postService.getPageFirstUnseenComment(id, lastId, 10)
-                            .then(newPage => {
-                                setPageFirstUnseenComment(newPage)
-                            })
-                        if (values[id] > 0) {
-                            setUnseenMessages(values[id])
+                        if (id && lastId) {
+                            postService.getPageFirstUnseenComment(id, lastId, 10)
+                                .then(newPage => {
+                                    setPageFirstUnseenComment(newPage)
+                                })
+                                .catch(err => {
+                                    console.log('postService.getPageFirstUnseenComment')
+                                    console.log(err)
+                                })
+                            if (values[id] > 0) {
+                                setUnseenMessages(values[id])
+                            }
                         }
                     })
+                        .catch(err => {
+                            console.log('postService.getCommentsUnseen')
+                            console.log(err)
+                        })
                 })
 
             LocalStorage.getCommentsPerPage()
                 .then(value => setElementsPerPage(value))
-                .catch(error => console.error(error))
+                .catch(error => {
+                    console.log('LocalStorage.getCommentsPerPage')
+                    console.error(error)
+                })
 
             if (!post) {
-                postService.getPostById(id).then(response => {
-                    setPost(response)
-                })
+                postService.getPostById(id)
+                    .then(response => {
+                        setPost(response)
+                    })
+                    .catch(err => {
+                        console.log('postService.getPostById(')
+                        console.log(err)
+                    })
             }
-            postService.getCommentsByPost(id).then((response: CommentResponse) => {
-
-                setPage({
-                    number: response.number,
-                    totalOfElements: response.totalElements,
-                    totalPages: response.totalPages
+            postService.getCommentsByPost(id)
+                .then((response: CommentResponse) => {
+                    setPage({
+                        number: response.number,
+                        totalOfElements: response.totalElements,
+                        totalPages: response.totalPages
+                    })
+                    setComments(response.content)
                 })
-                setComments(response.content)
-            })
+                .catch(err => {
+                    console.log('postService.getCommentsByPost')
+                    console.log(err)
+                })
 
             return () => {
                 BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick)
@@ -320,7 +342,10 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
         if (post) {
             postService.delete(post.id)
                 .then(() => navigation.navigate('App'))
-                .catch(error => console.log(error))
+                .catch(error => {
+                    console.log('error post delete')
+                    console.log(error)
+                })
                 .finally(() => {
                     setLoading(false)
                 })

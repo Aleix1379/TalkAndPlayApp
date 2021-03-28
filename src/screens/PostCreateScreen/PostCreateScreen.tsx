@@ -219,7 +219,10 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                 .then((postCreated) =>
                     navigation.navigate('Detail', {title: postCreated.title, id: postCreated.id})
                 )
-                .catch(error => console.log(error))
+                .catch(error => {
+                    console.log('create post')
+                    console.log(error)
+                })
                 .finally(() => setLoading(false))
         }
 
