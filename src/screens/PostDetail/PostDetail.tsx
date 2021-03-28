@@ -1,7 +1,7 @@
 import React, {MutableRefObject, useEffect, useRef, useState} from 'react'
-import {Text, withTheme} from 'react-native-paper'
+import {withTheme} from 'react-native-paper'
 import {Theme} from "react-native-paper/lib/typescript/types"
-import {ScrollView, StyleSheet, View, BackHandler} from "react-native"
+import {BackHandler, ScrollView, StyleSheet, View} from "react-native"
 import {Comment, CommentResponse, Option, PostInfo} from "../../types/PostsTypes"
 import PostsService from "../../services/Posts"
 import Info from "../../components/Info"
@@ -362,30 +362,11 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
 
                         <Info style={styles.postDetail} label={'🎮'} value={post.game}/>
 
-                        {/*<View style={{display: "flex", flexDirection: "row", justifyContent: "space-around"}}>*/}
-                        {/*          <View style={{marginRight: 5}}>*/}
                         <Info style={{...styles.postDetail, marginTop: 8}}
                               valueAlign={'right'}
                               label={post.language.name}
                               value={post.platforms.map((platform: Option) => platform.name).join(', ')}
                         />
-                        {/*       </View>*/}
-                        {/*     <View style={{marginLeft: 5}}>
-                                <Info style={styles.postDetail} textAlign='right' value={post.language.name}/>
-                            </View>*/}
-                        {/*</View>*/}
-
-                        {/*                        <View style={styles.ads}>
-                            <AdButton image="instant-gaming.png"
-                                      url={`https://www.instant-gaming.com/en/search/?q=${post.game}&igr=TalkAndPlay`}
-                            />
-
-                            <AdButton image="eneba.png"
-                                      url={`https://www.eneba.com/marketplace?text=${post?.game}&aff=602c24685aea7&sortBy=RELEVANCE_DESC`}
-                            />
-
-                        </View>*/}
-
                     </View>
                 }
 
