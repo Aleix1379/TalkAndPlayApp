@@ -51,7 +51,7 @@ abstract class Api {
 
     clearToken(): void {
         delete this.http.defaults.headers.common['Authorization']
-        LocalStorage.setAuthToken('').catch(error => console.log(error));
+        LocalStorage.removeAuthToken().catch(error => console.log(error));
     }
 }
 

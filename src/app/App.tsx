@@ -37,7 +37,7 @@ const App = () => {
                     accent: '#075aab',
                     onSurface: '#1976d2',
                     surface: '#0f0f0f',
-                    error: '#fa4848'
+                    error: '#b71c1c'
                 },
             };
         } else {
@@ -49,7 +49,7 @@ const App = () => {
                     accent: '#075aab',
                     onSurface: '#1976d2',
                     surface: '#e9e9e9',
-                    error: '#fa4848'
+                    error: '#b71c1c'
                 },
             };
         }

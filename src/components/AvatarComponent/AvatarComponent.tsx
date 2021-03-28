@@ -61,7 +61,7 @@ const AvatarComponent: React.FC<AvatarProperties> = ({
                 source={{uri}}
             />}
 
-            {!uri || uri === '-1' && <Image
+            {(!uri || uri === '-1') && <Image
                 style={styles.image}
                 source={require('../../assets/images/spinner.png')}
             />}

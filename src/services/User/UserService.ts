@@ -64,6 +64,10 @@ class UserService extends Api {
         })
     }
 
+    delete(userId: number): Promise<boolean> {
+        return this.http.delete(`${this.getUrl(userId)}`).then((res) => res.data)
+    }
+
 
 }
 

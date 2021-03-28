@@ -23,7 +23,7 @@ export const login = (user: UserState, token?: string) => {
 }
 
 export const logout = () => {
-    LocalStorage.removeAuthToken().catch(error => console.log(error))
+//    LocalStorage.removeAuthToken().catch(error => console.log(error))
     LocalStorage.removeUser().catch(error => console.log(error))
     userService.clearToken()
 

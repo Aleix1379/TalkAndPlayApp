@@ -1,11 +1,15 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {withTheme} from 'react-native-paper';
 import {Theme} from "react-native-paper/lib/typescript/types";
 import {StyleSheet, View} from "react-native";
 import ButtonComponent from "../../components/ButtonComponent";
-import {connect} from "react-redux";
+import {connect, shallowEqual, useSelector} from "react-redux";
 import {logout} from "../../store/user/actions";
 import HeaderComponent from "../../components/HeaderComponent";
+import DialogComponent from "../../components/DialogComponent/DialogComponent";
+import UserService from "../../services/User";
+import {UserState} from "../../store/user/types";
+import {ApplicationState} from "../../store";
 
 interface SettingsProperties {
     navigation: any,
@@ -14,6 +18,12 @@ interface SettingsProperties {
 }
 
 const SettingsScreen: React.FC<SettingsProperties> = ({navigation, theme, logout}) => {
+    const userService = new UserService()
+    const [showDialog, setShowDialog] = useState(false)
+    const user: UserState = useSelector((state: ApplicationState) => {
+        return state.user
+    }, shallowEqual)
+
     const styles = StyleSheet.create({
         settings: {
             backgroundColor: theme.colors.background,
@@ -31,7 +41,24 @@ const SettingsScreen: React.FC<SettingsProperties> = ({navigation, theme, logout
             marginBottom: 24,
             marginHorizontal: 16
         },
+        action: {
+            marginTop: 24
+        }
     })
+
+    const deleteUser = () => {
+        userService.delete(user.id)
+            .then(() => {
+                logout()
+            })
+            .catch(e => {
+                console.log('error remove user')
+                console.log(e)
+            })
+            .finally(() => {
+                setShowDialog(false)
+            })
+    }
 
     const disconnect = () => {
         logout()
@@ -51,11 +78,35 @@ const SettingsScreen: React.FC<SettingsProperties> = ({navigation, theme, logout
 
                 <View style={styles.actions}>
 
-                    <ButtonComponent label="Sign out" icon="logout" onPress={() => disconnect()}/>
+                    <ButtonComponent style={{...styles.action, backgroundColor: theme.colors.error}}
+                                     label="Remove account"
+                                     icon="delete-forever"
+                                     onPress={() => setShowDialog(true)}
+                    />
+
+                    <ButtonComponent style={styles.action} label="Sign out" icon="logout" onPress={() => disconnect()}/>
 
                 </View>
 
             </View>
+
+            <DialogComponent
+                visible={showDialog} onDismiss={() => setShowDialog(false)}
+                title="Remove user"
+                content={["Permanently remove user and all the posts and comments?", "You can't undo this"]}
+                actions={[
+                    {
+                        label: "Cancel",
+                        onPress: () => setShowDialog(false)
+                    },
+                    {
+                        label: "Delete",
+                        backgroundColor: theme.colors.error,
+                        onPress: () => deleteUser()
+                    }
+                ]}
+            />
+
         </>
     )
 }
