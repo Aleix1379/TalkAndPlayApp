@@ -10,6 +10,8 @@ export interface PaginationProperties {
     totalPages: number | undefined
     onPageChange: (newPage: number) => void
     theme: Theme
+    marginTop?: number
+    marginBottom?: number
 }
 
 interface DataPage {
@@ -21,7 +23,9 @@ interface DataPage {
 const PaginationComponent: React.FC<PaginationProperties> = ({
                                                                  number,
                                                                  totalPages,
-                                                                 onPageChange
+                                                                 onPageChange,
+                                                                 marginTop = 0,
+                                                                 marginBottom = 0
                                                              }) => {
 
     const styles = StyleSheet.create({
@@ -29,6 +33,8 @@ const PaginationComponent: React.FC<PaginationProperties> = ({
             display: "flex",
             flexDirection: "row",
             justifyContent: "flex-end",
+            marginTop,
+            marginBottom
         }
     })
 

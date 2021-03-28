@@ -10,6 +10,8 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import RoundButtonComponent from "../RoundButtonComponent";
 // @ts-ignore
 import InView from "react-native-component-inview";
+import Markdown, {MarkdownIt} from "react-native-markdown-display";
+import AvatarComponent from "../AvatarComponent";
 
 interface CommentProperties {
     comment: Comment
@@ -30,7 +32,7 @@ const CommentComponent: React.FC<CommentProperties> = ({comment, theme, checkVis
         comment: {
             backgroundColor: theme.colors.primary,
             paddingTop: 12,
-            paddingBottom: 8,
+            paddingBottom: 0,
             paddingHorizontal: 12,
             borderRadius: 4,
             shadowColor: theme.colors.primary,
@@ -46,7 +48,7 @@ const CommentComponent: React.FC<CommentProperties> = ({comment, theme, checkVis
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-            marginBottom: 12
+            marginBottom: 0
         },
         date: {
             marginLeft: "auto"
@@ -55,80 +57,17 @@ const CommentComponent: React.FC<CommentProperties> = ({comment, theme, checkVis
             height: imageSize,
             width: imageSize,
             borderRadius: imageSize / 2,
-            marginRight: 16,
-            borderWidth: 1,
-            borderColor: theme.colors.background
+            marginRight: 12,
+            borderWidth: 0,
         },
         options: {}
     })
 
-    const findSpecialCharacters = (specialCharacters: Item[], message: string, char: '*' | '_' | '~') => {
-        for (let i = 0; i < message.length; i++) {
-            if (message[i] === char) {
-                let index = message.indexOf(char, i + 1)
-                if (index >= 0) {
-                    specialCharacters.push({
-                        type: char,
-                        value: message.substring(i + 1, index),
-                        start: i + 1,
-                        end: index
-                    })
-                    i = index
-                }
-            }
-        }
-    }
-
-    const findNormalText = (specialCharacters: Item[], message: string) => {
-        const last = specialCharacters[specialCharacters.length - 1]?.end + 1
-        specialCharacters.forEach((sp, index) => {
-            specialCharacters.push({
-                value: message.substring(specialCharacters[index - 1]?.end + 1, sp.start - 1),
-                start: specialCharacters[index - 1] ? specialCharacters[index - 1].end + 1 : 0,
-                end: sp.start - 1
-            })
-        })
-
-        specialCharacters.push({
-            value: message.substring(last),
-            start: specialCharacters[specialCharacters.length - 1]?.end + 2,
-            end: message.length
-        })
-    }
-
-    const getStyleByCharacter = (char?: '*' | '_' | '~'): StyleProp<TextStyle> => {
-        const style: StyleProp<TextStyle> = {}
-        if (char === '*') {
-            style.fontWeight = 'bold'
-        }
-        if (char === '_') {
-            style.fontStyle = 'italic'
-        }
-        if (char === '~') {
-            style.textDecorationLine = 'line-through'
-        }
-        return style
-    }
-
-    const buildText = (text: string) => {
-        let specialCharacters: Item[] = []
-
-        findSpecialCharacters(specialCharacters, text, "*")
-        findSpecialCharacters(specialCharacters, text, "_")
-        findSpecialCharacters(specialCharacters, text, "~")
-        findNormalText(specialCharacters, text)
-
-        specialCharacters = specialCharacters.sort(((a, b) => a.start > b.start ? 1 : a.start < b.start ? -1 : 0))
-
-        return (
-            specialCharacters.map(it => <Text key={it.start} style={getStyleByCharacter(it.type)}>{it.value}</Text>)
-        )
-    }
-
     return (
         <View style={styles.comment} onLayout={(_) => checkVisible()}>
             <View style={styles.details}>
-                <Image style={styles.image} source={{uri: UserUtils.getImageUrl(comment.author)}}/>
+                {/*<Image style={styles.image} source={{uri: UserUtils.getImageUrl(comment.author)}}/>*/}
+                <AvatarComponent borderWidth={0} size={imageSize} style={styles.image} uri={UserUtils.getImageUrl(comment.author)}/>
                 <Text>{comment.author.name}</Text>
                 <Text style={styles.date}>{Time.diff(comment.lastUpdate)}</Text>
                 <RoundButtonComponent
@@ -139,7 +78,20 @@ const CommentComponent: React.FC<CommentProperties> = ({comment, theme, checkVis
                     onPress={() => console.log('open options...')}
                 />
             </View>
-            <Text>{buildText(comment.text)}</Text>
+
+            <Markdown
+                markdownit={
+                    MarkdownIt({typographer: true}).disable(['link', 'image'])
+                }
+                mergeStyle={true}
+                style={{
+                    text: {
+                        color: theme.colors.text
+                    }
+                }}
+            >
+                {comment.text}
+            </Markdown>
         </View>
     )
 }

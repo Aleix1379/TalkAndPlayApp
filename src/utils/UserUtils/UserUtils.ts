@@ -8,7 +8,10 @@ class UserUtils {
             return ''
         }
 
-        return `${REACT_APP_IMAGES_URL}/${user.id}_${user.imageVersion}.png`
+        if (user.imageVersion >= 0) {
+            return `${REACT_APP_IMAGES_URL}/${user.id}_${user.imageVersion}.png`
+        }
+        return `${user.imageVersion}`
     }
 
     public static getImageByName(name: string): string {

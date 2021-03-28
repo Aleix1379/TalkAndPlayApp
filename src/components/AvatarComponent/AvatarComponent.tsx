@@ -56,12 +56,12 @@ const AvatarComponent: React.FC<AvatarProperties> = ({
 
     return (
         <View style={{...styles.container, ...style as {}}} onTouchEnd={() => onPress && onPress()}>
-            {uri.length > 0 && <Image
+            {uri !== '-1' && uri.length > 0 && <Image
                 style={styles.image}
                 source={{uri}}
             />}
 
-            {!uri && <Image
+            {!uri || uri === '-1' && <Image
                 style={styles.image}
                 source={require('../../assets/images/spinner.png')}
             />}

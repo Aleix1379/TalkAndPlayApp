@@ -313,12 +313,10 @@ const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login,
                     style={styles.button}
                     disabled={
                         untouched ||
-                        !!errorImage ||
                         !!errors.name.message ||
                         !!errors.email.message ||
                         !!errors.password.message ||
-                        !!errors.repeatPassword.message ||
-                        !image
+                        !!errors.repeatPassword.message
                     }
                 />
 

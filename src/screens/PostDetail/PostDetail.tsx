@@ -79,7 +79,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
             justifyContent: "space-around"
         },
         comments: {
-            marginBottom: 8
+            marginBottom: 0
         },
         pagination: {
             display: "flex",
@@ -415,6 +415,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
                                         number={currentPage}
                                         totalPages={page?.totalPages}
                                         onPageChange={(newPage: number) => fetchComments('top', newPage)}
+                                        marginTop={3}
                                     />
                                 </View>
                             </View>
@@ -442,10 +443,11 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
                             </View>)}
 
                         {
-                            page && page.totalPages > 1 && comments.length > 5 &&
+                            page && page.totalPages > 1 &&
                             <PaginationComponent
                                 number={currentPage}
                                 totalPages={page?.totalPages}
+                                marginBottom={10}
                                 onPageChange={(newPage: number) => fetchComments('top', newPage)}
                             />
                         }
