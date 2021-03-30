@@ -14,9 +14,11 @@ import {connect, shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
 import HeaderComponent from "../../components/HeaderComponent";
 import {closeModal, openModal} from "../../store/topSheet/actions";
-import DialogComponent from "../../components/DialogComponent";
 import {setLoading} from "../../store/loading/actions";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import ReplyToComponent from "../../components/ReplyToComponent";
+import {closeDialog, openDialog} from "../../store/dialog/actions";
+import {DialogOption} from "../../store/dialog/types";
 
 interface PostDetailProperties {
     navigation: any
@@ -24,6 +26,8 @@ interface PostDetailProperties {
     openModal: (options: ModalOption[], onChange?: () => void) => void
     closeModal: () => void
     setLoading: (visible: boolean) => void
+    openDialog: (title: string, content: string[], actions: DialogOption[]) => void
+    closeDialog: () => void
 }
 
 interface InfoPage {
@@ -39,7 +43,15 @@ export interface ModalOption {
     action: Function
 }
 
-const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, openModal, closeModal, setLoading}) => {
+const PostDetailScreen: React.FC<PostDetailProperties> = ({
+                                                              navigation,
+                                                              theme,
+                                                              openModal,
+                                                              closeModal,
+                                                              setLoading,
+                                                              openDialog,
+                                                              closeDialog
+                                                          }) => {
     const {title, id} = navigation.state.params
     const [post, setPost] = useState<PostInfo | null>(navigation.state.params.post)
     const [comments, setComments] = useState<Comment[]>()
@@ -48,17 +60,18 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
     const [currentPage, setCurrentPage] = useState<number>(0)
     const [page, setPage] = useState<InfoPage>()
     const scrollRef: MutableRefObject<any> = useRef()
-    const postsService = new PostsService()
     const sheetRef = React.useRef(null)
     const [isModalOpened, setIsModalOpened] = useState(true)
     const [modalOptions, setModalOptions] = useState<ModalOption[]>([])
     const [message, setMessage] = useState('')
-    const [showDialog, setShowDialog] = useState(false)
     const [unseenMessages, setUnseenMessages] = useState(0)
     const [pageFirstUnseenComment, setPageFirstUnseenComment] = useState(0)
     const [lastCommentId, setLastCommentId] = useState(0)
     const [dataSourceCords, setDataSourceCords] = useState<any>([])
     const [manualScrollEnabled, setManualScrollEnabled] = useState(false)
+    const [optionsVisible, setOptionsVisible] = useState<any>({})
+    const [commentToReply, setCommentToReply] = useState<Comment | null>(null)
+    let inputRef: any = null
     const user: UserState = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
@@ -227,7 +240,23 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
                 id: 'delete',
                 icon: 'trash-can-outline',
                 title: 'Delete',
-                action: () => setShowDialog(true)
+                action: () => openDialog(
+                    "Delete post",
+                    ["Permanently delete this post and all the comments?", "You can't undo this"],
+                    [
+                        {
+                            label: "Cancel",
+                            onPress: () => closeDialog()
+                        },
+                        {
+                            label: "Delete",
+                            backgroundColor: theme.colors.error,
+                            onPress: () => {
+                                closeDialog()
+                                deletePost()
+                            }
+                        }
+                    ])
             })
         } else if (user.id >= 0) {
             options.push({
@@ -322,9 +351,16 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
             text: message,
             author: user
         }
+        if (commentToReply) {
+            comment.reply = commentToReply
+        }
         if (post) {
-            postsService.addComment(post.id, comment)
-                .then(() => fetchComments('bottom'))
+            postService.addComment(post.id, comment)
+                .then(() => {
+                    setCommentToReply(null)
+                    inputRef.blur()
+                    fetchComments('bottom')
+                })
                 .catch((error) => {
                     console.log('Error creating comment')
                     console.error(error)
@@ -363,6 +399,53 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
         setUnseenMessages(0)
         console.log('lastCommentId ===> ' + lastCommentId)
         fetchComments('top', pageFirstUnseenComment, lastCommentId)
+    }
+
+    const reply = (comment: Comment | null): void => {
+        console.log('author: ' + comment?.author.name)
+        console.log('TEXT: ' + comment?.text)
+
+        if (comment) {
+            setCommentToReply(comment)
+            inputRef.focus()
+        }
+    }
+
+    const setModalVisible = (id: number | null) => {
+        let values = {}
+        comments?.forEach(c => {
+            // @ts-ignore
+            values[c.id] = false
+        })
+
+        if (id) {
+            // @ts-ignore
+            values[id] = true
+        }
+
+        setOptionsVisible(values)
+    }
+
+    const refreshComments = (commentId: number): void => {
+        if (comments) {
+            let values: Comment[] = [...comments]
+            let index = values.findIndex(c => c.id === commentId)
+            if (index >= 0) {
+                values[index].text = ''
+                setComments(values)
+            }
+        }
+    }
+
+    const deleteComment = (commentId: number | null): void => {
+        if (post && commentId) {
+            postService.deleteComment(post.id, commentId)
+                .then(() => refreshComments(commentId))
+                .catch(err => {
+                    console.log('Error deleting postId: ' + post.id + ' commentID: ' + commentId)
+                    console.log(err)
+                })
+        }
     }
 
     return (
@@ -445,6 +528,10 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
                                     key={comment.id}
                                     comment={comment}
                                     checkVisible={() => loadComment(comment)}
+                                    optionsVisible={optionsVisible[comment.id!]}
+                                    reply={(comment) => reply(comment)}
+                                    setModalVisible={(id: number | null) => setModalVisible(id)}
+                                    onCommentDelete={(id: number | null) => deleteComment(id)}
                                 />
                             </View>)}
 
@@ -461,14 +548,28 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
                 }
             </ScrollView>
 
+            {commentToReply &&
+            <ReplyToComponent
+                comment={commentToReply}
+                close={() => {
+                    setCommentToReply(null)
+                    inputRef.blur()
+                }}
+            />}
+
             {user.id >= 0 &&
             <NewCommentComponent
                 send={sendComment}
                 message={message}
                 onChange={(value: string) => setMessage(value)}
+                setRef={ref => {
+                    if (ref) {
+                        inputRef = ref
+                    }
+                }}
             />}
 
-            <DialogComponent
+            {/*<DialogComponent
                 visible={showDialog} onDismiss={() => setShowDialog(false)}
                 title="Delete post"
                 content={["Permanently delete this post and all the comments?", "You can't undo this"]}
@@ -483,7 +584,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({navigation, theme, op
                         onPress: () => deletePost()
                     }
                 ]}
-            />
+            />*/}
 
         </>
     )
@@ -493,7 +594,9 @@ export default connect(null,
     {
         openModal: openModal,
         closeModal: closeModal,
-        setLoading: setLoading
+        setLoading: setLoading,
+        openDialog: openDialog,
+        closeDialog: closeDialog
     }
 )
 (withTheme(PostDetailScreen))

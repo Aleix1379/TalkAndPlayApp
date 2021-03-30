@@ -41,8 +41,7 @@ const TopSheetComponent: React.FC<TopSheetProperties> = ({theme, visible = false
             left: 0,
             width: '100%',
             zIndex: 100,
-            height: visible ? '100%' : 0,
-            backgroundColor: 'rgba(22,22,22, .22)'
+            height: visible ? '100%' : 0
         },
         topSheet: {
             position: "absolute",

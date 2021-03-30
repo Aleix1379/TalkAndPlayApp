@@ -19,6 +19,7 @@ interface TextInputProperties {
     placeholder?: string
     multiLine?: boolean
     maxLength?: number
+    setRef?: (ref: TextInput | null) => void
 }
 
 const TextInputComponent: React.FC<TextInputProperties> = ({
@@ -33,7 +34,8 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
                                                                placeholder,
                                                                multiLine = false,
                                                                maxLength,
-                                                               onBlur
+                                                               onBlur,
+                                                               setRef
                                                            }) => {
     const [showText, setShowText] = useState(!password)
     const [isFocused, setIsFocused] = useState(false)
@@ -62,7 +64,7 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
     }
 
     const showErrorMessage = (): boolean => (error?.touched! && error.message.length > 0)
-    
+
     const styles = StyleSheet.create({
         label: {
             position: "absolute",
@@ -136,17 +138,19 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
                     <Text>{label}</Text>
                 </Animated.View>
             }
-            <TextInput style={styles.input}
-                       secureTextEntry={!showText}
-                       value={value}
-                       placeholder={placeholder}
-                       multiline={multiLine}
-                       maxLength={maxLength}
-                       placeholderTextColor={theme.colors.text}
-                       onChangeText={(text: string) => onChange && onChange(id, text)}
-                       editable={!!onChange}
-                       onBlur={() => toggleFocus(false)}
-                       onFocus={() => toggleFocus(true)}
+            <TextInput
+                ref={(input: TextInput | null) => setRef && setRef(input)}
+                style={styles.input}
+                secureTextEntry={!showText}
+                value={value}
+                placeholder={placeholder}
+                multiline={multiLine}
+                maxLength={maxLength}
+                placeholderTextColor={theme.colors.text}
+                onChangeText={(text: string) => onChange && onChange(id, text)}
+                editable={!!onChange}
+                onBlur={() => toggleFocus(false)}
+                onFocus={() => toggleFocus(true)}
             />
 
             {password &&

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {Animated, Easing, StyleSheet, View} from "react-native"
+import {Animated, Easing, StyleSheet, TextInput, View} from "react-native"
 import TextInputComponent from "../TextInputComponent"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import AvatarComponent from "../AvatarComponent"
@@ -21,10 +21,10 @@ interface NewCommentProperties {
     send: (message: string) => void
     message: string
     onChange: (message: string) => void
-
+    setRef: (ref: TextInput | null) => void
 }
 
-const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, message, onChange}) => {
+const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, message, onChange, setRef}) => {
     const [rotationAnimation] = useState(new Animated.Value(0))
     const [colorAnimation] = useState(new Animated.Value(0))
     const [animationStarted, setAnimationStarted] = useState(false)
@@ -106,7 +106,8 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, messa
             flex: 1,
             backgroundColor: theme.colors.primary,
             borderRadius: 0,
-            marginHorizontal: 12
+            marginLeft: 6,
+            marginRight: 12,
         },
         button: {
             right: 5,
@@ -153,10 +154,14 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, messa
 
             <AvatarComponent
                 borderWidth={0}
+                style={{marginLeft: -6}}
                 size={40}
                 uri={UserUtils.getImageUrl(user)}/>
             <TextInputComponent
                 id="new-comment"
+                setRef={ref => {
+                    setRef(ref)
+                }}
                 value={message}
                 onChange={update}
                 onBlur={onMessageBlur}

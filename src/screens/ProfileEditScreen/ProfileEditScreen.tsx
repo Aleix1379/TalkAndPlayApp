@@ -110,21 +110,13 @@ const ProfileEditScreen: React.FC<ProfileEditProperties> = ({theme, navigation, 
             message: '',
             touched: false,
             label: 'Platforms',
-            validations: [
-                {
-                    key: REQUIRED,
-                },
-            ],
+            validations: [],
         },
         languages: {
             message: '',
             touched: false,
             label: 'Language',
-            validations: [
-                {
-                    key: REQUIRED,
-                },
-            ],
+            validations: [],
         },
     })
 

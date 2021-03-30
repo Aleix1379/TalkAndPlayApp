@@ -34,6 +34,7 @@ export interface Comment {
   text: string;
   lastUpdate?: any;
   author: User;
+  reply?: Comment
 }
 
 export interface SelectItem {

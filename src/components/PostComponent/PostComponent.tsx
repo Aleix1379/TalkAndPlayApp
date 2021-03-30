@@ -1,11 +1,12 @@
 import React from 'react'
-import {Image, StyleSheet, View} from "react-native"
+import {StyleSheet, View} from "react-native"
 import {Text, withTheme} from 'react-native-paper'
 import UserUtils from "../../utils/UserUtils"
 import Time from "../../utils/Time"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {Option, PostInfo} from "../../types/PostsTypes"
 import MessageCounterComponent from "../MessageCounterComponent/MessageCounterComponent";
+import AvatarComponent from "../AvatarComponent/AvatarComponent";
 
 interface PostProperties {
     post: PostInfo,
@@ -43,12 +44,7 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
             marginRight: 12
         },
         avatar: {
-            borderRadius: 50,
-            width: 50,
-            height: 50,
-            marginBottom: 10,
-            borderWidth: 1,
-            borderColor: theme.colors.background
+            marginBottom: 10
         },
         game: {
             flex: 1,
@@ -82,9 +78,15 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
             onTouchEnd={() => onClick(id, title)}>
 
             <View style={styles.user}>
-                <Image
+                {/*<Image
                     style={styles.avatar}
-                    source={{uri: UserUtils.getImageUrl(user)}}/>
+                    source={{uri: UserUtils.getImageUrl(user)}}/>*/}
+                <AvatarComponent
+                    borderWidth={0}
+                    size={50}
+                    style={styles.avatar}
+                    uri={UserUtils.getImageUrl(user)}
+                />
                 <Text style={styles.text}>{user?.name}</Text>
             </View>
 
@@ -110,7 +112,10 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
 
                 <View style={styles.details}>
                     <Text style={styles.label}>{game}</Text>
-                    <Text style={{...styles.text, alignSelf: 'center'}}>{platforms.map((platform: Option) => platform.name).join(', ')}</Text>
+                    <Text style={{
+                        ...styles.text,
+                        alignSelf: 'center'
+                    }}>{platforms.map((platform: Option) => platform.name).join(', ')}</Text>
                 </View>
 
                 <View style={styles.details}>

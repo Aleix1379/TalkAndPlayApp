@@ -12,13 +12,17 @@ import {login} from "../store/user/actions";
 import LoadingComponent from "../components/LoadingComponent";
 import TopSheetComponent from "../components/TopSheetComponent/TopSheetComponent";
 import {TopSheetState} from "../store/topSheet/types";
+import DialogComponent from "../components/DialogComponent/DialogComponent";
+import {DialogState} from "../store/dialog/types";
+import {closeDialog} from "../store/dialog/actions";
 
 interface ContentProperties {
     theme: Theme;
     login: Function
+    closeDialog: Function
 }
 
-const Content: React.FC<ContentProperties> = ({theme, login}) => {
+const Content: React.FC<ContentProperties> = ({theme, login, closeDialog}) => {
     const user: UserState = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
@@ -29,6 +33,10 @@ const Content: React.FC<ContentProperties> = ({theme, login}) => {
 
     const isLoadingVisible: boolean = useSelector((state: ApplicationState) => {
         return state.loading.visible
+    }, shallowEqual)
+
+    const dialog: DialogState = useSelector((state: ApplicationState) => {
+        return state.dialog
     }, shallowEqual)
 
     useEffect(() => {
@@ -44,6 +52,12 @@ const Content: React.FC<ContentProperties> = ({theme, login}) => {
     return (
         <View style={{flex: 1, backgroundColor: theme.colors.background}}>
             <LoadingComponent visible={isLoadingVisible}/>
+            <DialogComponent
+                visible={dialog.visible} onDismiss={() => closeDialog()}
+                title={dialog.title}
+                content={dialog.content}
+                actions={dialog.actions}
+            />
             <TopSheetComponent
                 visible={topSheet.visible}
                 onChange={topSheet.onChange}
@@ -54,5 +68,6 @@ const Content: React.FC<ContentProperties> = ({theme, login}) => {
 }
 
 export default connect(null, {
-    login: login
+    login: login,
+    closeDialog: closeDialog
 })(withTheme(Content))

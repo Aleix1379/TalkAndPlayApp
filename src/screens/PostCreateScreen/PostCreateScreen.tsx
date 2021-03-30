@@ -14,6 +14,7 @@ import Validator from "../../utils/Validator/Validator";
 import {setLoading} from "../../store/loading/actions";
 import PostsService from "../../services/Posts";
 import HeaderComponent from "../../components/HeaderComponent";
+import languages from '../../store/languages.json'
 
 interface PostCreateProperties {
     navigation: any,
@@ -161,7 +162,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
     useEffect(() => {
         const data: PostInfo = {...post}
 
-        if (user.languages.length === 1) {
+        if (user.languages.length >= 1) {
             data.language = user.languages[0]
         }
 
@@ -228,6 +229,22 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
 
     }
 
+    const getLanguages = () => {
+        let values = user.languages.map(lang => ({
+            ...lang,
+            image: 'language'
+        }))
+
+        if (values.length === 0) {
+            return languages.map(lang => ({
+                ...lang,
+                image: 'language'
+            }))
+        }
+
+        return values
+    }
+
     return (
         <>
             <HeaderComponent
@@ -268,10 +285,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                     <CheckBoxListComponent
                         id="languages"
                         label="Language"
-                        values={user.languages.map(lang => ({
-                            ...lang,
-                            image: 'language'
-                        }))}
+                        values={getLanguages()}
                         initialValues={[post.language]}
                         singleMode={true}
                         error={errors.language}
@@ -301,6 +315,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                                      !!errors.title.message ||
                                      !!errors.text.message ||
                                      !!errors.language.message ||
+                                     !post.language.name ||
                                      !!errors.platforms.message
                                  }
                 />
