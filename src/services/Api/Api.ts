@@ -24,6 +24,12 @@ abstract class Api {
                 if (statusCode === 403) {
                     console.log('statusCode === 403...........................................')
                     LocalStorage.removeAuthToken();
+
+                    //console.log("this.http.defaults.headers.common['Authorization']")
+                    //console.log(this.http.defaults.headers.common['Authorization'])
+
+                    //console.log("this.http.defaults.headers.common['Access-Control-Allow-Origin']")
+                    //console.log(this.http.defaults.headers.common['Access-Control-Allow-Origin'])
                     // LocalStorage.setUserDisConnected()
                     // LocalStorage.removeUserId()
                     // window.document.location.reload()
@@ -46,6 +52,7 @@ abstract class Api {
     }
 
     setToken(token: string) {
+        console.log('SET TOKEN: ' + token)
         this.http.defaults.headers.common['Authorization'] = token;
     }
 

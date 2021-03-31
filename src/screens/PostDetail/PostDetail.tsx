@@ -204,7 +204,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     )
 
     useEffect(() => {
-        if (manualScrollEnabled && dataSourceCords[lastCommentId] && unseenMessages > 0 && lastCommentId) {
+        if (manualScrollEnabled && dataSourceCords[lastCommentId] && lastCommentId) {
             scrollToElement(lastCommentId)
         }
     }, [dataSourceCords])
@@ -284,8 +284,11 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 
     const scrollToElement = (commentId: number): void => {
         const index = comments?.findIndex(comment => comment.id === commentId)
+        console.log('INDEX: ' + index)
         // @ts-ignore
         const y = dataSourceCords[commentId]
+        console.log('Y')
+        console.log(y)
         if (index && index >= 0) {
             // @ts-ignore
             scrollRef.current?.scrollTo({

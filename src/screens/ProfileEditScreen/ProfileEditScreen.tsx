@@ -200,7 +200,7 @@ const ProfileEditScreen: React.FC<ProfileEditProperties> = ({theme, navigation, 
         <>
             <View style={{flex: 1, backgroundColor: theme.colors.background}}>
                 <HeaderComponent
-                    title="Edit your profile"
+                    title="Edit profile"
                     leftAction={{
                         image: "arrow-left",
                         onPress: () => navigation.navigate('Profile')

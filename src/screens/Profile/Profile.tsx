@@ -18,84 +18,91 @@ interface ProfileProperties {
 }
 
 const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
-        const user: UserState = useSelector((state: ApplicationState) => {
-            return state.user
-        }, shallowEqual)
+    const user: UserState = useSelector((state: ApplicationState) => {
+        return state.user
+    }, shallowEqual)
 
-        const styles = StyleSheet.create({
-            title: {
-                textAlign: 'center',
-                fontFamily: 'Ranchers-Regular',
-                letterSpacing: 3,
-                fontSize: 25
-            },
-            profile: {
-                backgroundColor: theme.colors.background,
-                paddingHorizontal: 8,
-                paddingTop: 8,
-                display: "flex",
-                flex: 1,
-                alignItems: "center"
-            },
-            avatar: {
-                marginTop: 8,
-                marginBottom: 24,
-            },
-            info: {
-                marginVertical: 16,
-                width: '100%'
-            },
-            actions: {
-                marginTop: "auto",
-                marginBottom: 16,
-                display: "flex",
-                width: "100%",
-                flexDirection: "row",
-                justifyContent: "space-around",
-            },
-            button: {
-                flex: 1,
-                marginHorizontal: 16
-            }
-        })
+    const styles = StyleSheet.create({
+        title: {
+            textAlign: 'center',
+            fontFamily: 'Ranchers-Regular',
+            letterSpacing: 3,
+            fontSize: 25
+        },
+        profile: {
+            backgroundColor: theme.colors.background,
+            paddingHorizontal: 8,
+            paddingTop: 8,
+            display: "flex",
+            flex: 1,
+            alignItems: "center"
+        },
+        avatar: {
+            marginTop: 8,
+            marginBottom: 24,
+        },
+        info: {
+            marginVertical: 16,
+            width: '100%'
+        },
+        button: {
+            flex: 1,
+            marginHorizontal: 8
+        }
+    })
 
-        return (
-            <>
-                <HeaderComponent title={user?.name}/>
+    return (
+        <>
+            <HeaderComponent title={user?.name}/>
 
-                {user &&
-                <View style={styles.profile}>
-                    <AvatarComponent
-                        style={styles.avatar} uri={UserUtils.getImageUrl(user)}
+            {user &&
+            <View style={styles.profile}>
+                <AvatarComponent
+                    style={styles.avatar} uri={UserUtils.getImageUrl(user)}
+                />
+
+                <Info label="Email" value={user.email} style={styles.info}/>
+                <Info label="Languages"
+                      value={user.languages.map(language => language.name).join(', ')}
+                      style={styles.info}/>
+                <Info label="Platforms"
+                      value={user.platforms.map(platform => platform.name).join(', ')}
+                      style={styles.info}/>
+
+                <View style={{
+                    marginTop: "auto",
+                    marginBottom: 24,
+                    display: "flex",
+                    width: "100%",
+                    flexDirection: "row",
+                }}>
+                    <ButtonComponent label="Edit"
+                                     icon="account-edit"
+                                     onPress={() => navigation.navigate('ProfileEdit')}
+                                     style={styles.button}
                     />
 
-                    <Info label="Email" value={user.email} style={styles.info}/>
-                    <Info label="Languages"
-                          value={user.languages.map(language => language.name).join(', ')}
-                          style={styles.info}/>
-                    <Info label="Platforms"
-                          value={user.platforms.map(platform => platform.name).join(', ')}
-                          style={styles.info}/>
+                    <ButtonComponent label="Settings"
+                                     icon="cog"
+                                     onPress={() => navigation.navigate('Settings')}
+                                     style={styles.button}
+                    />
+                </View>
 
-                    <View style={styles.actions}>
-                        <ButtonComponent label="Edit"
-                                         icon="account-edit"
-                                         onPress={() => navigation.navigate('ProfileEdit')}
-                                         style={styles.button}
-                        />
+                <View style={{marginBottom: 24, width: '100%'}}>
+                    <ButtonComponent label="Change password"
+                                     icon="lock"
+                                     onPress={() => navigation.navigate('PasswordEdit')}
+                                     style={{marginHorizontal: 8}}
+                    />
+                </View>
 
-                        <ButtonComponent label="Settings"
-                                         icon="cog"
-                                         onPress={() => navigation.navigate('Settings')}
-                                         style={styles.button}
-                        />
-                    </View>
-                </View>}
+            </View>}
 
-            </>
-        );
-    }
-;
+        </>
+    )
+}
+
 
 export default connect(null,
     {

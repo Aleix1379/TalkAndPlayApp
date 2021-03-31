@@ -79,7 +79,7 @@ const SettingsScreen: React.FC<SettingsProperties> = ({navigation, theme, logout
                 <View style={styles.actions}>
 
                     <ButtonComponent style={{...styles.action, backgroundColor: theme.colors.error}}
-                                     label="Remove account"
+                                     label="Delete account"
                                      icon="delete-forever"
                                      onPress={() => setShowDialog(true)}
                     />
@@ -92,8 +92,8 @@ const SettingsScreen: React.FC<SettingsProperties> = ({navigation, theme, logout
 
             <DialogComponent
                 visible={showDialog} onDismiss={() => setShowDialog(false)}
-                title="Remove user"
-                content={["Permanently remove user and all the posts and comments?", "You can't undo this"]}
+                title="Delete user"
+                content={["Permanently delete user and all its posts and comments?", "You can't undo this"]}
                 actions={[
                     {
                         label: "Cancel",

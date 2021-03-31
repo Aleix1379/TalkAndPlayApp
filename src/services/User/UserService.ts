@@ -34,6 +34,10 @@ class UserService extends Api {
             .then((res) => res.data)
     }
 
+    checkPassword(email: string, password: string): Promise<boolean> {
+        return this.http.post(`${this.getUrl()}/check-password`, {email, password}).then((res) => res.data)
+    }
+
     updateProfile(id: number, data: UserState): Promise<UserState> {
         return this.http.put(`${this.getUrl()}/${id}`, data)
     }
@@ -68,6 +72,21 @@ class UserService extends Api {
         return this.http.delete(`${this.getUrl(userId)}`).then((res) => res.data)
     }
 
+    updatePassword(userId: number, currentPassword: string, newPassword: string): Promise<boolean> {
+        let url = `${this.getUrl(userId)}/password`;
+        console.log('url: ' + url)
+        console.log('currentPassword: ' + currentPassword)
+        console.log('newPassword: ' + newPassword)
+        return this.http.put(url, {
+            currentPassword: currentPassword,
+            newPassword: newPassword
+        }).then((res) => res.data)
+            .catch(err => {
+                console.log('user service error updating password')
+                console.log(err)
+                console.log('---------------------------------------------------------------------------')
+            })
+    }
 
 }
 

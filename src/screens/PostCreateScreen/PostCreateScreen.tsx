@@ -15,11 +15,13 @@ import {setLoading} from "../../store/loading/actions";
 import PostsService from "../../services/Posts";
 import HeaderComponent from "../../components/HeaderComponent";
 import languages from '../../store/languages.json'
+import {logout} from "../../store/user/actions";
 
 interface PostCreateProperties {
     navigation: any,
     theme: Theme,
     setLoading: Function
+    logout: Function
 }
 
 interface Errors {
@@ -31,7 +33,7 @@ interface Errors {
 }
 
 
-const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoading, theme}) => {
+const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoading, theme, logout}) => {
     const [untouched, setUntouched] = useState(true)
     const postService = new PostsService()
     const user: UserState = useSelector((state: ApplicationState) => {
@@ -222,7 +224,12 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                 )
                 .catch(error => {
                     console.log('create post')
-                    console.log(error)
+                    console.log(JSON.stringify(error))
+                    console.log('----------------------------------------------------------------')
+                    console.log('|' + error.message + '|')
+                    if (error.message === "Request failed with status code 403") {
+                        logout()
+                    }
                 })
                 .finally(() => setLoading(false))
         }
@@ -325,5 +332,6 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
 }
 
 export default connect(null, {
-    setLoading: setLoading
+    setLoading: setLoading,
+    logout: logout
 })(withTheme(PostCreateScreen))
