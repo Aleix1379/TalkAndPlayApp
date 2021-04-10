@@ -215,6 +215,17 @@ const CommentComponent: React.FC<CommentProperties> = ({
                                 })
                                 return items.map((it) => buildLine(it.content, it.index))
                             }
+                        },
+                        image: {
+                            react: (node: any, output: any, state: any) => (
+                                <Image
+                                    key={state.key}
+                                    source={{uri: node.target}}
+                                    width={Dimensions.get('window').width - 44}
+                                    resizeMode={'contain'}
+                                    style={{marginTop: 4}}
+                                />
+                            )
                         }
                     }}
                 >
