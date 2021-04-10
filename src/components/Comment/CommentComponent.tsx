@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {Comment} from "../../types/PostsTypes"
-import {StyleSheet, View} from "react-native"
+import {Dimensions, StyleSheet, View} from "react-native"
 import {Text, withTheme} from 'react-native-paper'
 import UserUtils from "../../utils/UserUtils"
 import {Theme} from "react-native-paper/lib/typescript/types"
@@ -20,6 +20,7 @@ import {closeDialog, openDialog} from "../../store/dialog/actions";
 import {DialogOption} from "../../store/dialog/types";
 // @ts-ignore
 import Markdown from 'react-native-simple-markdown'
+import Image from 'react-native-scalable-image';
 
 interface CommentProperties {
     comment: Comment
@@ -175,20 +176,20 @@ const CommentComponent: React.FC<CommentProperties> = ({
     const buildLine = (content: any, index: number): any => {
         const value = content.map((it: any, i: number) => {
             if (it.type === 'text') {
-                console.log('index i: ' + index + ' ' + i)
                 return <Text key={index + ' ' + i}>{it.content}</Text>
             }
-            console.log('index i: ' + index + ' ' + i)
             return <Text key={index + ' ' + i}>{it.content.map((ct: any) => ct.content)}</Text>
         })
-        return <View style={{
-            backgroundColor: 'rgba(7,90,171,0.32)',
-            flex: 1,
-            flexDirection: 'row',
-            marginTop: 4 * index,
-            paddingLeft: 4,
-            marginBottom: 4,
-        }}>
+        return <View
+            key={index}
+            style={{
+                backgroundColor: 'rgba(7,90,171,0.32)',
+                flex: 1,
+                flexDirection: 'row',
+                marginTop: 4 * index,
+                paddingLeft: 4,
+                marginBottom: 4,
+            }}>
             {value}
         </View>
     }
@@ -248,15 +249,29 @@ const CommentComponent: React.FC<CommentProperties> = ({
 
             {resultReplies}
 
-            <Markdown styles={{
-                text: {
-                    color: theme.colors.text
-                },
-                view: {
-                    marginTop: 4,
-                    marginBottom: 8
-                }
-            }}>
+            <Markdown
+                styles={{
+                    text: {
+                        color: theme.colors.text
+                    },
+                    view: {
+                        marginTop: 4,
+                        marginBottom: 8
+                    }
+                }}
+                rules={{
+                    image: {
+                        react: (node: any, output: any, state: any) => (<Image
+                                key={state.key}
+                                source={{uri: node.target}}
+                                width={Dimensions.get('window').width - 28}
+                                resizeMode={'contain'}
+                                style={{marginTop: 4}}
+                            />
+                        )
+                    }
+                }}
+            >
                 {comment.text || '_Comment deleted_'}
             </Markdown>
 
