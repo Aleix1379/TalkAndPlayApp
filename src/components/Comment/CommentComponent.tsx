@@ -10,7 +10,6 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import RoundButtonComponent from "../RoundButtonComponent";
 // @ts-ignore
 import InView from "react-native-component-inview";
-import Markdown, {MarkdownIt} from "react-native-markdown-display";
 import AvatarComponent from "../AvatarComponent";
 import TopSheetComponent from "../TopSheetComponent/TopSheetComponent";
 import {UserState} from "../../store/user/types";
@@ -19,6 +18,8 @@ import {ApplicationState} from "../../store";
 import {ModalOption} from "../../screens/PostDetail/PostDetail";
 import {closeDialog, openDialog} from "../../store/dialog/actions";
 import {DialogOption} from "../../store/dialog/types";
+// @ts-ignore
+import Markdown from 'react-native-simple-markdown'
 
 interface CommentProperties {
     comment: Comment
@@ -86,17 +87,19 @@ const CommentComponent: React.FC<CommentProperties> = ({
     })
 
     const markDownStyles = {
-        body: {
-            color: theme.colors.text,
-            backgroundColor: comment.text ? theme.colors.primary : theme.colors.background,
-            marginTop: comment.text ? 4 : 8,
-            marginBottom: comment.text ? 4 : 8,
-            paddingLeft: comment.text ? 0 : 8
-        },
-        blockquote: {
+        view: {
+            marginTop: 8,
+            marginLeft: 6,
             backgroundColor: theme.colors.background,
-            marginTop: 12,
-            paddingTop: 0
+            paddingHorizontal: 4,
+            paddingVertical: 4,
+            borderLeftWidth: 2,
+            borderLeftColor: theme.colors.text,
+        },
+        text: {
+            color: theme.colors.text,
+            display: 'flex',
+            flexDirection: 'row',
         }
     }
 
@@ -151,6 +154,9 @@ const CommentComponent: React.FC<CommentProperties> = ({
         for (let i = 0; i < max; i++) {
             quotes += '>'
         }
+        if (max > 0) {
+            quotes = '\n' + quotes
+        }
         return quotes
     }
 
@@ -166,22 +172,50 @@ const CommentComponent: React.FC<CommentProperties> = ({
         }
     }
 
+    const buildLine = (content: any, index: number): any => {
+        const value = content.map((it: any, i: number) => {
+            if (it.type === 'text') {
+                console.log('index i: ' + index + ' ' + i)
+                return <Text key={index + ' ' + i}>{it.content}</Text>
+            }
+            console.log('index i: ' + index + ' ' + i)
+            return <Text key={index + ' ' + i}>{it.content.map((ct: any) => ct.content)}</Text>
+        })
+        return <View style={{
+            backgroundColor: 'rgba(7,90,171,0.32)',
+            flex: 1,
+            flexDirection: 'row',
+            marginTop: 4 * index,
+            paddingLeft: 4,
+            marginBottom: 4,
+        }}>
+            {value}
+        </View>
+    }
+
     const displayReplies = (com?: Comment) => {
         if (com) {
             let result = buildReplies(com)
             if (result) {
                 let message = ''
                 result.reverse().forEach((rep: Comment, index) => {
-                    message += getQuotes(index) + ' ' + rep.author + '\n' + rep.text + '\n'
+                    message += getQuotes(index) + rep.author + ' \n\n' + rep.text + '\n'
                 })
 
 
                 setResultReplies(<Markdown
-                    markdownit={
-                        MarkdownIt({typographer: true}).disable(['link', 'image'])
-                    }
-                    mergeStyle={true}
-                    style={markDownStyles}
+                    styles={markDownStyles}
+                    rules={{
+                        blockQuote: {
+                            react: (node: any, output: any, state: any) => {
+                                let items: any[] = []
+                                node.content.forEach((item: any) => {
+                                    items.push({index: state.key, content: item.content})
+                                })
+                                return items.map((it) => buildLine(it.content, it.index))
+                            }
+                        }
+                    }}
                 >
                     {message || '_Comment deleted_'}
                 </Markdown>)
@@ -214,13 +248,15 @@ const CommentComponent: React.FC<CommentProperties> = ({
 
             {resultReplies}
 
-            <Markdown
-                markdownit={
-                    MarkdownIt({typographer: true}).disable(['link', 'image'])
+            <Markdown styles={{
+                text: {
+                    color: theme.colors.text
+                },
+                view: {
+                    marginTop: 4,
+                    marginBottom: 8
                 }
-                mergeStyle={true}
-                style={markDownStyles}
-            >
+            }}>
                 {comment.text || '_Comment deleted_'}
             </Markdown>
 

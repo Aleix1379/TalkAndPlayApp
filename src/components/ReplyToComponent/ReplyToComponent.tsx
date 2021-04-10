@@ -1,11 +1,12 @@
 import React from 'react';
 import {StyleSheet, View} from "react-native";
 import {Theme} from "react-native-paper/lib/typescript/types";
-import Markdown, {MarkdownIt} from "react-native-markdown-display";
+//import Markdown, {MarkdownIt} from "react-native-markdown-display";
 import {Text, withTheme} from "react-native-paper";
 import {Comment} from "../../types/PostsTypes";
 import RoundButtonComponent from "../RoundButtonComponent/RoundButtonComponent";
-
+// @ts-ignore
+import Markdown from 'react-native-simple-markdown'
 interface ReplyToProperties {
     theme: Theme
     comment: Comment
@@ -38,7 +39,6 @@ const ReplyToComponent: React.FC<ReplyToProperties> = ({theme, comment, close}) 
         },
         author: {
             color: theme.colors.accent,
-
         }
     });
 
@@ -53,15 +53,10 @@ const ReplyToComponent: React.FC<ReplyToProperties> = ({theme, comment, close}) 
             </View>
             <View style={styles.content}>
                 <Markdown
-                    markdownit={
-                        MarkdownIt({typographer: true}).disable(['link', 'image'])
-                    }
-                    mergeStyle={true}
-                    style={{
+                    styles={{
                         text: {
                             color: theme.colors.text
                         },
-
                         blockquote: {
                             backgroundColor: theme.colors.background,
                             marginTop: 12,
