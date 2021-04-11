@@ -33,6 +33,7 @@ interface CommentProperties {
     openDialog: (title: string, content: string[], actions: DialogOption[]) => void
     closeDialog: () => void
     editComment: (comment: Comment) => void
+    onReport: (id: number) => void
 }
 
 const CommentComponent: React.FC<CommentProperties> = ({
@@ -45,7 +46,8 @@ const CommentComponent: React.FC<CommentProperties> = ({
                                                            onCommentDelete,
                                                            openDialog,
                                                            closeDialog,
-                                                           editComment
+                                                           editComment,
+                                                           onReport
                                                        }) => {
     const [options, setOptions] = useState<ModalOption[]>([])
     const imageSize = 50
@@ -106,6 +108,12 @@ const CommentComponent: React.FC<CommentProperties> = ({
         }
     }
 
+    const sendReport = (): void => {
+        if (comment.id) {
+            onReport(comment.id)
+        }
+    }
+
     useEffect(() => {
         const values: ModalOption[] = []
 
@@ -115,6 +123,12 @@ const CommentComponent: React.FC<CommentProperties> = ({
                 action: () => reply(comment),
                 icon: 'reply',
                 title: 'Reply'
+            })
+            values.push({
+                id: 'report',
+                action: () => sendReport(),
+                icon: 'alert',
+                title: 'Report'
             })
         } else if (!!comment.text && user) {
             values.push({

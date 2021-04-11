@@ -226,7 +226,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 
     const editPost = () => navigation.navigate('PostEdit', {title, id, updatePost: setPost})
 
-    const reportPost = () => console.log('click.... reportPost ......................')
+    const reportPost = () => navigation.navigate('Report', {id, type: 'post'})
 
     const loadPostOptions = () => {
         const options: ModalOption[] = []
@@ -487,6 +487,10 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         setCommentId(comment.id)
     }
 
+    const reportComment = (id: number): void => {
+        navigation.navigate('Report', {id, type: 'comment'})
+    }
+
     return (
         <>
             <HeaderComponent
@@ -572,6 +576,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                     setModalVisible={(id: number | null) => setModalVisible(id)}
                                     onCommentDelete={(id: number | null) => deleteComment(id)}
                                     editComment={(comment) => editComment(comment)}
+                                    onReport={(id) => reportComment(id)}
                                 />
                             </View>)}
 

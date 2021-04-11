@@ -13,6 +13,7 @@ import ProfileEditScreen from "../screens/ProfileEditScreen";
 import PostEditScreen from "../screens/PostEditScreen";
 import PasswordEditScreen from "../screens/PasswordEditScreen";
 import PicturePreviewScreen from "../screens/PicturePreviewScreen";
+import ReportScreen from "../screens/ReportScreen";
 
 
 const PostStack = createStackNavigator({
@@ -96,6 +97,12 @@ const HomeDetailStack = createStackNavigator({
     },
     PicturePreview: {
         screen: PicturePreviewScreen,
+        navigationOptions: {
+            headerShown: false
+        }
+    },
+    Report: {
+        screen: ReportScreen,
         navigationOptions: {
             headerShown: false
         }
