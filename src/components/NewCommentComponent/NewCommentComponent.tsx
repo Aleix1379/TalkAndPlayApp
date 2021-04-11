@@ -21,10 +21,22 @@ interface NewCommentProperties {
     send: (message: string) => void
     message: string
     onChange: (message: string) => void
-    setRef: (ref: TextInput | null) => void
+    setRef?: (ref: TextInput | null) => void
+    onImageChange?: (event: any) => void
+    minLength?: number
+    label?: string
 }
 
-const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, message, onChange, setRef}) => {
+const NewCommentComponent: React.FC<NewCommentProperties> = ({
+                                                                 theme,
+                                                                 send,
+                                                                 message,
+                                                                 onChange,
+                                                                 setRef,
+                                                                 onImageChange,
+                                                                 minLength = 1,
+                                                                 label = "Write a comment..."
+                                                             }) => {
     const [rotationAnimation] = useState(new Animated.Value(0))
     const [colorAnimation] = useState(new Animated.Value(0))
     const [animationStarted, setAnimationStarted] = useState(false)
@@ -50,7 +62,7 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, messa
         outputRange: ['-90deg', '0deg']
     })
 
-    const isMessageValid = (): boolean => message.trim().length > 0 && message.trim().length <= 5000
+    const isMessageValid = (): boolean => message.trim().length >= minLength && message.trim().length <= 5000
 
     const animatedStyles = {
         rotation: {
@@ -125,10 +137,10 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, messa
     const update = (id: string, text: string) => onChange(text)
 
     useEffect(() => {
-        if (!animationStarted && message.length > 0) {
+        if (!animationStarted && message.length >= minLength) {
             startAnimation()
             setAnimationStarted(true)
-        } else if (animationStarted && message.length === 0) {
+        } else if (animationStarted && message.length < minLength) {
             startAnimation()
             setAnimationStarted(false)
         }
@@ -160,7 +172,7 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, messa
             <TextInputComponent
                 id="new-comment"
                 setRef={ref => {
-                    setRef(ref)
+                    setRef && setRef(ref)
                 }}
                 value={message}
                 onChange={update}
@@ -169,7 +181,8 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({theme, send, messa
                 maxLength={5000}
                 style={styles.textInput}
                 error={errors.message}
-                placeholder="Write a comment..."
+                placeholder={label}
+                onImageChange={onImageChange}
             />
 
             <View onTouchEnd={() => sendComment()}>

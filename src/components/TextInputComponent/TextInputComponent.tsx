@@ -20,6 +20,7 @@ interface TextInputProperties {
     multiLine?: boolean
     maxLength?: number
     setRef?: (ref: TextInput | null) => void
+    onImageChange?: (event: any) => void
 }
 
 const TextInputComponent: React.FC<TextInputProperties> = ({
@@ -35,7 +36,8 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
                                                                multiLine = false,
                                                                maxLength,
                                                                onBlur,
-                                                               setRef
+                                                               setRef,
+                                                               onImageChange
                                                            }) => {
     const [showText, setShowText] = useState(!password)
     const [isFocused, setIsFocused] = useState(false)
@@ -130,6 +132,8 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
         setShowText(!showText)
     }
 
+    // @ts-ignore
+    // @ts-ignore
     return (
         <View style={getStyles()}>
             {
@@ -151,6 +155,8 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
                 editable={!!onChange}
                 onBlur={() => toggleFocus(false)}
                 onFocus={() => toggleFocus(true)}
+                // @ts-ignore
+                onImageChange={onImageChange}
             />
 
             {password &&

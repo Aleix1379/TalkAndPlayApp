@@ -71,6 +71,8 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     const [manualScrollEnabled, setManualScrollEnabled] = useState(false)
     const [optionsVisible, setOptionsVisible] = useState<any>({})
     const [commentToReply, setCommentToReply] = useState<Comment | null>(null)
+    const [editModeEnabled, setEditModeEnabled] = useState(false)
+    const [commentId, setCommentId] = useState<number | null>(null)
     let inputRef: any = null
     const user: UserState = useSelector((state: ApplicationState) => {
         return state.user
@@ -350,22 +352,37 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 
     const sendComment = (message: string) => {
         const comment: Comment = {
-            id: null,
+            id: commentId,
             text: message,
             author: user
         }
         if (commentToReply) {
             comment.reply = commentToReply
         }
-        if (post) {
+        if (post && !editModeEnabled) {
             postService.addComment(post.id, comment)
                 .then(() => {
+                    setMessage('')
                     setCommentToReply(null)
                     inputRef.blur()
                     fetchComments('bottom')
                 })
                 .catch((error) => {
                     console.log('Error creating comment')
+                    console.error(error)
+                })
+        } else if (post && editModeEnabled) {
+            postService.editComment(post.id, comment)
+                .then(() => {
+                    setMessage('')
+                    setCommentToReply(null)
+                    inputRef.blur()
+                    fetchComments('bottom')
+                    setEditModeEnabled(false)
+                    setCommentId(null)
+                })
+                .catch((error) => {
+                    console.log('Error updating comment')
                     console.error(error)
                 })
         }
@@ -449,6 +466,25 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                     console.log(err)
                 })
         }
+    }
+
+    const onSendImage = (value: string): void => {
+        sendComment(value)
+    }
+
+    const onImageChange = (event: any) => {
+        const {linkUri} = event.nativeEvent
+        if (linkUri.endsWith('.gif')) {
+            navigation.navigate('PicturePreview', {image: linkUri, title, id, onSendImage})
+        } else {
+            sendComment('![gif](' + linkUri + ')')
+        }
+    }
+
+    const editComment = (comment: Comment): void => {
+        setEditModeEnabled(true)
+        setMessage(comment.text)
+        setCommentId(comment.id)
     }
 
     return (
@@ -535,6 +571,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                     reply={(comment) => reply(comment)}
                                     setModalVisible={(id: number | null) => setModalVisible(id)}
                                     onCommentDelete={(id: number | null) => deleteComment(id)}
+                                    editComment={(comment) => editComment(comment)}
                                 />
                             </View>)}
 
@@ -570,6 +607,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                         inputRef = ref
                     }
                 }}
+                onImageChange={onImageChange}
             />}
 
             {/*<DialogComponent

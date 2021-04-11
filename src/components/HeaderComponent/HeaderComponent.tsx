@@ -12,7 +12,6 @@ interface HeaderProperties {
     title?: string
     leftAction?: HeaderAction
     rightAction?: HeaderAction
-
 }
 
 const HeaderComponent: React.FC<HeaderProperties> = ({
@@ -25,8 +24,7 @@ const HeaderComponent: React.FC<HeaderProperties> = ({
         title: {
             textAlign: 'center',
             fontFamily: 'Ranchers-Regular',
-            letterSpacing: 3,
-            fontSize: 25,
+            letterSpacing: 2,
         }
     })
 

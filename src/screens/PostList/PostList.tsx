@@ -113,11 +113,14 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
                         </View>)}
                 </ScrollView>
 
-                {user.id >= 0 && <FAB
-                    style={styles.fab}
-                    icon="plus"
-                    onPress={() => navigation.navigate('PostCreate')}
-                />}
+                {
+                    user.id >= 0 &&
+                    <FAB
+                        style={styles.fab}
+                        icon="plus"
+                        onPress={() => navigation.navigate('PostCreate')}
+                    />
+                }
             </View>
         </>
     )

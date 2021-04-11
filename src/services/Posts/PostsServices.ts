@@ -82,6 +82,11 @@ class PostsService extends Api {
     deleteComment(postId: number, commentId: number): Promise<number> {
         return this.http.delete(`${this.getUrl(postId)}/comments/${commentId}`)
     }
+
+    editComment(postId: number, comment: Comment): Promise<Comment> {
+        return this.http.put(`${this.getUrl(postId)}/comments/${comment.id}`, comment)
+    }
+
 }
 
 export default PostsService;

@@ -32,6 +32,7 @@ interface CommentProperties {
     onCommentDelete: (id: number | null) => void
     openDialog: (title: string, content: string[], actions: DialogOption[]) => void
     closeDialog: () => void
+    editComment: (comment: Comment) => void
 }
 
 const CommentComponent: React.FC<CommentProperties> = ({
@@ -43,7 +44,8 @@ const CommentComponent: React.FC<CommentProperties> = ({
                                                            setModalVisible,
                                                            onCommentDelete,
                                                            openDialog,
-                                                           closeDialog
+                                                           closeDialog,
+                                                           editComment
                                                        }) => {
     const [options, setOptions] = useState<ModalOption[]>([])
     const imageSize = 50
@@ -117,7 +119,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
         } else if (!!comment.text && user) {
             values.push({
                 id: 'edit',
-                action: () => console.log('edit comment....'),
+                action: () => editComment(comment),
                 icon: 'pencil',
                 title: 'Edit'
             })
@@ -223,7 +225,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                                     source={{uri: node.target}}
                                     width={Dimensions.get('window').width - 44}
                                     resizeMode={'contain'}
-                                    style={{marginTop: 4}}
+                                    style={{marginTop: 4, marginBottom: 4}}
                                 />
                             )
                         }
@@ -275,9 +277,9 @@ const CommentComponent: React.FC<CommentProperties> = ({
                         react: (node: any, output: any, state: any) => (<Image
                                 key={state.key}
                                 source={{uri: node.target}}
-                                width={Dimensions.get('window').width - 28}
+                                width={Dimensions.get('window').width - 30}
                                 resizeMode={'contain'}
-                                style={{marginTop: 4}}
+                                style={{marginTop: 4, marginBottom: 8}}
                             />
                         )
                     }
