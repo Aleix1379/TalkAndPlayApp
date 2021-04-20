@@ -89,14 +89,6 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
                     />
                 </View>
 
-                <View style={{marginBottom: 24, width: '100%'}}>
-                    <ButtonComponent label="Change password"
-                                     icon="lock"
-                                     onPress={() => navigation.navigate('PasswordEdit')}
-                                     style={{marginHorizontal: 8}}
-                    />
-                </View>
-
             </View>}
 
         </>

@@ -4,13 +4,16 @@ import TextInputComponent from "../TextInputComponent"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import AvatarComponent from "../AvatarComponent"
 import {UserState} from "../../store/user/types"
-import {shallowEqual, useSelector} from "react-redux"
+import {connect, shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
 import UserUtils from "../../utils/UserUtils"
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import Validator from "../../utils/Validator/Validator"
 import {ErrorType} from "../../utils/Validator/types"
 import {withTheme} from "react-native-paper"
+import {ImagePickerResponse, launchImageLibrary} from "react-native-image-picker";
+import {closeDialog, openDialog} from "../../store/dialog/actions";
+import {DialogOption} from "../../store/dialog/types";
 
 interface Errors {
     message: ErrorType
@@ -25,6 +28,9 @@ interface NewCommentProperties {
     onImageChange?: (event: any) => void
     minLength?: number
     label?: string
+    openDialog: (title: string, content: string[], actions: DialogOption[]) => void
+    closeDialog: () => void
+    uploadPicture?: (image: ImagePickerResponse) => void
 }
 
 const NewCommentComponent: React.FC<NewCommentProperties> = ({
@@ -35,7 +41,10 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
                                                                  setRef,
                                                                  onImageChange,
                                                                  minLength = 1,
-                                                                 label = "Write a comment..."
+                                                                 label = "Write a comment...",
+                                                                 openDialog,
+                                                                 closeDialog,
+                                                                 uploadPicture
                                                              }) => {
     const [rotationAnimation] = useState(new Animated.Value(0))
     const [colorAnimation] = useState(new Animated.Value(0))
@@ -118,10 +127,12 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
             flex: 1,
             backgroundColor: theme.colors.primary,
             borderRadius: 0,
-            marginLeft: 6,
-            marginRight: 12,
+            marginLeft: 6
+        },
+        imageIcon: {
         },
         button: {
+            marginLeft: 12,
             right: 5,
             shadowOffset: {
                 width: 10,
@@ -161,6 +172,32 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
         }
     }
 
+    const choosePicture = (): void => {
+        launchImageLibrary(
+            {
+                mediaType: "photo"
+            },
+            (result) => {
+                if (!result.didCancel) {
+                    if (result.fileSize && result.fileSize >= 26214400) {
+                        openDialog(
+                            "Error",
+                            ["'Maximum upload file size: 25MB'"],
+                            [
+                                {
+                                    label: "Close",
+                                    onPress: () => closeDialog()
+                                }
+                            ])
+                    } else {
+//                        setImage(result)
+                        uploadPicture && uploadPicture(result)
+                    }
+                }
+            }
+        )
+    }
+
     return (
         <View style={styles.newComment}>
 
@@ -185,6 +222,17 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
                 onImageChange={onImageChange}
             />
 
+            {
+                uploadPicture &&
+                <View style={styles.imageIcon} onTouchEnd={() => choosePicture()}>
+                    <MaterialCommunityIcons
+                        name="image-plus"
+                        size={26}
+                        color={theme.colors.accent}
+                    />
+                </View>
+            }
+
             <View onTouchEnd={() => sendComment()}>
                 <Animated.View style={[styles.button, animatedStyles.rotation]}>
                     <Animated.Text style={{color: color}}>
@@ -198,4 +246,10 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
     )
 }
 
-export default withTheme(NewCommentComponent)
+export default connect(null,
+    {
+        openDialog: openDialog,
+        closeDialog: closeDialog
+    }
+)
+(withTheme(NewCommentComponent))

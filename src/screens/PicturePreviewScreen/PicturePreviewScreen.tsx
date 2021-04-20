@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {BackHandler, Dimensions, StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import Image from "react-native-scalable-image";
-import {withTheme} from "react-native-paper";
-import HeaderComponent from "../../components/HeaderComponent";
-import NewCommentComponent from "../../components/NewCommentComponent";
+import React, {useEffect, useState} from 'react'
+import {BackHandler, Dimensions, StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import Image from "react-native-scalable-image"
+import {withTheme} from "react-native-paper"
+import HeaderComponent from "../../components/HeaderComponent"
+import NewCommentComponent from "../../components/NewCommentComponent"
 
 interface PicturePreviewProperties {
     navigation: any
@@ -28,7 +28,7 @@ const PicturePreviewScreen: React.FC<PicturePreviewProperties> = ({theme, naviga
             right: 0,
             bottom: 0,
         }
-    });
+    })
 
     const handleBackButtonClick = (): boolean => {
         console.log('title: ' + title)

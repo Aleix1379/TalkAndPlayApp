@@ -1,5 +1,9 @@
 import {Comment, CommentResponse, Filter, PostInfo, PostsResponse} from "../../types/PostsTypes";
 import Api from "../Api";
+import {ImagePickerResponse} from "react-native-image-picker/src/types";
+import {UserState} from "../../store/user/types";
+import LocalStorage from "../../utils/LocalStorage/LocalStorage";
+import {Platform} from "react-native";
 
 class PostsService extends Api {
     constructor() {

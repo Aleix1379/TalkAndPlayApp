@@ -84,6 +84,12 @@ const SettingsScreen: React.FC<SettingsProperties> = ({navigation, theme, logout
                                      onPress={() => setShowDialog(true)}
                     />
 
+                    <ButtonComponent label="Change password"
+                                     icon="lock"
+                                     onPress={() => navigation.navigate('PasswordEdit')}
+                                     style={{marginTop: 24}}
+                    />
+
                     <ButtonComponent style={styles.action} label="Sign out" icon="logout" onPress={() => disconnect()}/>
 
                 </View>

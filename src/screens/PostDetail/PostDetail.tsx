@@ -19,6 +19,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import ReplyToComponent from "../../components/ReplyToComponent";
 import {closeDialog, openDialog} from "../../store/dialog/actions";
 import {DialogOption} from "../../store/dialog/types";
+import {ImagePickerResponse} from "react-native-image-picker";
 
 interface PostDetailProperties {
     navigation: any
@@ -481,6 +482,26 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         }
     }
 
+    const onSendPicture = (value: string): void => {
+        sendComment(value)
+    }
+
+    const uploadPicture = (image: ImagePickerResponse): void => {
+        navigation.navigate('PictureUpload', {image, title, id, onSendPicture})
+        /*
+        if (image.fileName) {
+            pictureService.fileUpload(image, image.fileName)
+                .then(() => {
+                    sendComment('![gif](' + REACT_APP_IMAGES_URL + '/' + user.id + '_' + image.fileName + ')')
+                })
+                .catch(err => {
+                    console.log('error uploading image')
+                    console.log(err)
+                })
+        }
+        */
+    }
+
     const editComment = (comment: Comment): void => {
         setEditModeEnabled(true)
         setMessage(comment.text)
@@ -613,6 +634,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                     }
                 }}
                 onImageChange={onImageChange}
+                uploadPicture={uploadPicture}
             />}
 
             {/*<DialogComponent
