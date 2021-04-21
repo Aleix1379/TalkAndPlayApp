@@ -15,6 +15,7 @@ import PasswordEditScreen from "../screens/PasswordEditScreen";
 import PicturePreviewScreen from "../screens/PicturePreviewScreen";
 import ReportScreen from "../screens/ReportScreen";
 import PictureUploadScreen from "../screens/PictureUploadScreen";
+import SearchScreen from "../screens/SearchScreen";
 
 
 const PostStack = createStackNavigator({
@@ -110,6 +111,12 @@ const HomeDetailStack = createStackNavigator({
     },
     PictureUpload: {
         screen: PictureUploadScreen,
+        navigationOptions: {
+            headerShown: false
+        }
+    },
+    Search: {
+        screen: SearchScreen,
         navigationOptions: {
             headerShown: false
         }

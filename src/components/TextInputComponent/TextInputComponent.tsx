@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {Text, withTheme} from 'react-native-paper'
-import {Animated, Easing, StyleProp, StyleSheet, TextInput, View, ViewStyle} from "react-native"
+import {Animated, Easing, StyleProp, StyleSheet, TextInput, TextStyle, View, ViewStyle} from "react-native"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {ErrorType} from "../../utils/Validator/types"
 import ErrorHelperComponent from "../ErrorHelperComponent";
@@ -15,7 +15,7 @@ interface TextInputProperties {
     onBlur?: () => void
     password?: boolean
     theme: Theme
-    style?: React.CSSProperties
+    style?: StyleProp<TextStyle>
     placeholder?: string
     multiLine?: boolean
     maxLength?: number
@@ -65,7 +65,7 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
         }).start()
     }
 
-    const showErrorMessage = (): boolean => (error?.touched! && error.message.length > 0)
+    const showErrorMessage = (): boolean => (error?.touched! && error.message?.length > 0)
 
     const styles = StyleSheet.create({
         label: {

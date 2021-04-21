@@ -1,13 +1,14 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import {UserState} from "../../store/user/types";
-import {Comment} from "../../types/PostsTypes";
+import {Comment, Filter} from "../../types/PostsTypes";
 
 export default class LocalStorage {
     private static keys = {
         AUTH_TOKEN: 'auth-token',
         COMMENTS_PER_PAGE: 'comments-per-page',
         USER: 'user',
-        COMMENT_SEEN: 'comment-seen'
+        COMMENT_SEEN: 'comment-seen',
+        FILTER: 'filter'
     };
 
     public static setAuthToken = async (token: string) => {
@@ -128,6 +129,22 @@ export default class LocalStorage {
         } catch (error) {
             console.log(error.message);
         }
+    }
+
+    public static addFilter = async (filter: Filter) => {
+        try {
+            await AsyncStorage.setItem(LocalStorage.keys.FILTER, JSON.stringify(filter));
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
+    public static getFilter = async (): Promise<Filter | null> => {
+        let value = await AsyncStorage.getItem(LocalStorage.keys.FILTER)
+        if (value) {
+            return JSON.parse(value!);
+        }
+        return null
     }
 
 }

@@ -3,7 +3,7 @@ import {FAB, withTheme} from 'react-native-paper'
 import {ScrollView, StyleSheet, View} from 'react-native'
 import {Theme} from 'react-native-paper/lib/typescript/types'
 import PostsService from '../../services/Posts'
-import {PostsResponse} from '../../types/PostsTypes'
+import {Filter, PostsResponse} from '../../types/PostsTypes'
 import PostComponent from "../../components/PostComponent"
 import {UserState} from "../../store/user/types"
 import {shallowEqual, useSelector} from "react-redux"
@@ -17,6 +17,7 @@ interface PostListProperties {
 }
 
 const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
+    const postsService = new PostsService()
     const styles = StyleSheet.create({
         postList: {
             flex: 1,
@@ -59,9 +60,18 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
     }, [])
 
     useEffect(() => {
-        postService.get().then((response: PostsResponse) => {
-            setData(response)
-        })
+        LocalStorage.getFilter()
+            .then(filter => {
+                if (filter) {
+                    postService.get(0, filter).then((response: PostsResponse) => {
+                        setData(response)
+                    })
+                } else {
+                    postService.get().then((response: PostsResponse) => {
+                        setData(response)
+                    })
+                }
+            })
     }, [user])
 
     useEffect(() => {
@@ -85,13 +95,24 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
         navigation.navigate('Detail', {title, id})
     }
 
+    const search = (filter: Filter) => {
+        postsService.get(0, filter)
+            .then(data => {
+                setData(data)
+            })
+            .catch(err => {
+                console.log('Error searching')
+                console.log(err)
+            })
+    }
+
     return (
         <>
             <HeaderComponent
                 title="Posts"
                 rightAction={{
                     image: "magnify",
-                    onPress: () => console.log('searching.....')
+                    onPress: () => navigation.navigate('Search', {search})
                 }}
             />
 
