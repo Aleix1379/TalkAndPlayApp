@@ -161,8 +161,8 @@ const SearchScreen: React.FC<SearchProperties> = ({navigation, theme}) => {
                         }
                         LocalStorage.addFilter(filter)
                             .then(() => {
-                                search(filter)
                                 navigation.goBack()
+                                search(filter)
                             })
                             .catch(err => {
                                 console.log('Error saving filter')
