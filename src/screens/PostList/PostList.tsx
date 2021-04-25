@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {FAB, withTheme} from 'react-native-paper'
+import {FAB, Text, withTheme} from 'react-native-paper'
 import {ScrollView, StyleSheet, View} from 'react-native'
 import {Theme} from 'react-native-paper/lib/typescript/types'
 import PostsService from '../../services/Posts'
@@ -21,7 +21,7 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
     const styles = StyleSheet.create({
         postList: {
             flex: 1,
-            backgroundColor: theme.colors.background
+            backgroundColor: theme.colors.background,
         },
         title: {
             textAlign: 'center',
@@ -34,6 +34,26 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
             margin: 16,
             right: 0,
             bottom: 0,
+        },
+        loadMore: {
+            display: "flex",
+            alignItems: "center",
+            marginTop: 8,
+            marginBottom: 16
+        },
+        loadMoreText: {
+            fontSize: 15,
+            backgroundColor: theme.colors.primary,
+            paddingHorizontal: 10,
+            paddingVertical: 6,
+            shadowColor: theme.colors.surface,
+            shadowOffset: {
+                width: 2.5,
+                height: 2.5,
+            },
+            shadowOpacity: 0.75,
+            shadowRadius: 1,
+            elevation: 5,
         }
     })
 
@@ -41,6 +61,7 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
     const [data, setData] = useState<PostsResponse>()
     const postService = new PostsService()
     const [totalMessages, setTotalMessages] = useState<any>({})
+    const [isLast, setIsLast] = useState(false)
 
     const user: UserState = useSelector((state: ApplicationState) => {
         return state.user
@@ -54,22 +75,16 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
                 })
             })
 
-        postService.get().then((response: PostsResponse) => {
-            setData(response)
-        })
+        fetchData()
     }, [])
 
     useEffect(() => {
         LocalStorage.getFilter()
             .then(filter => {
                 if (filter) {
-                    postService.get(0, filter).then((response: PostsResponse) => {
-                        setData(response)
-                    })
+                    fetchData(0, filter)
                 } else {
-                    postService.get().then((response: PostsResponse) => {
-                        setData(response)
-                    })
+                    fetchData()
                 }
             })
     }, [user])
@@ -91,6 +106,12 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
         }; // use effect cleanup to set flag false, if unmounted
     }, [data])
 
+    const fetchData = (page: number = 0, filter?: Filter) => {
+        postService.get(page, filter).then((response: PostsResponse) => {
+            setData(response)
+        })
+    }
+
     const goToDetail = (id: number, title: string) => {
         navigation.navigate('Detail', {title, id})
     }
@@ -104,6 +125,17 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
                 console.log('Error searching')
                 console.log(err)
             })
+    }
+
+    const loadMore = () => {
+        if (data) {
+            postService.get(data.number + 1).then((response: PostsResponse) => {
+                let newValue = {...response}
+                newValue.content = data.content.concat(response.content)
+                setData(newValue)
+                setIsLast(response.last)
+            })
+        }
     }
 
     return (
@@ -132,6 +164,12 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
                                 onClick={goToDetail}
                             />
                         </View>)}
+
+                    {!isLast &&
+                    <View style={styles.loadMore} onTouchEnd={() => loadMore()}>
+                        <Text style={styles.loadMoreText}>Load more...</Text>
+                    </View>}
+
                 </ScrollView>
 
                 {
