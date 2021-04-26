@@ -142,7 +142,7 @@ export default class LocalStorage {
     public static getFilter = async (): Promise<Filter | null> => {
         let value = await AsyncStorage.getItem(LocalStorage.keys.FILTER)
         if (value) {
-            return JSON.parse(value!);
+            return JSON.parse(value);
         }
         return null
     }

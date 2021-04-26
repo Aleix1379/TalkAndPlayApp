@@ -1,19 +1,30 @@
 import React, {useEffect, useState} from 'react'
-import {FAB, Text, withTheme} from 'react-native-paper'
+import {FAB, Modal, Text, withTheme} from 'react-native-paper'
 import {ScrollView, StyleSheet, View} from 'react-native'
 import {Theme} from 'react-native-paper/lib/typescript/types'
 import PostsService from '../../services/Posts'
-import {Filter, PostsResponse} from '../../types/PostsTypes'
+import {availablePlatforms, Filter, Option, PostsResponse, SelectItem} from '../../types/PostsTypes'
 import PostComponent from "../../components/PostComponent"
 import {UserState} from "../../store/user/types"
 import {shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
 import HeaderComponent from "../../components/HeaderComponent";
 import LocalStorage from "../../utils/LocalStorage/LocalStorage";
+import TextInputComponent from "../../components/TextInputComponent/TextInputComponent";
+import CheckBoxListComponent from "../../components/CheckBoxListComponent/CheckBoxListComponent";
+import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
+import languages from "../../store/languages.json";
 
 interface PostListProperties {
     navigation: any,
     theme: Theme
+}
+
+interface Form {
+    title: string
+    game: string
+    languages: Option[]
+    platforms: Option[]
 }
 
 const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
@@ -54,6 +65,26 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
             shadowOpacity: 0.75,
             shadowRadius: 1,
             elevation: 5,
+        },
+        search: {
+            backgroundColor: theme.colors.background,
+            flex: 1,
+            paddingTop: 16,
+            marginTop: 32,
+            paddingHorizontal: 16
+        },
+        input: {
+            marginTop: 32
+        },
+        accordion: {
+            marginTop: 32
+        },
+        button: {
+            marginTop: 'auto',
+            marginBottom: 24
+        },
+        modal: {
+            flex: 1
         }
     })
 
@@ -62,6 +93,15 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
     const postService = new PostsService()
     const [totalMessages, setTotalMessages] = useState<any>({})
     const [isLast, setIsLast] = useState(false)
+    const [showModal, setShowModal] = useState(false)
+    const [untouched, setUntouched] = useState(true)
+
+    const [form, setForm] = useState<Form>({
+        title: '',
+        game: '',
+        languages: [],
+        platforms: []
+    })
 
     const user: UserState = useSelector((state: ApplicationState) => {
         return state.user
@@ -74,20 +114,16 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
                     setCommentsUnSeen(values)
                 })
             })
-
-        fetchData()
-    }, [])
-
-    useEffect(() => {
         LocalStorage.getFilter()
             .then(filter => {
                 if (filter) {
+                    setForm(filter)
                     fetchData(0, filter)
                 } else {
                     fetchData()
                 }
             })
-    }, [user])
+    }, [])
 
     useEffect(() => {
         let isMounted = true; // note this flag denote mount status
@@ -109,6 +145,7 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
     const fetchData = (page: number = 0, filter?: Filter) => {
         postService.get(page, filter).then((response: PostsResponse) => {
             setData(response)
+            setIsLast(response.last)
         })
     }
 
@@ -120,6 +157,7 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
         postsService.get(0, filter)
             .then(data => {
                 setData(data)
+                setIsLast(data.last)
             })
             .catch(err => {
                 console.log('Error searching')
@@ -138,13 +176,44 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
         }
     }
 
+    const update = (id: string, value: string | Option | Option[]): void => {
+        let data: any
+        if (untouched) {
+            setUntouched(false)
+        }
+        data = {...form}
+        data[id] = value
+        setForm(data)
+    }
+
+    const handleChange = (value: SelectItem[], field: string): void => {
+        const result = value.filter((item) => item.value)
+        update(field, result)
+    }
+
+    const getLanguages = () => {
+        let values = user.languages.map(lang => ({
+            ...lang,
+            image: 'language'
+        }))
+
+        if (values.length === 0) {
+            return languages.map(lang => ({
+                ...lang,
+                image: 'language'
+            }))
+        }
+
+        return values
+    }
+
     return (
         <>
             <HeaderComponent
                 title="Posts"
                 rightAction={{
                     image: "magnify",
-                    onPress: () => navigation.navigate('Search', {search})
+                    onPress: () => setShowModal(true)
                 }}
             />
 
@@ -181,6 +250,75 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
                     />
                 }
             </View>
+
+            <Modal
+                visible={showModal}
+                contentContainerStyle={styles.modal}
+                dismissable={false}
+            >
+                <View style={styles.search}>
+                    <TextInputComponent
+                        id="title"
+                        label="Title"
+                        value={form.title}
+                        onChange={update}
+                        style={styles.input}
+                    />
+
+                    <TextInputComponent
+                        id="game"
+                        label="Game"
+                        value={form.game}
+                        onChange={update}
+                        style={styles.input}
+                    />
+
+                    <CheckBoxListComponent
+                        id="languages"
+                        label="Language"
+                        values={getLanguages()}
+                        initialValues={form.languages}
+                        onChange={(items) => handleChange(items, 'languages')}
+                        style={styles.accordion}
+                    />
+
+                    <CheckBoxListComponent
+                        id="platforms"
+                        label="Platforms"
+                        values={availablePlatforms}
+                        initialValues={form.platforms}
+                        onChange={(items) => handleChange(items, 'platforms')}
+                        style={styles.accordion}
+                    />
+
+                    <ButtonComponent
+                        label="Search"
+                        icon="magnify"
+                        onPress={() => {
+                            let filter = {
+                                title: form.title,
+                                game: form.game,
+                                languages: form.languages,
+                                platforms: form.platforms
+                            }
+                            console.log('SAVING FILTER')
+                            console.log(filter)
+                            LocalStorage.addFilter(filter)
+                                .then(() => {
+                                    search(filter)
+                                    setShowModal(false)
+                                })
+                                .catch(err => {
+                                    console.log('Error saving filter')
+                                    console.log(err)
+                                })
+                        }}
+                        style={styles.button}
+                    />
+
+                </View>
+            </Modal>
+
         </>
     )
 }
