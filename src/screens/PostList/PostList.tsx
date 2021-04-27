@@ -80,7 +80,7 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
             marginTop: 32
         },
         button: {
-            marginTop: 'auto',
+            marginTop: 16,
             marginBottom: 24
         },
         modal: {
@@ -257,40 +257,42 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
                 dismissable={false}
             >
                 <View style={styles.search}>
-                    <TextInputComponent
-                        id="title"
-                        label="Title"
-                        value={form.title}
-                        onChange={update}
-                        style={styles.input}
-                    />
+                    <ScrollView>
+                        <TextInputComponent
+                            id="title"
+                            label="Title"
+                            value={form.title}
+                            onChange={update}
+                            style={styles.input}
+                        />
 
-                    <TextInputComponent
-                        id="game"
-                        label="Game"
-                        value={form.game}
-                        onChange={update}
-                        style={styles.input}
-                    />
+                        <TextInputComponent
+                            id="game"
+                            label="Game"
+                            value={form.game}
+                            onChange={update}
+                            style={styles.input}
+                        />
 
-                    <CheckBoxListComponent
-                        id="languages"
-                        label="Language"
-                        values={getLanguages()}
-                        initialValues={form.languages}
-                        onChange={(items) => handleChange(items, 'languages')}
-                        style={styles.accordion}
-                    />
+                        <CheckBoxListComponent
+                            id="languages"
+                            label="Language"
+                            values={getLanguages()}
+                            initialValues={form.languages}
+                            onChange={(items) => handleChange(items, 'languages')}
+                            style={styles.accordion}
+                        />
 
-                    <CheckBoxListComponent
-                        id="platforms"
-                        label="Platforms"
-                        values={availablePlatforms}
-                        initialValues={form.platforms}
-                        onChange={(items) => handleChange(items, 'platforms')}
-                        style={styles.accordion}
-                    />
+                        <CheckBoxListComponent
+                            id="platforms"
+                            label="Platforms"
+                            values={availablePlatforms}
+                            initialValues={form.platforms}
+                            onChange={(items) => handleChange(items, 'platforms')}
+                            style={styles.accordion}
+                        />
 
+                    </ScrollView>
                     <ButtonComponent
                         label="Search"
                         icon="magnify"
@@ -301,8 +303,6 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
                                 languages: form.languages,
                                 platforms: form.platforms
                             }
-                            console.log('SAVING FILTER')
-                            console.log(filter)
                             LocalStorage.addFilter(filter)
                                 .then(() => {
                                     search(filter)
@@ -315,7 +315,6 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
                         }}
                         style={styles.button}
                     />
-
                 </View>
             </Modal>
 
