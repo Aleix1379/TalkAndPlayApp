@@ -20,6 +20,7 @@ import ReplyToComponent from "../../components/ReplyToComponent";
 import {closeDialog, openDialog} from "../../store/dialog/actions";
 import {DialogOption} from "../../store/dialog/types";
 import {ImagePickerResponse} from "react-native-image-picker";
+import {BannerAd, BannerAdSize, TestIds} from "@react-native-firebase/admob";
 
 interface PostDetailProperties {
     navigation: any
@@ -82,7 +83,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     const styles = StyleSheet.create({
         post: {
             backgroundColor: theme.colors.background,
-            paddingHorizontal: 6
+            paddingHorizontal: 4
         },
 
         postDetail: {
@@ -599,6 +600,26 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                     editComment={(comment) => editComment(comment)}
                                     onReport={(id) => reportComment(id)}
                                 />
+
+                                {
+                                    index === comments.length - 1 || index % 5 === 0 &&
+                                    <View style={{marginTop: 8}}>
+                                        <BannerAd
+                                            unitId={TestIds.BANNER}
+                                            size={BannerAdSize.ADAPTIVE_BANNER}
+                                            onAdLoaded={() => {
+                                                console.log('Advert loaded');
+                                            }}
+                                            onAdFailedToLoad={(error) => {
+                                                console.error('Advert failed to load: ', error);
+                                            }}
+                                            onAdClosed={() => console.log('onAdClosed')}
+                                            onAdLeftApplication={() => console.log('onAdLeftApplication')}
+                                            onAdOpened={() => console.log('onAdOpened')}
+                                        />
+                                    </View>
+                                }
+
                             </View>)}
 
                         {

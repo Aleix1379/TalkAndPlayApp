@@ -14,6 +14,9 @@ import TextInputComponent from "../../components/TextInputComponent/TextInputCom
 import CheckBoxListComponent from "../../components/CheckBoxListComponent/CheckBoxListComponent";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import languages from "../../store/languages.json";
+import {BannerAd, BannerAdSize, TestIds} from "@react-native-firebase/admob";
+
+//import {AdMobBanner, AdMobInterstitial, AdMobRewarded, PublisherBanner,} from 'react-native-admob';
 
 interface PostListProperties {
     navigation: any,
@@ -33,6 +36,7 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
         postList: {
             flex: 1,
             backgroundColor: theme.colors.background,
+            paddingHorizontal: 4
         },
         title: {
             textAlign: 'center',
@@ -232,6 +236,24 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
                                 totalMessages={totalMessages[post.id]}
                                 onClick={goToDetail}
                             />
+                            {
+                                index === data?.content.length - 1 || index % 5 === 0 &&
+                                <View style={{marginTop: 8}}>
+                                    <BannerAd
+                                        unitId={TestIds.BANNER}
+                                        size={BannerAdSize.ADAPTIVE_BANNER}
+                                        onAdLoaded={() => {
+                                            console.log('Advert loaded');
+                                        }}
+                                        onAdFailedToLoad={(error) => {
+                                            console.error('Advert failed to load: ', error);
+                                        }}
+                                        onAdClosed={() => console.log('onAdClosed')}
+                                        onAdLeftApplication={() => console.log('onAdLeftApplication')}
+                                        onAdOpened={() => console.log('onAdOpened')}
+                                    />
+                                </View>
+                            }
                         </View>)}
 
                     {!isLast &&
@@ -315,6 +337,15 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
                         }}
                         style={styles.button}
                     />
+
+                    {/*
+                    <AdMobBanner
+                        adSize="fullBanner"
+                        adUnitID="ca-app-pub-3339437277990541/5847363447"
+                        testDevices={[AdMobBanner.simulatorId]}
+                        onAdFailedToLoad={(error: any) => console.error(error)}
+                    />
+                    */}
                 </View>
             </Modal>
 

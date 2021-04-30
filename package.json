@@ -21,6 +21,8 @@
     "@react-native-community/async-storage": "^1.12.1",
     "@react-native-community/checkbox": "^0.5.7",
     "@react-native-community/masked-view": "^0.1.10",
+    "@react-native-firebase/admob": "^11.3.3",
+    "@react-native-firebase/app": "^11.3.3",
     "@react-navigation/native": "^5.9.3",
     "@types/react-native": "^0.63.50",
     "add": "^2.0.6",

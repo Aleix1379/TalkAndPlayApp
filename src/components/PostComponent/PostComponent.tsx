@@ -24,7 +24,6 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
             backgroundColor: theme.colors.primary,
             display: "flex",
             flexDirection: "row",
-            marginHorizontal: 6,
             paddingTop: 12,
             paddingBottom: 8,
             paddingHorizontal: 12,

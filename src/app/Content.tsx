@@ -63,6 +63,7 @@ const Content: React.FC<ContentProperties> = ({theme, login, closeDialog}) => {
                 onChange={topSheet.onChange}
                 options={topSheet.options}/>
             {user.id >= 0 ? <Container/> : <ContainerAnonymous/>}
+
         </View>
     )
 }
