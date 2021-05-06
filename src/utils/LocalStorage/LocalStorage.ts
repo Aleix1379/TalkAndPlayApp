@@ -8,7 +8,8 @@ export default class LocalStorage {
         COMMENTS_PER_PAGE: 'comments-per-page',
         USER: 'user',
         COMMENT_SEEN: 'comment-seen',
-        FILTER: 'filter'
+        FILTER: 'filter',
+        FCM_TOKEN: 'fcm-token'
     };
 
     public static setAuthToken = async (token: string) => {
@@ -145,6 +146,18 @@ export default class LocalStorage {
             return JSON.parse(value);
         }
         return null
+    }
+
+    public static getFcmToken = async (): Promise<string | null> => {
+        return await AsyncStorage.getItem(LocalStorage.keys.FCM_TOKEN)
+    }
+
+    public static setFcmToken = async (token: string) => {
+        try {
+            await AsyncStorage.setItem(LocalStorage.keys.FCM_TOKEN, token)
+        } catch (error) {
+            console.log(error.message);
+        }
     }
 
 }

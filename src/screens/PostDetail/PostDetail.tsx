@@ -602,7 +602,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                 />
 
                                 {
-                                    index === comments.length - 1 || index % 5 === 0 &&
+                                    index === comments.length  || index % 5 === 0 &&
                                     <View style={{marginTop: 8}}>
                                         <BannerAd
                                             unitId={TestIds.BANNER}
