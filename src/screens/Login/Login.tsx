@@ -132,6 +132,14 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading, navig
         icon: {
             width: 18,
             height: 18
+        },
+        recoveryPassword: {
+            display: "flex",
+            flexDirection: "row",
+            fontSize: 20,
+            marginHorizontal: 8,
+            marginTop: 24,
+            marginBottom: 8
         }
     });
 
@@ -167,6 +175,10 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading, navig
 
     const goToCreateAccount = () => {
         navigation.navigate('Register')
+    }
+
+    const goToRecoveryAccount = () => {
+        navigation.navigate('RecoveryPassword')
     }
 
     return (
@@ -217,6 +229,11 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading, navig
                     <View style={styles.noAccount}>
                         <Text>Don't have an account?</Text>
                         <Text style={styles.singUp} onPress={() => goToCreateAccount()}>Sign up  😜</Text>
+                    </View>
+
+                    <View style={styles.recoveryPassword}>
+                        <Text>Forgot password?</Text>
+                        <Text style={styles.singUp} onPress={() => goToRecoveryAccount()}>Recovery it  🔑</Text>
                     </View>
                 </View>
             </View>

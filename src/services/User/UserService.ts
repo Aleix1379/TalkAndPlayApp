@@ -4,6 +4,8 @@ import {UserState} from "../../store/user/types";
 import LocalStorage from "../../utils/LocalStorage/LocalStorage";
 import {Platform} from "react-native";
 import {ImagePickerResponse} from "react-native-image-picker/src/types";
+import {RecoveryPasswordResponse} from "../../types/EmailTypes";
+import {VerificationResponse} from "../../types/VerificationTypes";
 
 class UserService extends Api {
     constructor() {
@@ -86,6 +88,25 @@ class UserService extends Api {
                 console.log(err)
                 console.log('---------------------------------------------------------------------------')
             })
+    }
+
+    getRecoveryPasswordCode(email: string): Promise<RecoveryPasswordResponse> {
+        console.log('URL: ' + this.getUrl() + '/recovery/email')
+        return this.http
+            .post(this.getUrl() + '/recovery/email', {targetEmail: email})
+            .then((res) => res.data)
+    }
+
+    verifyPassword(email: string, code: string): Promise<VerificationResponse> {
+        return this.http
+            .post(this.getUrl() + '/verification', {email, code})
+            .then((res) => res.data)
+    }
+
+    resetPassword(code: string, email: string, newPassword: string): Promise<VerificationResponse> {
+        return this.http
+            .put(this.getUrl() + '/reset-password', {code, email, newPassword})
+            .then((res) => res.data)
     }
 
 }

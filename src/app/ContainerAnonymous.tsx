@@ -8,6 +8,9 @@ import {createMaterialBottomTabNavigator} from "react-navigation-material-bottom
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import LoginScreen from "../screens/Login";
 import RegisterScreen from "../screens/RegisterScreen";
+import RecoveryPasswordScreen from "../screens/RecoveryPasswordScreen";
+import VerificationCodeScreen from "../screens/VerificationCodeScreen";
+import PasswordEditWithCodeScreen from "../screens/PasswordEditWithCodeScreen/PasswordEditWithCodeScreen";
 
 
 const PostStack = createStackNavigator({
@@ -59,6 +62,24 @@ const HomeDetailStack = createStackNavigator({
     },
     Register: {
         screen: RegisterScreen,
+        navigationOptions: {
+            headerShown: false
+        }
+    },
+    RecoveryPassword: {
+        screen: RecoveryPasswordScreen,
+        navigationOptions: {
+            headerShown: false
+        }
+    },
+    VerificationCode: {
+        screen: VerificationCodeScreen,
+        navigationOptions: {
+            headerShown: false
+        }
+    },
+    PasswordEditWithCode: {
+        screen: PasswordEditWithCodeScreen,
         navigationOptions: {
             headerShown: false
         }
