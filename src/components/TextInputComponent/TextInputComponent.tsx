@@ -39,6 +39,7 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
                                                                setRef,
                                                                onImageChange
                                                            }) => {
+    let reference: TextInput | null = null
     const [showText, setShowText] = useState(!password)
     const [isFocused, setIsFocused] = useState(false)
     const [transformAnimation] = useState(new Animated.Value(0))
@@ -132,6 +133,11 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
         setShowText(!showText)
     }
 
+    const updateRed = (input: TextInput | null) => {
+        reference = input
+        setRef && setRef(input)
+    }
+
     // @ts-ignore
     // @ts-ignore
     return (
@@ -139,11 +145,11 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
             {
                 label &&
                 <Animated.View style={[styles.label, animatedStyles.translate]}>
-                    <Text>{label}</Text>
+                    <Text onPress={() => reference?.focus()}>{label}</Text>
                 </Animated.View>
             }
             <TextInput
-                ref={(input: TextInput | null) => setRef && setRef(input)}
+                ref={(input: TextInput | null) => updateRed(input)}
                 style={styles.input}
                 secureTextEntry={!showText}
                 value={value}
