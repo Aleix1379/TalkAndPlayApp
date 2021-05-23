@@ -11,24 +11,62 @@ import RecoveryPasswordScreen from "../screens/RecoveryPasswordScreen";
 import VerificationCodeScreen from "../screens/VerificationCodeScreen";
 import PasswordEditWithCodeScreen from "../screens/PasswordEditWithCodeScreen/PasswordEditWithCodeScreen";
 import PostListGames from "../screens/PostListGames";
+import PostListOnline from "../screens/PostListOnline/PostListOnline";
+import PostListStreamers from "../screens/PostListStreamers/PostListStreamers";
 
 
-const PostStack = createStackNavigator({
+const GamesStack = createStackNavigator({
     Home: {
         screen: PostListGames,
         navigationOptions: {
             headerShown: false
         },
     },
+
+});
+
+const OnlineStack = createStackNavigator({
+    Home: {
+        screen: PostListOnline,
+        navigationOptions: {
+            headerShown: false
+        },
+    },
+
+});
+const StreamersStack = createStackNavigator({
+    Home: {
+        screen: PostListStreamers,
+        navigationOptions: {
+            headerShown: false
+        },
+    },
+
 });
 
 const BottomTabNavigator = createMaterialBottomTabNavigator(
     {
-        Posts: {
-            screen: PostStack,
+        Games: {
+            screen: GamesStack,
             navigationOptions: {
                 tabBarIcon: ({tintColor}) => {
-                    return <MaterialCommunityIcons name="controller-classic" color={tintColor} size={24}/>;
+                    return <MaterialCommunityIcons name="controller-classic" color={tintColor} size={25}/>;
+                }
+            }
+        },
+        Online: {
+            screen: OnlineStack,
+            navigationOptions: {
+                tabBarIcon: ({tintColor}) => {
+                    return <MaterialCommunityIcons name="account-group" color={tintColor} size={25}/>;
+                }
+            }
+        },
+        Streamers: {
+            screen: StreamersStack,
+            navigationOptions: {
+                tabBarIcon: ({tintColor}) => {
+                    return <MaterialCommunityIcons name="twitch" color={tintColor} size={25}/>;
                 }
             }
         },
