@@ -3,7 +3,7 @@ import {FAB, Modal, Text} from 'react-native-paper'
 import {ScrollView, StyleSheet, View} from 'react-native'
 import {Theme} from 'react-native-paper/lib/typescript/types'
 import PostsService from '../../services/Posts'
-import {availablePlatforms, Filter, Option, PostsResponse, SelectItem, User} from '../../types/PostsTypes'
+import {availablePlatforms, Filter, Option, PostsResponse, PostType, SelectItem, User} from '../../types/PostsTypes'
 import PostComponent from "../../components/PostComponent"
 import HeaderComponent from "../../components/HeaderComponent";
 import LocalStorage from "../../utils/LocalStorage/LocalStorage";
@@ -17,6 +17,7 @@ export interface PostListProperties {
     navigation: any,
     theme: Theme,
     user: User
+    postType: PostType
 }
 
 interface Form {
@@ -37,14 +38,6 @@ export interface PostListState {
 }
 
 class PostListScreen extends React.Component<PostListProperties, PostListState> {
-    user: User = {
-        id: -1,
-        imageVersion: -1,
-        name: '',
-        languages: [],
-        platforms: [],
-        email: ''
-    }
     readonly postService = new PostsService()
     readonly postsService = new PostsService()
 
@@ -155,7 +148,7 @@ class PostListScreen extends React.Component<PostListProperties, PostListState> 
     }
 
     fetchData = (page: number = 0, filter?: Filter) => {
-        this.postService.get(page, filter).then((response: PostsResponse) => {
+        this.postService.get(page, this.props.postType, filter).then((response: PostsResponse) => {
             this.setState({
                 data: response,
                 isLast: response.last
@@ -164,11 +157,11 @@ class PostListScreen extends React.Component<PostListProperties, PostListState> 
     }
 
     goToDetail = (id: number, title: string) => {
-        this.props.navigation.navigate('Detail', {title, id})
+        this.props.navigation.navigate('Detail', {title, id, postType: this.props.postType})
     }
 
     search = (filter: Filter) => {
-        this.postsService.get(0, filter)
+        this.postsService.get(0, this.props.postType, filter)
             .then(data => {
                 this.setState({
                     data: data,
@@ -183,7 +176,7 @@ class PostListScreen extends React.Component<PostListProperties, PostListState> 
 
     loadMore = () => {
         if (this.state.data) {
-            this.postService.get(this.state.data.number + 1).then((response: PostsResponse) => {
+            this.postService.get(this.state.data.number + 1, this.props.postType).then((response: PostsResponse) => {
                 let newValue: PostsResponse | null = {...response}
                 if (this.state.data) {
                     newValue.content = this.state.data.content.concat(response.content)
@@ -214,7 +207,7 @@ class PostListScreen extends React.Component<PostListProperties, PostListState> 
     }
 
     getLanguages = () => {
-        let values = this.user.languages.map(lang => ({
+        let values = this.props.user.languages.map(lang => ({
             ...lang,
             image: 'language'
         }))
@@ -239,11 +232,21 @@ class PostListScreen extends React.Component<PostListProperties, PostListState> 
         return 2
     }
 
+    getTitle = () => {
+        if (this.props.postType === PostType.ONLINE) {
+            return 'Find people to play online'
+        } else if (this.props.postType === PostType.GAMES) {
+            return 'Talk about games'
+        } else {
+            return 'Talk about streamers'
+        }
+    }
+
     render() {
         return (
             <>
                 <HeaderComponent
-                    title="Posts"
+                    title={this.getTitle()}
                     rightAction={{
                         image: "magnify",
                         onPress: () => this.setState({showModal: true})
@@ -293,11 +296,11 @@ class PostListScreen extends React.Component<PostListProperties, PostListState> 
                     </ScrollView>
 
                     {
-                        this.user.id >= 0 &&
+                        this.props.user.id >= 0 &&
                         <FAB
                             style={this.styles.fab}
                             icon="plus"
-                            onPress={() => this.props.navigation.navigate('PostCreate')}
+                            onPress={() => this.props.navigation.navigate('PostCreate', {postType: this.props.postType})}
                         />
                     }
                 </View>

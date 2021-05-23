@@ -34,6 +34,7 @@ interface Errors {
 
 
 const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoading, theme, logout}) => {
+    const {postType} = navigation.state.params
     const [untouched, setUntouched] = useState(true)
     const postService = new PostsService()
     const user: UserState = useSelector((state: ApplicationState) => {
@@ -80,6 +81,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
         language: {id: 0, name: ''},
         user: null,
         lastUpdate: '',
+        postType
     })
 
     const [comment, setComment] = useState<Comment>({

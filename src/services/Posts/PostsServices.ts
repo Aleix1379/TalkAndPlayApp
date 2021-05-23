@@ -1,4 +1,4 @@
-import {Comment, CommentResponse, Filter, PostInfo, PostsResponse} from "../../types/PostsTypes";
+import {Comment, CommentResponse, Filter, PostInfo, PostsResponse, PostType} from "../../types/PostsTypes";
 import Api from "../Api";
 import {ImagePickerResponse} from "react-native-image-picker/src/types";
 import {UserState} from "../../store/user/types";
@@ -16,7 +16,7 @@ class PostsService extends Api {
         return response.data
     }
 
-    get(page: number = 0, filter?: Filter): Promise<PostsResponse> {
+    get(page: number = 0, postType: PostType, filter?: Filter): Promise<PostsResponse> {
         let title = '';
         let game = '';
         let platforms: number[] = [];
@@ -30,7 +30,7 @@ class PostsService extends Api {
 
         return this.http
             .get(
-                `${this.getUrl()}?page=${page}&title=${title}&game=${game}&platforms=${platforms}&languages=${language}`
+                `${this.getUrl()}?page=${page}&title=${title}&game=${game}&platforms=${platforms}&languages=${language}&postType=${postType}`
             )
             .then((res) => {
                 return res.data;

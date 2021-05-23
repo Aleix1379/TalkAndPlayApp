@@ -19,6 +19,12 @@ export interface PostUser {
   platforms: Option[];
 }
 
+export enum PostType {
+  GAMES = "GAMES",
+  ONLINE = "ONLINE",
+  STREAMERS = "STREAMERS",
+}
+
 export interface PostInfo {
   id: number;
   title: string;
@@ -27,6 +33,8 @@ export interface PostInfo {
   platforms: Option[];
   user: PostUser | null;
   lastUpdate: any;
+  postType: PostType
+
 }
 
 export interface Comment {

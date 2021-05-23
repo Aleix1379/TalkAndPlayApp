@@ -15,9 +15,11 @@ import PicturePreviewScreen from "../screens/PicturePreviewScreen";
 import ReportScreen from "../screens/ReportScreen";
 import PictureUploadScreen from "../screens/PictureUploadScreen";
 import PostListGames from "../screens/PostListGames";
+import PostListOnline from "../screens/PostListOnline";
+import PostListStreamers from "../screens/PostListStreamers";
 
 
-const PostStack = createStackNavigator({
+const GamesStack = createStackNavigator({
     Home: {
         screen: PostListGames,
         navigationOptions: {
@@ -27,14 +29,48 @@ const PostStack = createStackNavigator({
 
 });
 
+const OnlineStack = createStackNavigator({
+    Home: {
+        screen: PostListOnline,
+        navigationOptions: {
+            headerShown: false
+        },
+    },
+
+});
+const StreamersStack = createStackNavigator({
+    Home: {
+        screen: PostListStreamers,
+        navigationOptions: {
+            headerShown: false
+        },
+    },
+
+});
+
 const BottomTabNavigator = createMaterialBottomTabNavigator(
     {
-        Posts: {
-            screen: PostStack,
+        Games: {
+            screen: GamesStack,
             navigationOptions: {
-                title: 'Games',
                 tabBarIcon: ({tintColor}) => {
                     return <MaterialCommunityIcons name="controller-classic" color={tintColor} size={25}/>;
+                }
+            }
+        },
+        Online: {
+            screen: OnlineStack,
+            navigationOptions: {
+                tabBarIcon: ({tintColor}) => {
+                    return <MaterialCommunityIcons name="account-group" color={tintColor} size={25}/>;
+                }
+            }
+        },
+        Streamers: {
+            screen: StreamersStack,
+            navigationOptions: {
+                tabBarIcon: ({tintColor}) => {
+                    return <MaterialCommunityIcons name="twitch" color={tintColor} size={25}/>;
                 }
             }
         },

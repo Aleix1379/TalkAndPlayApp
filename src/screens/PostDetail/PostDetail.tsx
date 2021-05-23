@@ -2,7 +2,7 @@ import React, {MutableRefObject, useEffect, useRef, useState} from 'react'
 import {withTheme} from 'react-native-paper'
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {BackHandler, ScrollView, StyleSheet, View} from "react-native"
-import {Comment, CommentResponse, Option, PostInfo} from "../../types/PostsTypes"
+import {Comment, CommentResponse, Option, PostInfo, PostType} from "../../types/PostsTypes"
 import PostsService from "../../services/Posts"
 import Info from "../../components/Info"
 import CommentComponent from "../../components/Comment"
@@ -55,6 +55,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                                               closeDialog
                                                           }) => {
     const {title, id} = navigation.state.params
+    const postType: PostType = navigation.state.params.postType
     const [post, setPost] = useState<PostInfo | null>(navigation.state.params.post)
     const [comments, setComments] = useState<Comment[]>()
     const postService = new PostsService()
@@ -513,13 +514,22 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         navigation.navigate('Report', {id, type: 'comment'})
     }
 
+    const capitalize = (s: string) => {
+        s = s.toLowerCase()
+        return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    const goBack = () => {
+        navigation.navigate(capitalize(postType))
+    }
+
     return (
         <>
             <HeaderComponent
                 title={post?.title}
                 leftAction={{
                     image: "arrow-left",
-                    onPress: () => navigation.navigate('App')
+                    onPress: () => goBack()
                 }}
                 rightAction={user.id >= 0 ? {
                     image: "dots-vertical",
@@ -602,7 +612,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                 />
 
                                 {
-                                    index === comments.length  || index % 5 === 0 &&
+                                    index === comments.length || index % 5 === 0 &&
                                     <View style={{marginTop: 8}}>
                                         <BannerAd
                                             unitId={TestIds.BANNER}
