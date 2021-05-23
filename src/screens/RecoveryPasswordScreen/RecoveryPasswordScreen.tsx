@@ -56,7 +56,7 @@ const RecoveryPasswordScreen: React.FC<RecoveryPasswordProperties> = ({navigatio
             backgroundColor: theme.colors.background,
             alignItems: 'center',
             paddingTop: 25,
-            paddingHorizontal: 16
+            paddingHorizontal: 8
         },
         image: {
             marginBottom: 35,
@@ -78,7 +78,7 @@ const RecoveryPasswordScreen: React.FC<RecoveryPasswordProperties> = ({navigatio
         button: {
             marginTop: 'auto',
             marginBottom: 24,
-            width: '100%'
+            width: Dimensions.get('window').width - 48
         }
     });
 
