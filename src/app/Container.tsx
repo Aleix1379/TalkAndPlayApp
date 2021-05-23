@@ -1,6 +1,5 @@
 import React from 'react';
 import {createStackNavigator} from "react-navigation-stack";
-import PostListScreen from "../screens/PostList/PostList";
 import PostDetailScreen from "../screens/PostDetail";
 import {createAppContainer, createSwitchNavigator} from "react-navigation";
 import {createMaterialBottomTabNavigator} from "react-navigation-material-bottom-tabs";
@@ -15,11 +14,12 @@ import PasswordEditScreen from "../screens/PasswordEditScreen";
 import PicturePreviewScreen from "../screens/PicturePreviewScreen";
 import ReportScreen from "../screens/ReportScreen";
 import PictureUploadScreen from "../screens/PictureUploadScreen";
+import PostListGames from "../screens/PostListGames";
 
 
 const PostStack = createStackNavigator({
     Home: {
-        screen: PostListScreen,
+        screen: PostListGames,
         navigationOptions: {
             headerShown: false
         },
@@ -32,6 +32,7 @@ const BottomTabNavigator = createMaterialBottomTabNavigator(
         Posts: {
             screen: PostStack,
             navigationOptions: {
+                title: 'Games',
                 tabBarIcon: ({tintColor}) => {
                     return <MaterialCommunityIcons name="controller-classic" color={tintColor} size={25}/>;
                 }

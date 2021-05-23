@@ -1,13 +1,10 @@
-import React, {useEffect, useState} from 'react'
-import {FAB, Modal, Text, withTheme} from 'react-native-paper'
+import React from 'react'
+import {FAB, Modal, Text} from 'react-native-paper'
 import {ScrollView, StyleSheet, View} from 'react-native'
 import {Theme} from 'react-native-paper/lib/typescript/types'
 import PostsService from '../../services/Posts'
-import {availablePlatforms, Filter, Option, PostsResponse, SelectItem} from '../../types/PostsTypes'
+import {availablePlatforms, Filter, Option, PostsResponse, SelectItem, User} from '../../types/PostsTypes'
 import PostComponent from "../../components/PostComponent"
-import {UserState} from "../../store/user/types"
-import {shallowEqual, useSelector} from "react-redux"
-import {ApplicationState} from "../../store"
 import HeaderComponent from "../../components/HeaderComponent";
 import LocalStorage from "../../utils/LocalStorage/LocalStorage";
 import TextInputComponent from "../../components/TextInputComponent/TextInputComponent";
@@ -16,11 +13,10 @@ import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import languages from "../../store/languages.json";
 import {BannerAd, BannerAdSize, TestIds} from "@react-native-firebase/admob";
 
-//import {AdMobBanner, AdMobInterstitial, AdMobRewarded, PublisherBanner,} from 'react-native-admob';
-
-interface PostListProperties {
+export interface PostListProperties {
     navigation: any,
-    theme: Theme
+    theme: Theme,
+    user: User
 }
 
 interface Form {
@@ -30,12 +26,32 @@ interface Form {
     platforms: Option[]
 }
 
-const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
-    const postsService = new PostsService()
-    const styles = StyleSheet.create({
+export interface PostListState {
+    commentsUnSeen: [n: number] | null
+    data: PostsResponse | null
+    totalMessages: any
+    isLast: boolean
+    showModal: boolean
+    untouched: boolean
+    form: Form
+}
+
+class PostListScreen extends React.Component<PostListProperties, PostListState> {
+    user: User = {
+        id: -1,
+        imageVersion: -1,
+        name: '',
+        languages: [],
+        platforms: [],
+        email: ''
+    }
+    readonly postService = new PostsService()
+    readonly postsService = new PostsService()
+
+    readonly styles = StyleSheet.create({
         postList: {
             flex: 1,
-            backgroundColor: theme.colors.background,
+            backgroundColor: this.props.theme.colors.background,
             paddingHorizontal: 4
         },
         title: {
@@ -58,10 +74,10 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
         },
         loadMoreText: {
             fontSize: 15,
-            backgroundColor: theme.colors.primary,
+            backgroundColor: this.props.theme.colors.primary,
             paddingHorizontal: 10,
             paddingVertical: 6,
-            shadowColor: theme.colors.surface,
+            shadowColor: this.props.theme.colors.surface,
             shadowOffset: {
                 width: 2.5,
                 height: 2.5,
@@ -71,7 +87,7 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
             elevation: 5,
         },
         search: {
-            backgroundColor: theme.colors.background,
+            backgroundColor: this.props.theme.colors.background,
             flex: 1,
             paddingTop: 16,
             marginTop: 32,
@@ -92,76 +108,72 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
         }
     })
 
-    const [commentsUnSeen, setCommentsUnSeen] = useState<[n: number]>()
-    const [data, setData] = useState<PostsResponse>()
-    const postService = new PostsService()
-    const [totalMessages, setTotalMessages] = useState<any>({})
-    const [isLast, setIsLast] = useState(false)
-    const [showModal, setShowModal] = useState(false)
-    const [untouched, setUntouched] = useState(true)
+    state: PostListState = {
+        commentsUnSeen: null,
+        data: null,
+        totalMessages: [],
+        isLast: false,
+        showModal: false,
+        untouched: true,
+        form: {
+            title: '',
+            game: '',
+            languages: [],
+            platforms: []
+        },
+    }
 
-    const [form, setForm] = useState<Form>({
-        title: '',
-        game: '',
-        languages: [],
-        platforms: []
-    })
-
-    const user: UserState = useSelector((state: ApplicationState) => {
-        return state.user
-    }, shallowEqual)
-
-    useEffect(() => {
+    componentDidMount() {
         LocalStorage.getMessagesSeen()
             .then(data => {
-                postService.getCommentsUnseen(data).then(values => {
-                    setCommentsUnSeen(values)
+                this.postService.getCommentsUnseen(data).then(values => {
+                    this.setState({commentsUnSeen: values})
                 })
             })
         LocalStorage.getFilter()
             .then(filter => {
                 if (filter) {
-                    setForm(filter)
-                    fetchData(0, filter)
+                    this.setState({form: filter})
+                    this.fetchData(0, filter)
                 } else {
-                    fetchData()
+                    this.fetchData()
                 }
             })
-    }, [])
+    }
 
-    useEffect(() => {
-        let isMounted = true; // note this flag denote mount status
-        const ids = data?.content.map(item => item.id)
-        if (ids) {
-            postService.getNumberOfCommentsByPost(ids)
-                .then(numberOfCommentsByPost => {
-                    if (isMounted) {
-                        setTotalMessages(numberOfCommentsByPost)
-                    }
-                })
-                .catch(err => console.log(err))
+    componentDidUpdate(prevProps: Readonly<PostListProperties>, prevState: Readonly<PostListState>, snapshot?: any) {
+        if (JSON.stringify(prevState.data) !== JSON.stringify(this.state.data)) {
+            const ids = this.state.data?.content.map(item => item.id)
+            if (ids) {
+                this.postService.getNumberOfCommentsByPost(ids)
+                    .then(numberOfCommentsByPost => {
+                        this.setState({totalMessages: numberOfCommentsByPost})
+                    })
+                    .catch(err => console.log(err))
+            }
         }
-        return () => {
-            isMounted = false
-        }; // use effect cleanup to set flag false, if unmounted
-    }, [data])
+    }
 
-    const fetchData = (page: number = 0, filter?: Filter) => {
-        postService.get(page, filter).then((response: PostsResponse) => {
-            setData(response)
-            setIsLast(response.last)
+    fetchData = (page: number = 0, filter?: Filter) => {
+        this.postService.get(page, filter).then((response: PostsResponse) => {
+            this.setState({
+                data: response,
+                isLast: response.last
+            })
         })
     }
 
-    const goToDetail = (id: number, title: string) => {
-        navigation.navigate('Detail', {title, id})
+    goToDetail = (id: number, title: string) => {
+        this.props.navigation.navigate('Detail', {title, id})
     }
 
-    const search = (filter: Filter) => {
-        postsService.get(0, filter)
+    search = (filter: Filter) => {
+        this.postsService.get(0, filter)
             .then(data => {
-                setData(data)
-                setIsLast(data.last)
+                this.setState({
+                    data: data,
+                    isLast: data.last
+                })
             })
             .catch(err => {
                 console.log('Error searching')
@@ -169,34 +181,40 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
             })
     }
 
-    const loadMore = () => {
-        if (data) {
-            postService.get(data.number + 1).then((response: PostsResponse) => {
-                let newValue = {...response}
-                newValue.content = data.content.concat(response.content)
-                setData(newValue)
-                setIsLast(response.last)
+    loadMore = () => {
+        if (this.state.data) {
+            this.postService.get(this.state.data.number + 1).then((response: PostsResponse) => {
+                let newValue: PostsResponse | null = {...response}
+                if (this.state.data) {
+                    newValue.content = this.state.data.content.concat(response.content)
+                    this.setState({
+                        data: newValue,
+                        isLast: response.last
+                    })
+                }
             })
         }
     }
 
-    const update = (id: string, value: string | Option | Option[]): void => {
+    update = (id: string, value: string | Option | Option[]): void => {
         let data: any
-        if (untouched) {
-            setUntouched(false)
+        if (this.state.untouched) {
+            this.setState({untouched: false})
         }
-        data = {...form}
+        data = {...this.state.form}
         data[id] = value
-        setForm(data)
+        this.setState({
+            form: data
+        })
     }
 
-    const handleChange = (value: SelectItem[], field: string): void => {
+    handleChange = (value: SelectItem[], field: string): void => {
         const result = value.filter((item) => item.value)
-        update(field, result)
+        this.update(field, result)
     }
 
-    const getLanguages = () => {
-        let values = user.languages.map(lang => ({
+    getLanguages = () => {
+        let values = this.user.languages.map(lang => ({
             ...lang,
             image: 'language'
         }))
@@ -211,147 +229,150 @@ const PostListScreen: React.FC<PostListProperties> = ({navigation, theme}) => {
         return values
     }
 
-    return (
-        <>
-            <HeaderComponent
-                title="Posts"
-                rightAction={{
-                    image: "magnify",
-                    onPress: () => setShowModal(true)
-                }}
-            />
+    getMarginBottom = (index: number): number => {
+        if (!this.state.data) {
+            return 2
+        }
+        if (index === this.state.data?.content.length - 1) {
+            return 10
+        }
+        return 2
+    }
 
-            <View style={styles.postList}>
-                <ScrollView>
-                    {data?.content.map((post, index) =>
-                        <View key={post.id}
-                              style={{
-                                  marginTop: index === 0 ? 10 : 8,
-                                  marginBottom: index === data?.content.length - 1 ? 10 : 2
-                              }}>
-                            <PostComponent
-                                key={post.id}
-                                post={post}
-                                unreadMessages={(commentsUnSeen && commentsUnSeen[post.id] >= 0) ? commentsUnSeen[post.id] : totalMessages[post.id]}
-                                totalMessages={totalMessages[post.id]}
-                                onClick={goToDetail}
-                            />
-                            {
-                                index === data?.content.length - 1 || index % 5 === 0 &&
-                                <View style={{marginTop: 8}}>
-                                    <BannerAd
-                                        unitId={TestIds.BANNER}
-                                        size={BannerAdSize.ADAPTIVE_BANNER}
-                                        onAdLoaded={() => {
-                                            console.log('Advert loaded');
-                                        }}
-                                        onAdFailedToLoad={(error) => {
-                                            console.error('Advert failed to load: ', error);
-                                        }}
-                                        onAdClosed={() => console.log('onAdClosed')}
-                                        onAdLeftApplication={() => console.log('onAdLeftApplication')}
-                                        onAdOpened={() => console.log('onAdOpened')}
-                                    />
-                                </View>
-                            }
-                        </View>)}
+    render() {
+        return (
+            <>
+                <HeaderComponent
+                    title="Posts"
+                    rightAction={{
+                        image: "magnify",
+                        onPress: () => this.setState({showModal: true})
+                    }}
+                />
 
-                    {!isLast &&
-                    <View style={styles.loadMore} onTouchEnd={() => loadMore()}>
-                        <Text style={styles.loadMoreText}>Load more...</Text>
-                    </View>}
-
-                </ScrollView>
-
-                {
-                    user.id >= 0 &&
-                    <FAB
-                        style={styles.fab}
-                        icon="plus"
-                        onPress={() => navigation.navigate('PostCreate')}
-                    />
-                }
-            </View>
-
-            <Modal
-                visible={showModal}
-                contentContainerStyle={styles.modal}
-                dismissable={false}
-            >
-                <View style={styles.search}>
+                <View style={this.styles.postList}>
                     <ScrollView>
-                        <TextInputComponent
-                            id="title"
-                            label="Title"
-                            value={form.title}
-                            onChange={update}
-                            style={styles.input}
-                        />
+                        {this.state.data?.content.map((post, index) =>
+                            <View key={post.id}
+                                  style={{
+                                      marginTop: index === 0 ? 10 : 8,
+                                      marginBottom: this.getMarginBottom(index)
+                                  }}>
+                                <PostComponent
+                                    key={post.id}
+                                    post={post}
+                                    unreadMessages={(this.state.commentsUnSeen && this.state.commentsUnSeen[post.id] >= 0) ? this.state.commentsUnSeen[post.id] : this.state.totalMessages[post.id]}
+                                    totalMessages={this.state.totalMessages[post.id]}
+                                    onClick={this.goToDetail}
+                                />
+                                {
+                                    index === this.state.data?.content.length || 1 - 1 || index % 5 === 0 &&
+                                    <View style={{marginTop: 8}}>
+                                        <BannerAd
+                                            unitId={TestIds.BANNER}
+                                            size={BannerAdSize.ADAPTIVE_BANNER}
+                                            onAdLoaded={() => {
+                                                console.log('Advert loaded');
+                                            }}
+                                            onAdFailedToLoad={(error) => {
+                                                console.error('Advert failed to load: ', error);
+                                            }}
+                                            onAdClosed={() => console.log('onAdClosed')}
+                                            onAdLeftApplication={() => console.log('onAdLeftApplication')}
+                                            onAdOpened={() => console.log('onAdOpened')}
+                                        />
+                                    </View>
+                                }
+                            </View>)}
 
-                        <TextInputComponent
-                            id="game"
-                            label="Game"
-                            value={form.game}
-                            onChange={update}
-                            style={styles.input}
-                        />
-
-                        <CheckBoxListComponent
-                            id="languages"
-                            label="Language"
-                            values={getLanguages()}
-                            initialValues={form.languages}
-                            onChange={(items) => handleChange(items, 'languages')}
-                            style={styles.accordion}
-                        />
-
-                        <CheckBoxListComponent
-                            id="platforms"
-                            label="Platforms"
-                            values={availablePlatforms}
-                            initialValues={form.platforms}
-                            onChange={(items) => handleChange(items, 'platforms')}
-                            style={styles.accordion}
-                        />
+                        {!this.state.isLast &&
+                        <View style={this.styles.loadMore} onTouchEnd={() => this.loadMore()}>
+                            <Text style={this.styles.loadMoreText}>Load more...</Text>
+                        </View>}
 
                     </ScrollView>
-                    <ButtonComponent
-                        label="Search"
-                        icon="magnify"
-                        onPress={() => {
-                            let filter = {
-                                title: form.title,
-                                game: form.game,
-                                languages: form.languages,
-                                platforms: form.platforms
-                            }
-                            LocalStorage.addFilter(filter)
-                                .then(() => {
-                                    search(filter)
-                                    setShowModal(false)
-                                })
-                                .catch(err => {
-                                    console.log('Error saving filter')
-                                    console.log(err)
-                                })
-                        }}
-                        style={styles.button}
-                    />
 
-                    {/*
-                    <AdMobBanner
-                        adSize="fullBanner"
-                        adUnitID="ca-app-pub-3339437277990541/5847363447"
-                        testDevices={[AdMobBanner.simulatorId]}
-                        onAdFailedToLoad={(error: any) => console.error(error)}
-                    />
-                    */}
+                    {
+                        this.user.id >= 0 &&
+                        <FAB
+                            style={this.styles.fab}
+                            icon="plus"
+                            onPress={() => this.props.navigation.navigate('PostCreate')}
+                        />
+                    }
                 </View>
-            </Modal>
 
-        </>
-    )
+                <Modal
+                    visible={this.state.showModal}
+                    contentContainerStyle={this.styles.modal}
+                    dismissable={false}
+                >
+                    <View style={this.styles.search}>
+                        <ScrollView>
+                            <TextInputComponent
+                                id="title"
+                                label="Title"
+                                value={this.state.form.title}
+                                onChange={this.update}
+                                style={this.styles.input}
+                            />
+
+                            <TextInputComponent
+                                id="game"
+                                label="Game"
+                                value={this.state.form.game}
+                                onChange={this.update}
+                                style={this.styles.input}
+                            />
+
+                            <CheckBoxListComponent
+                                id="languages"
+                                label="Language"
+                                values={this.getLanguages()}
+                                initialValues={this.state.form.languages}
+                                onChange={(items) => this.handleChange(items, 'languages')}
+                                style={this.styles.accordion}
+                            />
+
+                            <CheckBoxListComponent
+                                id="platforms"
+                                label="Platforms"
+                                values={availablePlatforms}
+                                initialValues={this.state.form.platforms}
+                                onChange={(items) => this.handleChange(items, 'platforms')}
+                                style={this.styles.accordion}
+                            />
+
+                        </ScrollView>
+                        <ButtonComponent
+                            label="Search"
+                            icon="magnify"
+                            onPress={() => {
+                                let filter = {
+                                    title: this.state.form.title,
+                                    game: this.state.form.game,
+                                    languages: this.state.form.languages,
+                                    platforms: this.state.form.platforms
+                                }
+                                LocalStorage.addFilter(filter)
+                                    .then(() => {
+                                        this.search(filter)
+                                        this.setState({showModal: false})
+                                    })
+                                    .catch(err => {
+                                        console.log('Error saving filter')
+                                        console.log(err)
+                                    })
+                            }}
+                            style={this.styles.button}
+                        />
+
+                    </View>
+                </Modal>
+
+            </>
+        )
+    }
 }
 
-
-export default withTheme(PostListScreen)
+export default PostListScreen

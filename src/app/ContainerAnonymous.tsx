@@ -1,6 +1,5 @@
 import React from 'react';
 import {createStackNavigator} from "react-navigation-stack";
-import PostListScreen from "../screens/PostList/PostList";
 import PostDetailScreen from "../screens/PostDetail";
 import {createAppContainer, createSwitchNavigator} from "react-navigation";
 import {createMaterialBottomTabNavigator} from "react-navigation-material-bottom-tabs";
@@ -11,11 +10,12 @@ import RegisterScreen from "../screens/RegisterScreen";
 import RecoveryPasswordScreen from "../screens/RecoveryPasswordScreen";
 import VerificationCodeScreen from "../screens/VerificationCodeScreen";
 import PasswordEditWithCodeScreen from "../screens/PasswordEditWithCodeScreen/PasswordEditWithCodeScreen";
+import PostListGames from "../screens/PostListGames";
 
 
 const PostStack = createStackNavigator({
     Home: {
-        screen: PostListScreen,
+        screen: PostListGames,
         navigationOptions: {
             headerShown: false
         },
