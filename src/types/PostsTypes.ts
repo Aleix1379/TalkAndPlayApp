@@ -57,6 +57,7 @@ export interface Filter {
   game: string;
   languages: Option[];
   platforms: Option[];
+  user: string
 }
 
 export interface Option {

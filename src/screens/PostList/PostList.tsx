@@ -25,6 +25,7 @@ interface Form {
     game: string
     languages: Option[]
     platforms: Option[]
+    user: string
 }
 
 export interface PostListState {
@@ -98,6 +99,15 @@ class PostListScreen extends React.Component<PostListProperties, PostListState> 
         },
         modal: {
             flex: 1
+        },
+        noDataContainer: {
+            flex: 1,
+
+        },
+        noDataText: {
+            alignSelf: "center",
+            marginTop: 'auto',
+            fontSize: 22
         }
     })
 
@@ -112,7 +122,8 @@ class PostListScreen extends React.Component<PostListProperties, PostListState> 
             title: '',
             game: '',
             languages: [],
-            platforms: []
+            platforms: [],
+            user: ''
         },
     }
 
@@ -254,6 +265,15 @@ class PostListScreen extends React.Component<PostListProperties, PostListState> 
                 />
 
                 <View style={this.styles.postList}>
+
+                    {
+                        this.state.data?.content.length === 0 &&
+                        <View style={this.styles.noDataContainer}>
+                            <Text style={this.styles.noDataText}>There is no posts with this filter</Text>
+                        </View>
+                    }
+
+
                     <ScrollView>
                         {this.state.data?.content.map((post, index) =>
                             <View key={post.id}
@@ -328,6 +348,14 @@ class PostListScreen extends React.Component<PostListProperties, PostListState> 
                                 style={this.styles.input}
                             />
 
+                            <TextInputComponent
+                                id='user'
+                                label='User name'
+                                value={this.state.form.user}
+                                onChange={this.update}
+                                style={this.styles.input}
+                            />
+
                             <CheckBoxListComponent
                                 id="languages"
                                 label="Language"
@@ -355,7 +383,8 @@ class PostListScreen extends React.Component<PostListProperties, PostListState> 
                                     title: this.state.form.title,
                                     game: this.state.form.game,
                                     languages: this.state.form.languages,
-                                    platforms: this.state.form.platforms
+                                    platforms: this.state.form.platforms,
+                                    user: this.state.form.user
                                 }
                                 LocalStorage.addFilter(filter)
                                     .then(() => {

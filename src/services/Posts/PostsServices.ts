@@ -21,16 +21,18 @@ class PostsService extends Api {
         let game = '';
         let platforms: number[] = [];
         let language: number[] = [];
+        let userName = ''
         if (filter) {
             title = filter.title;
             game = filter.game;
             platforms = filter.platforms.map((platform) => platform.id);
             language = filter.languages.map((language) => language.id);
+            userName = filter.user
         }
 
         return this.http
             .get(
-                `${this.getUrl()}?page=${page}&title=${title}&game=${game}&platforms=${platforms}&languages=${language}&postType=${postType}`
+                `${this.getUrl()}?page=${page}&title=${title}&game=${game}&platforms=${platforms}&languages=${language}&postType=${postType}&userName=${userName}`
             )
             .then((res) => {
                 return res.data;

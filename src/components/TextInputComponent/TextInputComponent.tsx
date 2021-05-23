@@ -43,7 +43,7 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
     const [isFocused, setIsFocused] = useState(false)
     const [transformAnimation] = useState(new Animated.Value(0))
 
-    const isInputFilled = () => isFocused || value.length > 0
+    const isInputFilled = () => isFocused || value && value.length > 0
 
     const translation = transformAnimation.interpolate({
         inputRange: [0, 1],
