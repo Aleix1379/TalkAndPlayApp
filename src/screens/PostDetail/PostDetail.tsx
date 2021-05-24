@@ -107,12 +107,13 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         goToFirstUnSeen: {
             backgroundColor: theme.colors.accent,
             marginLeft: 6,
+            marginTop: 4,
             marginRight: 'auto',
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            height: 40,
-            width: 40,
+            height: 28,
+            width: 28,
             shadowColor: theme.colors.primary,
             shadowOffset: {
                 width: 0,
@@ -569,7 +570,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                     >
                                         <MaterialCommunityIcons name="email-mark-as-unread"
                                                                 color={theme.colors.text}
-                                                                size={28}
+                                                                size={15}
                                         />
                                     </View>
                                 }

@@ -46,8 +46,8 @@ const ButtonPageComponent: React.FC<ButtonPageProperties> = ({
 
     const getButtonStyles = (): StyleProp<ViewStyle> => {
         return {
-            height: 40,
-            width: 40,
+            height: 30,
+            width: 30,
             backgroundColor: theme.colors.accent,
             shadowColor: theme.colors.primary,
             shadowOffset: {
@@ -65,7 +65,7 @@ const ButtonPageComponent: React.FC<ButtonPageProperties> = ({
     const getNumberStyles = () => {
         return {
             fontFamily: 'Ranchers-Regular',
-            fontSize: 26,
+            fontSize: 18,
         }
     }
 
