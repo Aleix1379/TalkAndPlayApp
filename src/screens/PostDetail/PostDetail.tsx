@@ -128,18 +128,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     })
 
     const handleBackButtonClick = (): boolean => {
-        /*        LocalStorage.getMessagesSeen()
-                    .then(commentsSeen => {
-                        console.log('Last ID => ' + lastCommentSeen)
-                        console.log('comments seen')
-                        console.log(commentsSeen)
-                        console.log('lastCommentSeen: ' + lastCommentSeen + ' | ' + commentsSeen[id])
-                        if (lastCommentSeen < commentsSeen[id]) {
-                            console.log('update last comments seen....')
-                            console.log(commentsSeen)
-                        }
-                    })*/
-        navigation.navigate('App')
+        goBack()
         return true
     }
 
