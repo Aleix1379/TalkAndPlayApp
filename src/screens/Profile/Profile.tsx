@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {withTheme} from 'react-native-paper';
 import {UserState} from "../../store/user/types";
@@ -11,13 +11,18 @@ import {connect, shallowEqual, useSelector} from "react-redux";
 import AvatarComponent from "../../components/AvatarComponent";
 import HeaderComponent from "../../components/HeaderComponent";
 import {ApplicationState} from "../../store";
+import {ModalOption} from "../PostDetail/PostDetail";
+import {closeModal, openModal} from "../../store/topSheet/actions";
 
 interface ProfileProperties {
     navigation: any,
+    openModal: (options: ModalOption[], onChange?: () => void) => void
+    closeModal: () => void
     theme: Theme;
 }
 
-const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
+const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, openModal, closeModal}) => {
+    const [modalOptions, setModalOptions] = useState<ModalOption[]>([])
     const user: UserState = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
@@ -51,9 +56,45 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
         }
     })
 
+    useEffect(() => {
+        loadPostOptions()
+    }, [])
+
+    const loadPostOptions = () => {
+        const options: ModalOption[] = []
+
+        if (user.id >= 0) {
+            options.push({
+                id: 'edit',
+                icon: 'account-edit',
+                title: 'Edit',
+                action: () => navigation.navigate('ProfileEdit')
+            })
+
+            options.push({
+                id: 'settings',
+                icon: 'cog',
+                title: 'Settings',
+                action: () => navigation.navigate('Settings')
+            })
+        }
+
+        setModalOptions(options)
+    }
+
+    const toggleModal = () => {
+        openModal(modalOptions, () => closeModal())
+    }
+
     return (
         <>
-            <HeaderComponent title={user?.name}/>
+            <HeaderComponent
+                title={user?.name}
+                rightAction={user.id >= 0 ? {
+                    image: "dots-vertical",
+                    onPress: () => toggleModal()
+                } : undefined}
+            />
 
             {user &&
             <View style={styles.profile}>
@@ -69,26 +110,6 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
                       value={user.platforms.map(platform => platform.name).join(', ')}
                       style={styles.info}/>
 
-                <View style={{
-                    marginTop: "auto",
-                    marginBottom: 24,
-                    display: "flex",
-                    width: "100%",
-                    flexDirection: "row",
-                }}>
-                    <ButtonComponent label="Edit"
-                                     icon="account-edit"
-                                     onPress={() => navigation.navigate('ProfileEdit')}
-                                     style={styles.button}
-                    />
-
-                    <ButtonComponent label="Settings"
-                                     icon="cog"
-                                     onPress={() => navigation.navigate('Settings')}
-                                     style={styles.button}
-                    />
-                </View>
-
             </View>}
 
         </>
@@ -98,6 +119,8 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
 
 export default connect(null,
     {
+        openModal: openModal,
+        closeModal: closeModal,
         login: login,
     }
 )(withTheme(ProfileScreen))
