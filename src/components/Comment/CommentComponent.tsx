@@ -117,7 +117,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
     useEffect(() => {
         const values: ModalOption[] = []
 
-        if (!!comment.text && user?.id !== comment.author.id) {
+        if (!!comment.text && user?.id !== comment.author.id && user.id >= 0) {
             values.push({
                 id: 'reply',
                 action: () => reply(comment),
@@ -130,7 +130,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                 icon: 'alert',
                 title: 'Report'
             })
-        } else if (!!comment.text && user) {
+        } else if (!!comment.text && user.id >= 0) {
             values.push({
                 id: 'edit',
                 action: () => editComment(comment),
@@ -263,7 +263,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                 <Text style={{fontSize: 18}}>{comment.author.name}</Text>
                 <Text style={styles.date}>{Time.diff(comment.lastUpdate)}</Text>
                 {
-                    !!comment.text &&
+                    !!comment.text && user.id >= 0 &&
                     <RoundButtonComponent
                         icon="dots-vertical"
                         style={{marginLeft: 6}}
