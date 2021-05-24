@@ -269,7 +269,7 @@ class PostListScreen extends React.Component<PostListProperties, PostListState> 
                     {
                         this.state.data?.content.length === 0 &&
                         <View style={this.styles.noDataContainer}>
-                            <Text style={this.styles.noDataText}>There is no posts with this filter</Text>
+                            <Text style={this.styles.noDataText}>No posts found with this filter.</Text>
                         </View>
                     }
 
