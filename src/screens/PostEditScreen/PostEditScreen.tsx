@@ -5,7 +5,7 @@ import {withTheme} from "react-native-paper";
 import HeaderComponent from "../../components/HeaderComponent";
 import TextInputComponent from "../../components/TextInputComponent/TextInputComponent";
 import CheckBoxListComponent from "../../components/CheckBoxListComponent/CheckBoxListComponent";
-import {availablePlatforms, Option, PostInfo, SelectItem} from "../../types/PostsTypes";
+import {availablePlatforms, Option, PostInfo, PostType, SelectItem} from "../../types/PostsTypes";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import {ErrorType} from "../../utils/Validator/types";
 import PostsService from "../../services/Posts";
@@ -70,6 +70,7 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
         language: {id: 0, name: ''},
         user: null,
         lastUpdate: '',
+        postType: PostType.ONLINE
     })
 
     const [errors, setFormErrors] = useState<Errors>({
