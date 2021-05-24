@@ -6,7 +6,6 @@ import {login} from "../../store/user/actions";
 import {Theme} from "react-native-paper/lib/typescript/types";
 import Info from "../../components/Info";
 import UserUtils from "../../utils/UserUtils";
-import ButtonComponent from "../../components/ButtonComponent";
 import {connect, shallowEqual, useSelector} from "react-redux";
 import AvatarComponent from "../../components/AvatarComponent";
 import HeaderComponent from "../../components/HeaderComponent";
