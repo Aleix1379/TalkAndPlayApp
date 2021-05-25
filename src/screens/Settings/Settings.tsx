@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {withTheme} from 'react-native-paper';
 import {Theme} from "react-native-paper/lib/typescript/types";
-import {StyleSheet, View} from "react-native";
+import {DevSettings, StyleSheet, View} from "react-native";
 import ButtonComponent from "../../components/ButtonComponent";
 import {connect, shallowEqual, useSelector} from "react-redux";
 import {logout} from "../../store/user/actions";
@@ -10,18 +10,26 @@ import DialogComponent from "../../components/DialogComponent/DialogComponent";
 import UserService from "../../services/User";
 import {UserState} from "../../store/user/types";
 import {ApplicationState} from "../../store";
+import {setTheme} from "../../store/theme/actions";
+import LocalStorage from "../../utils/LocalStorage/LocalStorage";
+import ThemeToggleComponent from "../../components/ThemeToggleComponent";
 
 interface SettingsProperties {
     navigation: any,
     theme: Theme;
     logout: Function
+    setTheme: (theme: 'dark' | 'light') => void
 }
 
-const SettingsScreen: React.FC<SettingsProperties> = ({navigation, theme, logout}) => {
+const SettingsScreen: React.FC<SettingsProperties> = ({navigation, theme, logout, setTheme}) => {
     const userService = new UserService()
     const [showDialog, setShowDialog] = useState(false)
     const user: UserState = useSelector((state: ApplicationState) => {
         return state.user
+    }, shallowEqual)
+
+    const isDarkTheme: boolean = useSelector((state: ApplicationState) => {
+        return state.theme.isDarkTheme
     }, shallowEqual)
 
     const styles = StyleSheet.create({
@@ -64,6 +72,13 @@ const SettingsScreen: React.FC<SettingsProperties> = ({navigation, theme, logout
         logout()
     }
 
+    const updateTheme = () => {
+        setTheme(isDarkTheme ? 'light' : 'dark')
+        LocalStorage.setTheme(isDarkTheme ? 'light' : 'dark')
+            .then(() => DevSettings.reload())
+            .catch(err => console.log(err))
+    }
+
     return (
         <>
             <HeaderComponent
@@ -76,7 +91,10 @@ const SettingsScreen: React.FC<SettingsProperties> = ({navigation, theme, logout
 
             <View style={styles.settings}>
 
+
                 <View style={styles.actions}>
+
+                    <ThemeToggleComponent value={isDarkTheme} onPress={updateTheme} />
 
                     <ButtonComponent style={{...styles.action, backgroundColor: theme.colors.error}}
                                      label="Delete account"
@@ -120,5 +138,6 @@ const SettingsScreen: React.FC<SettingsProperties> = ({navigation, theme, logout
 export default connect(null,
     {
         logout: logout,
+        setTheme: setTheme
     }
 )(withTheme(SettingsScreen))

@@ -70,8 +70,7 @@ const ButtonComponent: React.FC<ButtonProperties> = ({
         let item: StyleProp<ViewStyle> = {
             height: 50,
             backgroundColor: disabled ? '#c1c1c1' : theme.colors.onSurface,
-            paddingVertical: 6,
-            paddingHorizontal: 8,
+
             borderRadius: 20,
             shadowColor: theme.colors.primary,
             display: "flex",

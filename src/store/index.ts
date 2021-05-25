@@ -5,9 +5,11 @@ import userReducer from './user/reducer'
 import loadingReducer from './loading/reducer'
 import topSheetReducer from './topSheet/reducer'
 import dialogReducer from './dialog/reducer'
+import themeReducer from './theme/reducer'
 import {LoadingState} from "./loading/types";
 import {TopSheetState} from "./topSheet/types";
 import {DialogState} from "./dialog/types";
+import {ThemeState} from "./theme/types";
 
 // The top-level state object
 export interface ApplicationState {
@@ -15,6 +17,7 @@ export interface ApplicationState {
     loading: LoadingState
     topSheet: TopSheetState
     dialog: DialogState
+    theme: ThemeState
 }
 
 // Whenever an action is dispatched, Redux will update each top-level application state property
@@ -24,7 +27,8 @@ const reducers: Reducer<ApplicationState> = combineReducers<ApplicationState>({
     user: userReducer,
     loading: loadingReducer,
     topSheet: topSheetReducer,
-    dialog: dialogReducer
+    dialog: dialogReducer,
+    theme: themeReducer
 })
 
 export default reducers

@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import {UserState} from "../../store/user/types";
-import {Comment, Filter} from "../../types/PostsTypes";
+import {Filter} from "../../types/PostsTypes";
 
 export default class LocalStorage {
     private static keys = {
@@ -9,7 +9,8 @@ export default class LocalStorage {
         USER: 'user',
         COMMENT_SEEN: 'comment-seen',
         FILTER: 'filter',
-        FCM_TOKEN: 'fcm-token'
+        FCM_TOKEN: 'fcm-token',
+        THEME: 'theme'
     };
 
     public static setAuthToken = async (token: string) => {
@@ -158,6 +159,19 @@ export default class LocalStorage {
         } catch (error) {
             console.log(error.message);
         }
+    }
+
+    public static setTheme = async (theme: 'dark' | 'light') => {
+        try {
+            await AsyncStorage.setItem(LocalStorage.keys.THEME, theme)
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
+    public static getTheme = async (): Promise<'dark' | 'light'> => {
+        const value = await AsyncStorage.getItem(LocalStorage.keys.THEME)
+        return value === 'dark' ? 'dark' : 'light'
     }
 
 }

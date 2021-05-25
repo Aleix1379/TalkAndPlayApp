@@ -3,7 +3,7 @@ import {View} from "react-native";
 import Container from "./Container";
 import ContainerAnonymous from "./ContainerAnonymous";
 import {connect, shallowEqual, useSelector} from "react-redux";
-import {withTheme} from "react-native-paper";
+import {DefaultTheme, withTheme} from "react-native-paper";
 import {Theme} from "react-native-paper/lib/typescript/types";
 import {ApplicationState} from "../store";
 import {UserState} from "../store/user/types";
@@ -15,14 +15,16 @@ import {TopSheetState} from "../store/topSheet/types";
 import DialogComponent from "../components/DialogComponent/DialogComponent";
 import {DialogState} from "../store/dialog/types";
 import {closeDialog} from "../store/dialog/actions";
+import {setTheme} from "../store/theme/actions";
 
 interface ContentProperties {
     theme: Theme;
     login: Function
     closeDialog: Function
+    setTheme: (theme: 'dark' | 'light') => void
 }
 
-const Content: React.FC<ContentProperties> = ({theme, login, closeDialog}) => {
+const Content: React.FC<ContentProperties> = ({theme, login, closeDialog, setTheme}) => {
     const user: UserState = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
@@ -39,15 +41,68 @@ const Content: React.FC<ContentProperties> = ({theme, login, closeDialog}) => {
         return state.dialog
     }, shallowEqual)
 
+    const isDarkTheme: boolean = useSelector((state: ApplicationState) => {
+        return state.theme.isDarkTheme
+    }, shallowEqual)
+
+    const getTheme = (): Theme => {
+        console.log('GET THEME IS DARK: ' + isDarkTheme)
+        if (isDarkTheme) {
+            return {
+                ...DefaultTheme,
+                colors: {
+                    ...DefaultTheme.colors,
+                    primary: '#212121',
+                    text: '#fafafa',
+                    background: '#363636',
+                    accent: '#075aab',
+                    onSurface: '#1976d2',
+                    surface: '#0f0f0f',
+                    error: '#b71c1c'
+                },
+            };
+        } else {
+            return {
+                ...DefaultTheme,
+                colors: {
+                    ...DefaultTheme.colors,
+                    primary: '#C0C0C0',
+                    accent: '#075aab',
+                    onSurface: '#1976d2',
+                    surface: '#e9e9e9',
+                    error: '#b71c1c'
+                },
+            };
+        }
+    }
+
+    const loadCustomTheme = () => {
+        theme.colors = {...getTheme().colors}
+    }
+
     useEffect(() => {
-        setTimeout(() =>
+        setTimeout(() => {
+            LocalStorage.getTheme()
+                .then(newTheme => {
+                    if (!newTheme) {
+                        setTheme('dark')
+                    } else {
+                        setTheme(newTheme)
+                    }
+                })
             LocalStorage.getUser()
                 .then(userSaved => {
                     if (userSaved) {
                         login(userSaved)
                     }
-                }), 100)
+                })
+        }, 100)
     }, [])
+
+    useEffect(() => {
+        console.log('use effect dark theme: ' + isDarkTheme)
+        loadCustomTheme()
+    }, [isDarkTheme])
 
     return (
         <View style={{flex: 1, backgroundColor: theme.colors.background}}>
@@ -70,5 +125,6 @@ const Content: React.FC<ContentProperties> = ({theme, login, closeDialog}) => {
 
 export default connect(null, {
     login: login,
-    closeDialog: closeDialog
+    closeDialog: closeDialog,
+    setTheme: setTheme
 })(withTheme(Content))
