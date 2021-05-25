@@ -600,13 +600,15 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                     editComment={(comment) => editComment(comment)}
                                     onReport={(id) => reportComment(id)}
                                     goToProfile={(email) => {
-                                        navigation.navigate('ProfileViewer', {
-                                            email,
-                                            origin: {
-                                                screen: 'Detail',
-                                                id: post?.user?.id
-                                            }
-                                        })
+                                        if (user.id >= 0 && user.id !== comment.author.id) {
+                                            navigation.navigate('ProfileViewer', {
+                                                email,
+                                                origin: {
+                                                    screen: 'Detail',
+                                                    id: post?.user?.id
+                                                }
+                                            })
+                                        }
                                     }}
                                 />
 
