@@ -1,14 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {BackHandler, StyleSheet, View} from "react-native";
 import {Theme} from "react-native-paper/lib/typescript/types";
-import {Text, withTheme} from "react-native-paper";
+import {withTheme} from "react-native-paper";
 import HeaderComponent from "../../components/HeaderComponent";
 import AvatarComponent from "../../components/AvatarComponent/AvatarComponent";
 import UserUtils from "../../utils/UserUtils";
 import Info from "../../components/Info/Info";
 import {UserState} from "../../store/user/types";
 import UserService from "../../services/User";
-import {Origin} from "../../types/Origin";
 
 interface ProfileViewerProperties {
     navigation: any,
@@ -49,7 +48,11 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
     const userService = new UserService()
 
     const goBack = () => {
-        navigation.navigate(origin.screen, {id: origin.id})
+        if (origin) {
+            navigation.navigate(origin.screen, {id: origin.id})
+        } else {
+            navigation.goBack()
+        }
     }
 
     const handleBackButtonClick = (): boolean => {
