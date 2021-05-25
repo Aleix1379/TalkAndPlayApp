@@ -102,7 +102,6 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
                         style={styles.avatar} uri={UserUtils.getImageUrl(user)}
                     />
 
-                    <Info label="Name" value={user.name} style={styles.info}/>
                     <Info label="Languages"
                           value={user.languages.map(language => language.name).join(', ')}
                           style={styles.info}/>
