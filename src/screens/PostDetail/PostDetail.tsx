@@ -599,6 +599,15 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                     onCommentDelete={(id: number | null) => deleteComment(id)}
                                     editComment={(comment) => editComment(comment)}
                                     onReport={(id) => reportComment(id)}
+                                    goToProfile={(email) => {
+                                        navigation.navigate('ProfileViewer', {
+                                            email,
+                                            origin: {
+                                                screen: 'Detail',
+                                                id: post?.user?.id
+                                            }
+                                        })
+                                    }}
                                 />
 
                                 {

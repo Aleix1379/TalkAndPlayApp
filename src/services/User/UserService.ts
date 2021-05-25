@@ -109,6 +109,10 @@ class UserService extends Api {
             .then((res) => res.data)
     }
 
+    findUserByEmail(email: string): Promise<UserState[]> {
+        return this.http.get(`${this.getUrl()}?email=${email}`).then((res) => res.data)
+    }
+
 }
 
 export default UserService

@@ -21,11 +21,11 @@
 
         <!-- If we want to schedule local notifications, we must also add the following -->
 
-        <receiver android:name="io.invertase.firebasereactnative.notifications.RNFirebaseNotificationReceiver"/>
+        <receiver android:name="io.invertase.firebase.notifications.RNFirebaseNotificationReceiver"/>
         <receiver
             android:enabled="true"
             android:exported="true"
-            android:name="io.invertase.firebasereactnative.notifications.RNFirebaseNotificationsRebootReceiver">
+            android:name="io.invertase.firebase.notifications.RNFirebaseNotificationsRebootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
@@ -33,22 +33,22 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-        <receiver android:name="io.invertase.firebasereactnative.notifications.RNFirebaseBackgroundNotificationActionReceiver" android:exported="true">
+        <receiver android:name="io.invertase.firebase.notifications.RNFirebaseBackgroundNotificationActionReceiver" android:exported="true">
             <intent-filter>
-                <action android:name="io.invertase.firebasereactnative.notifications.BackgroundAction"/>
+                <action android:name="io.invertase.firebase.notifications.BackgroundAction"/>
             </intent-filter>
         </receiver>
-        <service android:name="io.invertase.firebasereactnative.notifications.RNFirebaseBackgroundNotificationActionsService"/>
+        <service android:name="io.invertase.firebase.notifications.RNFirebaseBackgroundNotificationActionsService"/>
 
         <!-- Add this line for Message service  -->
-        <service android:name="io.invertase.firebasereactnative.messaging.RNFirebaseMessagingService">
+        <service android:name="io.invertase.firebase.messaging.RNFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
         <!-- Add this line to enable backgound messaging services -->
-        <service android:name="io.invertase.firebasereactnative.messaging.RNFirebaseBackgroundMessagingService"/>
+        <service android:name="io.invertase.firebase.messaging.RNFirebaseBackgroundMessagingService"/>
 
         <activity
             android:name=".MainActivity"

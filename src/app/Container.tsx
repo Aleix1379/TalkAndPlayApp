@@ -17,6 +17,7 @@ import PictureUploadScreen from "../screens/PictureUploadScreen";
 import PostListGames from "../screens/PostListGames";
 import PostListOnline from "../screens/PostListOnline";
 import PostListStreamers from "../screens/PostListStreamers";
+import ProfileViewerScreen from "../screens/ProfileViewerScreen";
 
 
 const GamesStack = createStackNavigator({
@@ -147,6 +148,12 @@ const HomeDetailStack = createStackNavigator({
     },
     PictureUpload: {
         screen: PictureUploadScreen,
+        navigationOptions: {
+            headerShown: false
+        }
+    },
+    ProfileViewer: {
+        screen: ProfileViewerScreen,
         navigationOptions: {
             headerShown: false
         }

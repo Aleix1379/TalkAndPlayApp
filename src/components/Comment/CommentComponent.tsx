@@ -34,6 +34,7 @@ interface CommentProperties {
     closeDialog: () => void
     editComment: (comment: Comment) => void
     onReport: (id: number) => void
+    goToProfile: (email: string) => void
 }
 
 const CommentComponent: React.FC<CommentProperties> = ({
@@ -47,7 +48,8 @@ const CommentComponent: React.FC<CommentProperties> = ({
                                                            openDialog,
                                                            closeDialog,
                                                            editComment,
-                                                           onReport
+                                                           onReport,
+                                                           goToProfile
                                                        }) => {
     const [options, setOptions] = useState<ModalOption[]>([])
     const imageSize = 50
@@ -254,13 +256,16 @@ const CommentComponent: React.FC<CommentProperties> = ({
     return (
         <View style={styles.comment} onLayout={(_) => checkVisible()}>
             <View style={styles.details}>
-                <AvatarComponent
-                    borderWidth={0}
-                    size={imageSize}
-                    style={styles.image}
-                    uri={UserUtils.getImageUrl(comment.author)}
-                />
-                <Text style={{fontSize: 18}}>{comment.author.name}</Text>
+                <View onTouchEnd={() => goToProfile(comment.author.email)}>
+                    <AvatarComponent
+                        borderWidth={0}
+                        size={imageSize}
+                        style={styles.image}
+                        uri={UserUtils.getImageUrl(comment.author)}
+                    />
+                </View>
+                <Text style={{fontSize: 18}}
+                      onPress={() => goToProfile(comment.author.email)}>{comment.author.name}</Text>
                 <Text style={styles.date}>{Time.diff(comment.lastUpdate)}</Text>
                 {
                     !!comment.text && user.id >= 0 &&

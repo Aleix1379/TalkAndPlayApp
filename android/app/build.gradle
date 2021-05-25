@@ -129,8 +129,8 @@ android {
         applicationId "app.talkandplay"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 33
-        versionName "1.1.33"
+        versionCode 35
+        versionName "1.1.35"
     }
     splits {
         abi {
