@@ -17,7 +17,7 @@ import reducers, {ApplicationState} from "../store";
 import {DispatchType} from "../store/user/types";
 import thunk from 'redux-thunk'
 import Content from "./Content";
-import {Alert, StatusBar, View} from "react-native";
+import {Alert, StatusBar} from "react-native";
 import firebase from "react-native-firebase";
 import LocalStorage from "../utils/LocalStorage/LocalStorage";
 
@@ -99,8 +99,6 @@ const App = () => {
             fcmToken = await firebase.messaging().getToken();
             if (fcmToken) {
                 // user has a device token
-                console.log('fcmToken:')
-                console.log(fcmToken)
                 LocalStorage.setFcmToken(fcmToken).catch(error => {
                     console.log('Error saving fcm token')
                     console.log(error)
