@@ -13,6 +13,7 @@ import PasswordEditWithCodeScreen from "../screens/PasswordEditWithCodeScreen/Pa
 import PostListGames from "../screens/PostListGames";
 import PostListOnline from "../screens/PostListOnline/PostListOnline";
 import PostListStreamers from "../screens/PostListStreamers/PostListStreamers";
+import ShowConditionsScreen from "../screens/ShowConditionsScreen";
 
 
 const GamesStack = createStackNavigator({
@@ -118,6 +119,12 @@ const HomeDetailStack = createStackNavigator({
     },
     PasswordEditWithCode: {
         screen: PasswordEditWithCodeScreen,
+        navigationOptions: {
+            headerShown: false
+        }
+    },
+    ShowConditions: {
+        screen: ShowConditionsScreen,
         navigationOptions: {
             headerShown: false
         }

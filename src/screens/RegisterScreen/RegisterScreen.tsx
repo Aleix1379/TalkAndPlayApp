@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Image, ScrollView, StyleSheet, View} from "react-native";
 import {Theme} from "react-native-paper/lib/typescript/types";
-import {Text, withTheme} from "react-native-paper";
+import {Checkbox, Text, withTheme} from "react-native-paper";
 import {UserState} from "../../store/user/types";
 import AvatarComponent from "../../components/AvatarComponent/AvatarComponent";
 import TextInputComponent from "../../components/TextInputComponent/TextInputComponent";
@@ -23,6 +23,9 @@ import {login} from "../../store/user/actions";
 import {setLoading} from "../../store/loading/actions";
 import LocalStorage from "../../utils/LocalStorage/LocalStorage";
 import {ImagePickerResponse} from "react-native-image-picker/src/types";
+import {Conditions} from "../../types/Conditions";
+import SelectComponent from "../../components/SelectComponent";
+import ConditionComponent from "../../components/SelectComponent";
 
 interface RegisterProperties {
     theme: Theme
@@ -46,6 +49,16 @@ interface Errors {
 }
 
 const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login, navigation}) => {
+    const [conditions, setConditions] = useState<Conditions>({
+        privacyPolicy: {
+            text: 'I have read and agree with the privacy policy',
+            value: false
+        },
+        termsOfUse: {
+            text: 'I have read and agree with the terms and conditions',
+            value: false
+        }
+    })
     const [image, setImage] = useState<ImagePickerResponse>()
     const [timeoutId, setTimeoutId] = useState(-1)
     const [untouched, setUntouched] = useState(true)
@@ -90,25 +103,22 @@ const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login,
             display: "flex",
             flex: 1
         },
-        avatar: {
-            marginTop: 8,
-            marginBottom: 24,
-        },
+        avatar: {},
         info: {
             marginTop: 16,
             marginBottom: 16
         },
         button: {
             marginHorizontal: 12,
-            marginTop: 'auto',
-            marginBottom: 24,
+            marginBottom: 8,
         },
         noAccount: {
             display: "flex",
             flexDirection: "row",
             fontSize: 20,
             marginHorizontal: 16,
-            marginBottom: 24
+            marginBottom: 24,
+            marginTop: 16
         },
         singUp: {
             marginLeft: 8,
@@ -204,9 +214,7 @@ const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login,
                 clearTimeout(timeoutId)
             }
             const newTimeoutId = setTimeout(() => {
-                if (!err[id].message) {
-                    checkUserExists(id, value as string)
-                }
+                checkUserExists(id, value as string)
             }, 1000)
 
             // @ts-ignore
@@ -232,6 +240,21 @@ const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login,
                 setLoading(false)
             }
         })
+    }
+
+    const toggleConditions = (id: string) => {
+        const data = {...conditions}
+        if (id === 'privacyPolicy') {
+            data.privacyPolicy.value = !data.privacyPolicy.value
+        } else {
+            data.termsOfUse.value = !data.termsOfUse.value
+        }
+
+        setConditions(data)
+    }
+
+    const showConditions = (id: string) => {
+        navigation.navigate('ShowConditions', {id})
     }
 
     return (
@@ -316,15 +339,33 @@ const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login,
                         !!errors.name.message ||
                         !!errors.email.message ||
                         !!errors.password.message ||
-                        !!errors.repeatPassword.message
+                        !!errors.repeatPassword.message ||
+                        !conditions.privacyPolicy.value ||
+                        !conditions.termsOfUse.value
                     }
+                />
+
+                <ConditionComponent
+                    id='privacyPolicy'
+                    value={conditions.privacyPolicy.value}
+                    onChangeValue={() => toggleConditions('privacyPolicy')}
+                    text={conditions.privacyPolicy.text}
+                    show={(id) => showConditions(id)}
+                />
+
+                <ConditionComponent
+                    id={'termsOfUse'}
+                    value={conditions.termsOfUse.value}
+                    onChangeValue={() => toggleConditions('termsOfUse')}
+                    text={conditions.termsOfUse.text}
+                    show={(id) => showConditions(id)}
                 />
 
                 <View style={styles.noAccount}>
                     <Text>Already have an account?</Text>
                     <Text
                         style={styles.singUp}
-                        onPress={() => navigation.navigate('Login')}>Sign in 😎
+                        onPress={() => navigation.navigate('Login')}>Sign in  😎
                     </Text>
                 </View>
 
