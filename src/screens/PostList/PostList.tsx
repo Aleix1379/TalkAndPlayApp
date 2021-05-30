@@ -41,6 +41,7 @@ export interface PostListState {
 class PostListScreen extends React.Component<PostListProperties, PostListState> {
     readonly postService = new PostsService()
     readonly postsService = new PostsService()
+    mounted: boolean = false
 
     readonly styles = StyleSheet.create({
         postList: {
@@ -127,13 +128,31 @@ class PostListScreen extends React.Component<PostListProperties, PostListState> 
         },
     }
 
+    unsubscribe = this.props.navigation.addListener('didFocus', () => {
+        if (this.mounted) {
+            this.loadData()
+        } else {
+            this.unsubscribe()
+        }
+    });
+
+    componentWillUnmount() {
+        this.mounted = false
+    }
+
     componentDidMount() {
+        this.mounted = true
+    }
+
+    loadData = () => {
+        console.log('loadSeenMessages')
         LocalStorage.getMessagesSeen()
             .then(data => {
                 this.postService.getCommentsUnseen(data).then(values => {
                     this.setState({commentsUnSeen: values})
                 })
             })
+
         LocalStorage.getFilter()
             .then(filter => {
                 if (filter) {
