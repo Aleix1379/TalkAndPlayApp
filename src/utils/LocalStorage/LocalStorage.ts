@@ -171,7 +171,7 @@ export default class LocalStorage {
 
     public static getTheme = async (): Promise<'dark' | 'light'> => {
         const value = await AsyncStorage.getItem(LocalStorage.keys.THEME)
-        return value === 'dark' ? 'dark' : 'light'
+        return value === 'light' ? 'light' : 'dark'
     }
 
 }
