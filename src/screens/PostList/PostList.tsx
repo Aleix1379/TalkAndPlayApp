@@ -158,6 +158,15 @@ class PostListScreen extends React.Component<PostListProperties, PostListState> 
                 if (filter) {
                     this.setState({form: filter})
                     this.fetchData(0, filter)
+                    const data: Form = {...filter}
+                    data.title = ''
+                    data.user = ''
+                    data.game = ''
+                    data.languages = filter.languages
+                    data.platforms = filter.platforms
+                    LocalStorage.saveFilter(data)
+                        .then(() => this.setState({form: data}))
+                        .catch(err => console.log(err))
                 } else {
                     this.fetchData()
                 }
@@ -178,12 +187,17 @@ class PostListScreen extends React.Component<PostListProperties, PostListState> 
     }
 
     fetchData = (page: number = 0, filter?: Filter) => {
-        this.postService.get(page, this.props.postType, filter).then((response: PostsResponse) => {
-            this.setState({
-                data: response,
-                isLast: response.last
+        this.postService.get(page, this.props.postType, filter)
+            .then((response: PostsResponse) => {
+                this.setState({
+                    data: response,
+                    isLast: response.last
+                })
             })
-        })
+            .catch(err => {
+                console.log('Error getting posts')
+                console.log(err)
+            })
     }
 
     goToDetail = (id: number, title: string) => {
@@ -405,7 +419,7 @@ class PostListScreen extends React.Component<PostListProperties, PostListState> 
                                     platforms: this.state.form.platforms,
                                     user: this.state.form.user
                                 }
-                                LocalStorage.addFilter(filter)
+                                LocalStorage.saveFilter(filter)
                                     .then(() => {
                                         this.search(filter)
                                         this.setState({showModal: false})

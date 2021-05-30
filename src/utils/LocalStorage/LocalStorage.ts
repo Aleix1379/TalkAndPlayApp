@@ -133,7 +133,7 @@ export default class LocalStorage {
         }
     }
 
-    public static addFilter = async (filter: Filter) => {
+    public static saveFilter = async (filter: Filter) => {
         try {
             await AsyncStorage.setItem(LocalStorage.keys.FILTER, JSON.stringify(filter));
         } catch (error) {
@@ -147,6 +147,14 @@ export default class LocalStorage {
             return JSON.parse(value);
         }
         return null
+    }
+
+    public static removeFilter = async () => {
+        try {
+            await AsyncStorage.removeItem(LocalStorage.keys.FILTER);
+        } catch (error) {
+            console.log(error.message);
+        }
     }
 
     public static getFcmToken = async (): Promise<string | null> => {
