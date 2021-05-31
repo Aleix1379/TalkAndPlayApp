@@ -18,6 +18,7 @@ import PostListGames from "../screens/PostListGames";
 import PostListOnline from "../screens/PostListOnline";
 import PostListStreamers from "../screens/PostListStreamers";
 import ProfileViewerScreen from "../screens/ProfileViewerScreen";
+import ErrorScreen from "../screens/ErrorScreen";
 
 
 const GamesStack = createStackNavigator({
@@ -154,6 +155,12 @@ const HomeDetailStack = createStackNavigator({
     },
     ProfileViewer: {
         screen: ProfileViewerScreen,
+        navigationOptions: {
+            headerShown: false
+        }
+    },
+    Error: {
+        screen: ErrorScreen,
         navigationOptions: {
             headerShown: false
         }

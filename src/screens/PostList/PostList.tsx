@@ -150,6 +150,9 @@ class PostListScreen extends React.Component<PostListProperties, PostListState> 
             .then(data => {
                 this.postService.getCommentsUnseen(data).then(values => {
                     this.setState({commentsUnSeen: values})
+                }).catch(err => {
+                    console.log('error get messages seen')
+                    console.log(err)
                 })
             })
 
@@ -197,6 +200,7 @@ class PostListScreen extends React.Component<PostListProperties, PostListState> 
             .catch(err => {
                 console.log('Error getting posts')
                 console.log(err)
+                this.props.navigation.navigate('Error')
             })
     }
 
@@ -220,16 +224,21 @@ class PostListScreen extends React.Component<PostListProperties, PostListState> 
 
     loadMore = () => {
         if (this.state.data) {
-            this.postService.get(this.state.data.number + 1, this.props.postType).then((response: PostsResponse) => {
-                let newValue: PostsResponse | null = {...response}
-                if (this.state.data) {
-                    newValue.content = this.state.data.content.concat(response.content)
-                    this.setState({
-                        data: newValue,
-                        isLast: response.last
-                    })
-                }
-            })
+            this.postService.get(this.state.data.number + 1, this.props.postType)
+                .then((response: PostsResponse) => {
+                    let newValue: PostsResponse | null = {...response}
+                    if (this.state.data) {
+                        newValue.content = this.state.data.content.concat(response.content)
+                        this.setState({
+                            data: newValue,
+                            isLast: response.last
+                        })
+                    }
+                })
+                .catch(err => {
+                    console.log('error load more')
+                    console.log(err)
+                })
         }
     }
 

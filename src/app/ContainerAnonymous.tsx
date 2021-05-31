@@ -14,6 +14,7 @@ import PostListGames from "../screens/PostListGames";
 import PostListOnline from "../screens/PostListOnline/PostListOnline";
 import PostListStreamers from "../screens/PostListStreamers/PostListStreamers";
 import ShowConditionsScreen from "../screens/ShowConditionsScreen";
+import ErrorScreen from "../screens/ErrorScreen";
 
 
 const GamesStack = createStackNavigator({
@@ -125,6 +126,12 @@ const HomeDetailStack = createStackNavigator({
     },
     ShowConditions: {
         screen: ShowConditionsScreen,
+        navigationOptions: {
+            headerShown: false
+        }
+    },
+    Error: {
+        screen: ErrorScreen,
         navigationOptions: {
             headerShown: false
         }
