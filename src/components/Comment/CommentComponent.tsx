@@ -264,8 +264,12 @@ const CommentComponent: React.FC<CommentProperties> = ({
                         uri={UserUtils.getImageUrl(comment.author)}
                     />
                 </View>
-                <Text style={{fontSize: 18}}
-                      onPress={() => goToProfile(comment.author.email)}>{comment.author.name}</Text>
+                <Text
+                    style={{
+                        fontSize: 18,
+                        color: user.id !== comment.author.id ? theme.colors.accent : theme.colors.text
+                    }}
+                    onPress={() => goToProfile(comment.author.email)}>{comment.author.name}</Text>
                 <Text style={styles.date}>{Time.diff(comment.lastUpdate)}</Text>
                 {
                     !!comment.text && user.id >= 0 &&
