@@ -253,6 +253,14 @@ const CommentComponent: React.FC<CommentProperties> = ({
         }
     }
 
+    const getImageSize = () => {
+        if (comment.text.startsWith("![gif](https://media.googleusercontent.com") ||
+            comment.text.startsWith("![gif](https://www.gstatic.com")) {
+            return Dimensions.get('window').width / 3
+        }
+        return Dimensions.get('window').width - 30
+    }
+
     return (
         <View style={styles.comment} onLayout={(_) => checkVisible()}>
             <View style={styles.details}>
@@ -297,10 +305,11 @@ const CommentComponent: React.FC<CommentProperties> = ({
                 }}
                 rules={{
                     image: {
-                        react: (node: any, output: any, state: any) => (<Image
+                        react: (node: any, output: any, state: any) => (
+                            <Image
                                 key={state.key}
                                 source={{uri: node.target}}
-                                width={Dimensions.get('window').width - 30}
+                                width={getImageSize()}
                                 resizeMode={'contain'}
                                 style={{marginTop: 4, marginBottom: 8}}
                             />
