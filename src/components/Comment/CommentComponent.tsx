@@ -216,14 +216,13 @@ const CommentComponent: React.FC<CommentProperties> = ({
     const getCustomImage = () => {
         return {
             react: (node: any, output: any, state: any) => {
-                console.log('node.target: ' + node.target)
                 if (node.target.includes("youtube.com")) {
                     return <YoutubePlayer
                         key={node.target}
                         height={0.56 * getImageSize()}
                         width={getImageSize()}
                         videoId={getIdByUrl(node.target)}
-                        webViewStyle={{ marginTop: 8,backgroundColor: '#ff00aa'}}
+                        webViewStyle={{ marginTop: 8, opacity:0.99}}
                     />
 
                 }
@@ -280,7 +279,10 @@ const CommentComponent: React.FC<CommentProperties> = ({
 
     const getIdByUrl = (url: string): string => {
         const start = url.indexOf('watch?v=') + 8
-        const end = url.indexOf("&", start)
+        let end = url.indexOf("&", start)
+        if (end < 0) {
+            end = url.length
+        }
         return url.substring(start, end)
     }
 

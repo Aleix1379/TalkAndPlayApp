@@ -346,7 +346,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     const sendComment = (message: string) => {
         const comment: Comment = {
             id: commentId,
-            text: message,
+            text: processYoutubeUrl(message),
             author: user
         }
         if (commentToReply) {
@@ -511,6 +511,25 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 
     const goBack = () => {
         navigation.navigate(capitalize(postType))
+    }
+
+    const processYoutubeUrl = (message: string, initialPosition: number = 0): string => {
+        const content = 'https://www.youtube.com/watch?v='
+        const start = message.indexOf(content, initialPosition)
+        let end = message.indexOf(' ', start)
+
+        if (end < 0 ) {
+            end = message.length
+        }
+
+        const youtubeUrl = message.substring(start, end)
+        const value = '![yt](' + message.substring(start, end) + ')'
+
+        if (start >= 0) {
+            return processYoutubeUrl(message.replace(youtubeUrl, value), end )
+        } else {
+            return message
+        }
     }
 
     return (

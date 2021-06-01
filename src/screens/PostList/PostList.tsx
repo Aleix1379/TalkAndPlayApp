@@ -145,7 +145,6 @@ class PostListScreen extends React.Component<PostListProperties, PostListState> 
     }
 
     loadData = () => {
-        console.log('loadSeenMessages')
         LocalStorage.getMessagesSeen()
             .then(data => {
                 this.postService.getCommentsUnseen(data).then(values => {
@@ -174,6 +173,10 @@ class PostListScreen extends React.Component<PostListProperties, PostListState> 
                     this.fetchData()
                 }
             })
+            .catch(err => {
+                console.log('error getting filter')
+                console.log(err)
+            })
     }
 
     componentDidUpdate(prevProps: Readonly<PostListProperties>, prevState: Readonly<PostListState>, snapshot?: any) {
@@ -184,7 +187,10 @@ class PostListScreen extends React.Component<PostListProperties, PostListState> 
                     .then(numberOfCommentsByPost => {
                         this.setState({totalMessages: numberOfCommentsByPost})
                     })
-                    .catch(err => console.log(err))
+                    .catch(err => {
+                        console.log('error getting number of comments by post')
+                        console.log(err)
+                    })
             }
         }
     }
