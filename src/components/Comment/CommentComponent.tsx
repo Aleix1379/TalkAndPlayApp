@@ -21,6 +21,7 @@ import {DialogOption} from "../../store/dialog/types";
 // @ts-ignore
 import Markdown from 'react-native-simple-markdown'
 import Image from 'react-native-scalable-image';
+import YoutubePlayer from "react-native-youtube-iframe";
 
 interface CommentProperties {
     comment: Comment
@@ -212,6 +213,31 @@ const CommentComponent: React.FC<CommentProperties> = ({
         </View>
     }
 
+    const getCustomImage = () => {
+        return {
+            react: (node: any, output: any, state: any) => {
+                console.log('node.target: ' + node.target)
+                if (node.target.includes("youtube.com")) {
+                    return <YoutubePlayer
+                        key={node.target}
+                        height={0.56 * getImageSize()}
+                        width={getImageSize()}
+                        videoId={getIdByUrl(node.target)}
+                        webViewStyle={{ marginTop: 8,backgroundColor: '#ff00aa'}}
+                    />
+
+                }
+                return <Image
+                    key={state.key}
+                    source={{uri: node.target}}
+                    width={getImageSize()}
+                    resizeMode={'contain'}
+                    style={{marginTop: 4, marginBottom: 8}}
+                />
+            }
+        }
+    }
+
     const displayReplies = (com?: Comment) => {
         if (com) {
             let result = buildReplies(com)
@@ -234,17 +260,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                                 return items.map((it) => buildLine(it.content, it.index))
                             }
                         },
-                        image: {
-                            react: (node: any, output: any, state: any) => (
-                                <Image
-                                    key={state.key}
-                                    source={{uri: node.target}}
-                                    width={Dimensions.get('window').width - 44}
-                                    resizeMode={'contain'}
-                                    style={{marginTop: 4, marginBottom: 4}}
-                                />
-                            )
-                        }
+                        image: getCustomImage()
                     }}
                 >
                     {message || '_Comment deleted_'}
@@ -256,9 +272,16 @@ const CommentComponent: React.FC<CommentProperties> = ({
     const getImageSize = () => {
         if (comment.text.startsWith("![gif](https://media.googleusercontent.com") ||
             comment.text.startsWith("![gif](https://www.gstatic.com")) {
-            return Dimensions.get('window').width / 3
+            return 100
         }
-        return Dimensions.get('window').width - 30
+        return Dimensions.get('window').width - 25
+    }
+
+
+    const getIdByUrl = (url: string): string => {
+        const start = url.indexOf('watch?v=') + 8
+        const end = url.indexOf("&", start)
+        return url.substring(start, end)
     }
 
     return (
@@ -303,19 +326,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                         marginBottom: 8
                     }
                 }}
-                rules={{
-                    image: {
-                        react: (node: any, output: any, state: any) => (
-                            <Image
-                                key={state.key}
-                                source={{uri: node.target}}
-                                width={getImageSize()}
-                                resizeMode={'contain'}
-                                style={{marginTop: 4, marginBottom: 8}}
-                            />
-                        )
-                    }
-                }}
+                rules={{image: getCustomImage()}}
             >
                 {comment.text || '_Comment deleted_'}
             </Markdown>

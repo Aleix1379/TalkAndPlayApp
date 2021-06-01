@@ -15,7 +15,7 @@ class Time {
 
         if (day < 1) {
             if (hours === 0 && minutes < 1) {
-                return 'now'
+                return date.format('HH:mm')
             } else {
                 const today = moment().startOf('day')
                 if (date < today) {

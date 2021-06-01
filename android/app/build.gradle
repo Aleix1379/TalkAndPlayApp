@@ -191,6 +191,8 @@ dependencies {
     implementation 'com.facebook.fresco:fresco:2.4.0'
     implementation 'com.facebook.fresco:animated-gif:2.4.0'
 
+    implementation project(':react-native-webview')
+
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
     }

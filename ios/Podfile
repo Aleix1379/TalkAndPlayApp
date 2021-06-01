@@ -10,6 +10,8 @@ target 'TalkAndPlayApp' do
 
   pod 'RNFirebase', :path => '../node_modules/react-native-firebase'
 
+  pod 'react-native-webview', :path => '../node_modules/react-native-webview'
+
   target 'TalkAndPlayAppTests' do
     inherit! :complete
     # Pods for testing
