@@ -233,7 +233,7 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading, navig
 
                     <View style={styles.recoveryPassword}>
                         <Text>Forgot password?</Text>
-                        <Text style={styles.singUp} onPress={() => goToRecoveryAccount()}>Recovery it  🔑</Text>
+                        <Text style={styles.singUp} onPress={() => goToRecoveryAccount()}>Restore password  🔑</Text>
                     </View>
                 </View>
             </View>

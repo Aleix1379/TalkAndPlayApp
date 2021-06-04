@@ -216,7 +216,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
     const getCustomImage = () => {
         return {
             react: (node: any, output: any, state: any) => {
-                if (node.target.includes("youtube.com")) {
+                if (node.target.includes("youtube.com") || node.target.includes("youtu.be ")) {
                     return <YoutubePlayer
                         key={node.target}
                         height={0.56 * getImageSize()}

@@ -19,6 +19,7 @@ import PostListOnline from "../screens/PostListOnline";
 import PostListStreamers from "../screens/PostListStreamers";
 import ProfileViewerScreen from "../screens/ProfileViewerScreen";
 import ErrorScreen from "../screens/ErrorScreen";
+import UserScreen from "../screens/UserScreen";
 
 
 const GamesStack = createStackNavigator({

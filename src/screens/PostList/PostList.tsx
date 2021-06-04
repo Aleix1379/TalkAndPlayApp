@@ -293,7 +293,7 @@ class PostListScreen extends React.Component<PostListProperties, PostListState> 
 
     getTitle = () => {
         if (this.props.postType === PostType.ONLINE) {
-            return 'Talk about play online'
+            return 'Find friends to play online '
         } else if (this.props.postType === PostType.GAMES) {
             return 'Talk about games'
         } else {
