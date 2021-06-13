@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {GestureResponderEvent, StyleProp, StyleSheet, View, ViewStyle} from "react-native";
 import {Theme} from "react-native-paper/lib/typescript/types";
 import {Text, withTheme} from "react-native-paper";
@@ -27,7 +27,7 @@ const ChannelComponent: React.FC<ChannelProperties> = ({
                                                            onTouchEnd
                                                        }) => {
     const {name, value} = account
-    const [channel, setChannel] = useState<Channel | null>(null)
+    const [channel] = useState<Channel>(AccountUtil.getChannel(name))
     const styles = StyleSheet.create({
         channel: {
             flexDirection: "row",
@@ -50,11 +50,6 @@ const ChannelComponent: React.FC<ChannelProperties> = ({
             marginRight: 8
         }
     });
-
-    useEffect(() => {
-        setChannel(AccountUtil.getChannel(name))
-    }, [])
-
 
     return (
         <View
