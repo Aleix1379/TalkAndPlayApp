@@ -102,7 +102,8 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         pagination: {
             display: "flex",
             flexDirection: "row",
-            marginTop: 8
+            marginTop: 8,
+            marginBottom: 4
         },
         goToFirstUnSeen: {
             backgroundColor: theme.colors.accent,
