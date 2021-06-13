@@ -10,42 +10,9 @@ import RegisterScreen from "../screens/RegisterScreen";
 import RecoveryPasswordScreen from "../screens/RecoveryPasswordScreen";
 import VerificationCodeScreen from "../screens/VerificationCodeScreen";
 import PasswordEditWithCodeScreen from "../screens/PasswordEditWithCodeScreen/PasswordEditWithCodeScreen";
-import PostListGames from "../screens/PostListGames";
-import PostListOnline from "../screens/PostListOnline/PostListOnline";
-import PostListStreamers from "../screens/PostListStreamers/PostListStreamers";
 import ShowConditionsScreen from "../screens/ShowConditionsScreen";
 import ErrorScreen from "../screens/ErrorScreen";
 import PostsScreen from "../screens/PostsScreen/PostsScreen";
-
-
-const GamesStack = createStackNavigator({
-    Home: {
-        screen: PostListGames,
-        navigationOptions: {
-            headerShown: false
-        },
-    },
-
-});
-
-const OnlineStack = createStackNavigator({
-    Home: {
-        screen: PostListOnline,
-        navigationOptions: {
-            headerShown: false
-        },
-    },
-
-});
-const StreamersStack = createStackNavigator({
-    Home: {
-        screen: PostListStreamers,
-        navigationOptions: {
-            headerShown: false
-        },
-    },
-
-});
 
 const PostsStack = createStackNavigator({
     Home: {

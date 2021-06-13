@@ -3,8 +3,17 @@ import {Animated, Dimensions, ScrollView, StyleSheet, View} from "react-native";
 import {Theme} from "react-native-paper/lib/typescript/types";
 import {TabBar, TabView} from "react-native-tab-view";
 import {FAB, Modal, Text, withTheme} from "react-native-paper";
-import {NavigationState, SceneRendererProps} from "react-native-tab-view/lib/typescript/src/types";
-import {availablePlatforms, Filter, Option, PostsResponse, PostType, SelectItem, User} from "../../types/PostsTypes";
+import {NavigationState} from "react-native-tab-view/lib/typescript/src/types";
+import {
+    availableChannels,
+    availablePlatforms,
+    Filter,
+    Option,
+    PostsResponse,
+    PostType,
+    SelectItem,
+    User
+} from "../../types/PostsTypes";
 import HeaderComponent from "../../components/HeaderComponent";
 import PostComponent from "../../components/PostComponent/PostComponent";
 import {BannerAd, BannerAdSize, TestIds} from "@react-native-firebase/admob";
@@ -14,7 +23,6 @@ import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import LocalStorage from "../../utils/LocalStorage/LocalStorage";
 import PostsService from "../../services/Posts";
 import languages from "../../store/languages.json";
-import {PostListProperties} from "../PostList/PostList";
 import {connect} from "react-redux";
 import {ApplicationState} from "../../store";
 import Image from "react-native-scalable-image";
@@ -182,20 +190,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
             },
             shadowOpacity: 0.55,
             shadowRadius: 5,
-            elevation: 8,
-            // height: this.state.headerVisible ? 50 : 0
-            // top: 4,
-            // right: 6,
-            // shadowColor: this.props.theme.colors.background,
-            // shadowOffset: {
-            //     width: 2.5,
-            //     height: 2.5,
-            // },
-            // shadowOpacity: 0.75,
-            // shadowRadius: 1,
-            // elevation: 5,
-            // backgroundColor: this.props.theme.colors.background,
-            // paddingHorizontal: 8
+            elevation: 8
         }
     })
 
@@ -280,7 +275,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
             })
     }
 
-    componentDidUpdate(prevProps: Readonly<PostListProperties>, prevState: Readonly<PostListState>, snapshot?: any) {
+    componentDidUpdate(prevProps: Readonly<PostsProperties>, prevState: Readonly<PostListState>, snapshot?: any) {
         if (JSON.stringify(prevState.data) !== JSON.stringify(this.state.data)) {
             const ids = this.state.data?.content.map(item => item.id)
             if (ids) {
@@ -394,7 +389,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
         }
     }
 
-    getScene = (props: SceneRendererProps) => (
+    getScene = () => (
         <View style={this.styles.posts}>
             {
                 this.state.data?.content.length === 0 &&
@@ -510,6 +505,17 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                             onChange={(items) => this.handleChange(items, 'platforms')}
                             style={this.styles.accordion}
                         />
+
+                        {
+                            this.state.postType === PostType.STREAMERS &&
+                            <CheckBoxListComponent
+                                id="channels"
+                                label="Channels"
+                                values={availableChannels}
+                                onChange={(items) => this.handleChange(items, 'channels')}
+                                style={this.styles.accordion}
+                            />
+                        }
 
                     </ScrollView>
                     <ButtonComponent
