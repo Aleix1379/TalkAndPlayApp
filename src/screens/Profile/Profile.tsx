@@ -168,7 +168,7 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, openModa
             </View>}
         </>
     )
-    const SecondRoute = () => {
+    const AccountsRoute = () => {
         let startX = 0
 
         const onTouchStart = (event: GestureResponderEvent) => {
@@ -223,7 +223,7 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, openModa
 
     const renderScene = SceneMap({
         info: UserScreen,
-        accounts: SecondRoute,
+        accounts: AccountsRoute,
     })
 
     const layout = useWindowDimensions()
