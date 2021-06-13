@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Image, StyleSheet, View} from 'react-native';
+import {Image, ScrollView, StyleSheet, View} from 'react-native';
 import {Text, withTheme} from 'react-native-paper';
 import {Theme} from "react-native-paper/lib/typescript/types";
 import TextInputComponent from "../../components/TextInputComponent";
@@ -97,7 +97,6 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading, navig
             borderTopLeftRadius: 30,
             borderTopRightRadius: 30,
             paddingHorizontal: 12,
-            bottom: 25,
             display: "flex",
             flex: 1,
         },
@@ -146,7 +145,6 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading, navig
     const validator = new Validator(errors, setErrors)
 
     const update = (id: string, value: string) => {
-        // setForm({...form, [id]: value})
         const data: Form = {...form}
         // @ts-ignore
         data[id] = value
@@ -189,7 +187,7 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading, navig
 
                 <Image style={styles.image} source={require('../../assets/images/controller.png')}/>
 
-                <View style={styles.content}>
+                <ScrollView style={styles.content}>
 
                     <View style={styles.inputs}>
                         <View style={styles.input}>
@@ -228,14 +226,14 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading, navig
 
                     <View style={styles.noAccount}>
                         <Text>Don't have an account?</Text>
-                        <Text style={styles.singUp} onPress={() => goToCreateAccount()}>Sign up  😜</Text>
+                        <Text style={styles.singUp} onPress={() => goToCreateAccount()}>Sign up 😜</Text>
                     </View>
 
                     <View style={styles.recoveryPassword}>
                         <Text>Forgot password?</Text>
-                        <Text style={styles.singUp} onPress={() => goToRecoveryAccount()}>Restore password  🔑</Text>
+                        <Text style={styles.singUp} onPress={() => goToRecoveryAccount()}>Restore password 🔑</Text>
                     </View>
-                </View>
+                </ScrollView>
             </View>
         </>
     );
