@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {StyleSheet, View} from "react-native"
 import {Text, withTheme} from 'react-native-paper'
 import UserUtils from "../../utils/UserUtils"
@@ -59,6 +59,7 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
         title: {
             flex: 1,
             color: theme.colors.text,
+            fontWeight: unreadMessages > 0 ? 'bold' : 'normal'
         },
         text: {
             color: theme.colors.text,
