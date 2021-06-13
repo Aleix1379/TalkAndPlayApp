@@ -111,7 +111,8 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading, navig
         signInButton: {
             marginTop: 32,
             marginBottom: 32,
-            marginHorizontal: 0
+            marginHorizontal: 0,
+
         },
         registerButton: {
             backgroundColor: theme.colors.accent,
@@ -123,6 +124,7 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading, navig
             flexDirection: "row",
             fontSize: 20,
             marginHorizontal: 8,
+            marginTop: 'auto'
         },
         singUp: {
             marginLeft: 8,

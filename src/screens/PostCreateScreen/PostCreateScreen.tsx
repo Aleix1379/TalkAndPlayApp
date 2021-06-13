@@ -4,7 +4,15 @@ import {withTheme} from 'react-native-paper'
 import {Theme} from "react-native-paper/lib/typescript/types"
 import TextInputComponent from "../../components/TextInputComponent"
 import {ErrorType} from "../../utils/Validator/types"
-import {availablePlatforms, Comment, Option, PostInfo, PostType, SelectItem} from "../../types/PostsTypes"
+import {
+    availablePlatforms,
+    availableChannels,
+    Comment,
+    Option,
+    PostInfo,
+    PostType,
+    SelectItem
+} from "../../types/PostsTypes"
 import {UserState} from "../../store/user/types"
 import {connect, shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
@@ -170,6 +178,12 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                         label: 'Platforms',
                         validations: [],
                     },
+                    channels: {
+                        message: '',
+                        touched: false,
+                        label: 'Channels',
+                        validations: []
+                    }
                 }
             default:
                 return {
@@ -359,22 +373,6 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
         }
     }
 
-    const addPlatForms = () => {
-        if (postType === PostType.STREAMERS) {
-            return null
-        }
-
-        return <CheckBoxListComponent
-            id="platforms"
-            label="Platforms"
-            values={availablePlatforms}
-            initialValues={post.platforms}
-            error={errors.platforms}
-            onChange={(items) => handleChange(items, 'platforms')}
-            style={styles.accordion}
-        />
-    }
-
     return (
         <>
             <HeaderComponent
@@ -423,7 +421,27 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                         style={styles.accordion}
                     />
 
-                    {addPlatForms()}
+                    <CheckBoxListComponent
+                        id="platforms"
+                        label="Platforms"
+                        values={availablePlatforms}
+                        initialValues={post.platforms}
+                        error={errors.platforms}
+                        onChange={(items) => handleChange(items, 'platforms')}
+                        style={styles.accordion}
+                    />
+
+                    {
+                        postType === PostType.STREAMERS &&
+                        <CheckBoxListComponent
+                            id="channels"
+                            label="Channels"
+                            values={availableChannels}
+                            error={errors.channels}
+                            onChange={(items) => handleChange(items, 'channels')}
+                            style={styles.accordion}
+                        />
+                    }
 
                 </ScrollView>
 

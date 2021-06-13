@@ -22,6 +22,7 @@ import {DialogOption} from "../../store/dialog/types"
 import Markdown from 'react-native-simple-markdown'
 import Image from 'react-native-scalable-image'
 import YoutubePlayer from "react-native-youtube-iframe"
+import CommentUtils from "../../utils/Comment";
 
 interface CommentProperties {
     comment: Comment
@@ -216,12 +217,12 @@ const CommentComponent: React.FC<CommentProperties> = ({
     const getCustomImage = () => {
         return {
             react: (node: any, output: any, state: any) => {
-                if (node.target.includes("youtube.com") || node.target.includes("youtu.be ")) {
+                if (node.target.includes("youtube.com") || node.target.includes("youtu.be")) {
                     return <YoutubePlayer
                         key={node.target}
                         height={0.56 * getImageSize()}
                         width={getImageSize()}
-                        videoId={getIdByUrl(node.target)}
+                        videoId={CommentUtils.getIdByUrl(node.target)}
                         webViewStyle={{ marginTop: 8, opacity:0.99}}
                     />
 
@@ -262,7 +263,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                         image: getCustomImage()
                     }}
                 >
-                    {message || '💀 _Comment deleted_'}
+                    {CommentUtils.processYoutubeUrl(message) || '💀 _Comment deleted_'}
                 </Markdown>)
             }
         }
@@ -274,16 +275,6 @@ const CommentComponent: React.FC<CommentProperties> = ({
             return 100
         }
         return Dimensions.get('window').width - 25
-    }
-
-
-    const getIdByUrl = (url: string): string => {
-        const start = url.indexOf('watch?v=') + 8
-        let end = url.indexOf("&", start)
-        if (end < 0) {
-            end = url.length
-        }
-        return url.substring(start, end)
     }
 
     return (
@@ -330,7 +321,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                 }}
                 rules={{image: getCustomImage()}}
             >
-                {comment.text || '💀 _Comment deleted_'}
+                {CommentUtils.processYoutubeUrl(comment.text) || '💀 _Comment deleted_'}
             </Markdown>
 
             <TopSheetComponent

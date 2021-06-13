@@ -1,5 +1,3 @@
-import {UserState} from "../store/user/types";
-
 export interface CommentsSeen {
 
 }
@@ -39,7 +37,7 @@ export interface PostInfo {
     user: PostUser | null;
     lastUpdate: any;
     postType: PostType
-    channels: Account[]
+    channels: Channel[]
 
 }
 
@@ -79,6 +77,12 @@ export interface Account {
     value: string
 }
 
+export interface Channel {
+    id: number
+    name: string
+    image: string
+}
+
 export const availablePlatforms = [
     {id: 1, name: 'PC', image: 'pc'},
     {id: 2, name: 'PS 5', image: 'ps4'},
@@ -92,6 +96,12 @@ export const availablePlatforms = [
     {id: 10, name: 'Xbox 360', image: 'xbox'},
     {id: 11, name: 'Other', image: 'gamepad'},
 ];
+
+export const availableChannels: Channel[] = [
+    {id: 1, name: 'Twitch', image: 'twitch'},
+    {id: 2, name: 'Youtube', image: 'youtube'},
+    {id: 3, name: 'Facebook Gaming', image: 'facebook'},
+]
 
 export interface LoginResponse {
     token: string;

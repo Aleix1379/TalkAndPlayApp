@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, View} from "react-native";
 import {Theme} from "react-native-paper/lib/typescript/types";
-import {Text, withTheme} from "react-native-paper";
+import {withTheme} from "react-native-paper";
 import HeaderComponent from "../../components/HeaderComponent";
 import AccountEditComponent from "../../components/AccountEditComponent";
 import ButtonComponent from "../../components/ButtonComponent";
@@ -50,16 +50,13 @@ const UserAccountsEditScreen: React.FC<UserAccountsEditProperties> = ({theme, na
             {id: user.id + '-5', name: 'Discord', value: ''},
             {id: user.id + '-6', name: 'Twitch', value: ''},
             {id: user.id + '-7', name: 'Youtube', value: ''},
-            {id: user.id + '-8', name: 'Facebook', value: ''},
+            {id: user.id + '-8', name: 'Facebook Gaming', value: ''},
         ]
     )
 
     useEffect(() => {
-        console.log('user.profiles')
-        console.log(JSON.stringify(user))
         const result = accounts.map(account => {
             let item = user.profiles.find(ac => ac.name === account.name)
-            console.log('ITEM => ' + JSON.stringify(item))
 
             if (item) {
                 account.id = item.id
@@ -73,7 +70,6 @@ const UserAccountsEditScreen: React.FC<UserAccountsEditProperties> = ({theme, na
     }, [user])
 
     const update = (id: string, value: string) => {
-        console.log('ID => ' + id)
         setInputsUpdated({...inputsUpdated, [id]: true})
         setUntouched(false)
         const items = [...accounts]
@@ -91,13 +87,7 @@ const UserAccountsEditScreen: React.FC<UserAccountsEditProperties> = ({theme, na
     }
 
     const save = () => {
-        console.log('inputsUpdated')
-        console.log(inputsUpdated)
-
         user.profiles = accounts.filter(ac => ac.value || inputsUpdated[ac.name])
-
-        console.log('user.profiles')
-        console.log(user.profiles)
 
         userService.updateProfile(user.id, user)
             .then((userUpdated) => {

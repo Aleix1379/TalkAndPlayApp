@@ -2,7 +2,7 @@ import React, {MutableRefObject, useEffect, useRef, useState} from 'react'
 import {withTheme} from 'react-native-paper'
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {BackHandler, ScrollView, StyleSheet, View} from "react-native"
-import {Comment, CommentResponse, Option, PostInfo, PostType} from "../../types/PostsTypes"
+import {Channel, Comment, CommentResponse, Option, PostInfo, PostType} from "../../types/PostsTypes"
 import PostsService from "../../services/Posts"
 import Info from "../../components/Info"
 import CommentComponent from "../../components/Comment"
@@ -346,7 +346,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     const sendComment = (message: string) => {
         const comment: Comment = {
             id: commentId,
-            text: processYoutubeUrl(message),
+            text: message,
             author: user
         }
         if (commentToReply) {
@@ -370,6 +370,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                     setMessage('')
                     setCommentToReply(null)
                     inputRef.blur()
+                    setComments([])
                     fetchComments('bottom')
                     setEditModeEnabled(false)
                     setCommentId(null)
@@ -495,6 +496,20 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     }
 
     const editComment = (comment: Comment): void => {
+        let values: Comment[] = []
+        let index = -1
+
+        if (comments) {
+            values = [...comments]
+            index = comments.findIndex(c => c.id === comment.id)
+            if (index >= 0) {
+                values[index] = {...comment}
+                setComments(values)
+            }
+        }
+
+        console.log('comment.text => ' + comment.text)
+
         setEditModeEnabled(true)
         setMessage(comment.text)
         setCommentId(comment.id)
@@ -504,32 +519,8 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         navigation.navigate('Report', {id, type: 'comment'})
     }
 
-    const capitalize = (s: string) => {
-        s = s.toLowerCase()
-        return s.charAt(0).toUpperCase() + s.slice(1);
-    }
-
     const goBack = () => {
         navigation.navigate('Posts')
-    }
-
-    const processYoutubeUrl = (message: string, initialPosition: number = 0): string => {
-        const content = 'https://www.youtube.com/watch?v='
-        const start = message.indexOf(content, initialPosition)
-        let end = message.indexOf(' ', start)
-
-        if (end < 0 ) {
-            end = message.length
-        }
-
-        const youtubeUrl = message.substring(start, end)
-        const value = '![yt](' + message.substring(start, end) + ')'
-
-        if (start >= 0) {
-            return processYoutubeUrl(message.replace(youtubeUrl, value), end )
-        } else {
-            return message
-        }
     }
 
     return (
@@ -559,6 +550,16 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                               label={post.language.name}
                               value={post.platforms.map((platform: Option) => platform.name).join(', ')}
                         />
+
+                        {
+                            post.channels.length > 0 &&
+                            <Info
+                                style={{...styles.postDetail, marginTop: 4}}
+                                label='Channels'
+                                value={post.channels.map((channel: Channel) => channel.name).join(', ')}
+                            />
+                        }
+
                     </View>
                 }
 
@@ -637,7 +638,8 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                         <BannerAd
                                             unitId={TestIds.BANNER}
                                             size={BannerAdSize.ADAPTIVE_BANNER}
-                                            onAdLoaded={() => {}}
+                                            onAdLoaded={() => {
+                                            }}
                                             onAdFailedToLoad={(error) => {
                                                 console.error('Advert failed to load: ', error);
                                             }}

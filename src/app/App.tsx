@@ -49,7 +49,7 @@ const App = () => {
                 ...DefaultTheme,
                 colors: {
                     ...DefaultTheme.colors,
-                    primary: '#C0C0C0',
+                    primary: '#959595',
                     accent: '#075aab',
                     onSurface: '#1976d2',
                     surface: '#e9e9e9',

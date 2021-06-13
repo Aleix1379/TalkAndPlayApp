@@ -3,6 +3,8 @@ import {Image, StyleSheet, View} from "react-native"
 import {Text, withTheme} from 'react-native-paper'
 import {Theme} from "react-native-paper/lib/typescript/types"
 import CheckBox from "@react-native-community/checkbox"
+import AccountUtil from "../../utils/Account";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 
 interface CheckBoxProperties {
@@ -79,16 +81,33 @@ const CheckBoxComponent: React.FC<CheckBoxProperties> = ({theme, name, label, im
         }
     ]
 
+    const getImage = () => {
+        const image = images.find(img => img.id === imageName)?.image
+
+        if (image) {
+            return <Image
+                style={styles.image}
+                source={images.find(img => img.id === imageName)?.image}
+            />
+        }
+
+        const {icon, color} = AccountUtil.getChannel(imageName)
+
+        if (icon) {
+            return <View style={{marginRight: 6}}>
+                <MaterialCommunityIcons name={icon} color={color} size={25}/>
+            </View>
+        }
+
+
+    }
+
     return (
         <View
             style={styles.checkbox}
             onTouchEnd={() => onChange(name, !value)}
         >
-            {imageName &&
-            <Image
-                style={styles.image}
-                source={images.find(img => img.id === imageName)?.image}
-            />}
+            {imageName && getImage()}
 
             <Text style={styles.label}>{label}</Text>
             <CheckBox
