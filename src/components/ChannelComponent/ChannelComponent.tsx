@@ -10,7 +10,7 @@ interface ChannelProperties {
     theme: Theme
     account: Account
     style?: StyleProp<ViewStyle>
-    onTouchStart: (event: GestureResponderEvent) => void
+    onTouchStart?: (event: GestureResponderEvent) => void
     onTouchEnd: (event: GestureResponderEvent, color?: string) => void
 }
 
@@ -59,7 +59,7 @@ const ChannelComponent: React.FC<ChannelProperties> = ({
     return (
         <View
             style={[styles.channel, style]}
-            onTouchStart={onTouchStart}
+            onTouchStart={(e) => onTouchStart && onTouchStart(e)}
             onTouchEnd={(e) => onTouchEnd(e, channel?.color)}
         >
             {channel && <MaterialCommunityIcons name={channel.icon} color={channel.color} size={35}/>}
