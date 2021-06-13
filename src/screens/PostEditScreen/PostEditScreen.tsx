@@ -24,12 +24,13 @@ interface PostEditProperties {
 interface Errors {
     title: ErrorType
     game: ErrorType
-    platforms: ErrorType
+    platforms?: ErrorType
     language: ErrorType
+    channels?: ErrorType
 }
 
 const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoading}) => {
-    const {title, id, updatePost} = navigation.state.params
+    const {title, id, updatePost, postType} = navigation.state.params
     const [untouched, setUntouched] = useState(true)
     const postService = new PostsService()
     const user: UserState = useSelector((state: ApplicationState) => {
@@ -67,62 +68,115 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
         title: '',
         game: '',
         platforms: [],
+        channels: [],
         language: {id: 0, name: ''},
         user: null,
         lastUpdate: '',
         postType: PostType.ONLINE
     })
 
-    const [errors, setFormErrors] = useState<Errors>({
-        title: {
-            message: '',
-            touched: false,
-            label: 'Title',
-            validations: [
-                {
-                    key: 'REQUIRED',
-                },
-                {
-                    key: 'MAX_LENGTH',
-                    value: 40,
-                },
-            ],
-        },
-        game: {
-            message: '',
-            touched: false,
-            label: 'Game',
-            validations: [
-                {
-                    key: 'REQUIRED',
-                },
-                {
-                    key: 'MAX_LENGTH',
-                    value: 40,
-                },
-            ],
-        },
-        platforms: {
-            message: '',
-            touched: false,
-            label: 'Platforms',
-            validations: [
-                {
-                    key: 'REQUIRED',
-                },
-            ],
-        },
-        language: {
-            message: '',
-            touched: false,
-            label: 'Language',
-            validations: [
-                {
-                    key: 'REQUIRED',
-                },
-            ],
-        },
-    })
+    const initErrors = (): Errors => {
+        switch (postType) {
+            case PostType.GENERAL:
+                return {
+                    title: {
+                        message: '',
+                        touched: false,
+                        label: 'Title',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 40,
+                            },
+                        ],
+                    },
+                    game: {
+                        message: '',
+                        touched: false,
+                        label: 'Game',
+                        validations: [
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 40,
+                            },
+                        ],
+                    },
+                    language: {
+                        message: '',
+                        touched: false,
+                        label: 'Language',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                        ],
+                    },
+                    platforms: {
+                        message: '',
+                        touched: false,
+                        label: 'Platforms',
+                        validations: [],
+                    },
+                }
+            default:
+                return {
+                    title: {
+                        message: '',
+                        touched: false,
+                        label: 'Title',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 40,
+                            },
+                        ],
+                    },
+                    game: {
+                        message: '',
+                        touched: false,
+                        label: 'Game',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 40,
+                            },
+                        ],
+                    },
+                    platforms: {
+                        message: '',
+                        touched: false,
+                        label: 'Platforms',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                        ],
+                    },
+                    language: {
+                        message: '',
+                        touched: false,
+                        label: 'Language',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                        ],
+                    },
+                }
+        }
+
+    }
+
+    const [errors, setFormErrors] = useState<Errors>(initErrors())
 
     const validator = new Validator(errors, setFormErrors)
 
@@ -170,6 +224,39 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
             console.log(e)
         } finally {
             setLoading(false)
+        }
+    }
+
+    const isButtonEnabled = (): boolean => {
+        switch (postType) {
+            case PostType.GENERAL:
+                return untouched ||
+                    !!errors.title.message ||
+                    !!errors.language.message ||
+                    !post.language.name
+            case PostType.GAMES:
+                return untouched ||
+                    !!errors.title.message ||
+                    !!errors.game?.message ||
+                    !!errors.language.message ||
+                    !post.language.name ||
+                    !!errors.platforms?.message
+            case PostType.ONLINE:
+                return untouched ||
+                    !!errors.title.message ||
+                    !!errors.game?.message ||
+                    !!errors.language.message ||
+                    !post.language.name ||
+                    !!errors.platforms?.message
+            case PostType.STREAMERS:
+                return untouched ||
+                    !!errors.game?.message ||
+                    !!errors.title.message ||
+                    !!errors.language.message ||
+                    !post.language.name ||
+                    !!errors.channels?.message
+            default:
+                return true
         }
     }
 
@@ -231,13 +318,7 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
                                  icon="content-save"
                                  onPress={() => save()}
                                  style={styles.button}
-                                 disabled={
-                                     untouched ||
-                                     !!errors.game.message ||
-                                     !!errors.title.message ||
-                                     !!errors.language.message ||
-                                     !!errors.platforms.message
-                                 }
+                                 disabled={isButtonEnabled()}
                 />
             </View>
         </>

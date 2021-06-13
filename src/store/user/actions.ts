@@ -36,6 +36,7 @@ export const logout = () => {
             imageVersion: 0,
             languages: [],
             platforms: [],
+            profiles: []
         },
     }
 

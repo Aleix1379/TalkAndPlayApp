@@ -25,6 +25,7 @@ const HeaderComponent: React.FC<HeaderProperties> = ({
             textAlign: 'center',
             fontFamily: 'Ranchers-Regular',
             letterSpacing: 2,
+            fontSize: 16
         }
     })
 

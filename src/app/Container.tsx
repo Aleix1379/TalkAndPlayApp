@@ -14,66 +14,27 @@ import PasswordEditScreen from "../screens/PasswordEditScreen";
 import PicturePreviewScreen from "../screens/PicturePreviewScreen";
 import ReportScreen from "../screens/ReportScreen";
 import PictureUploadScreen from "../screens/PictureUploadScreen";
-import PostListGames from "../screens/PostListGames";
-import PostListOnline from "../screens/PostListOnline";
-import PostListStreamers from "../screens/PostListStreamers";
 import ProfileViewerScreen from "../screens/ProfileViewerScreen";
 import ErrorScreen from "../screens/ErrorScreen";
-import UserScreen from "../screens/UserScreen";
+import PostsScreen from "../screens/PostsScreen";
+import UserAccountsEditScreen from "../screens/UserAccountsEditScreen";
 
-
-const GamesStack = createStackNavigator({
+const PostsStack = createStackNavigator({
     Home: {
-        screen: PostListGames,
+        screen: PostsScreen,
         navigationOptions: {
-            headerShown: false
+            headerShown: false,
         },
     },
-
-});
-
-const OnlineStack = createStackNavigator({
-    Home: {
-        screen: PostListOnline,
-        navigationOptions: {
-            headerShown: false
-        },
-    },
-
-});
-const StreamersStack = createStackNavigator({
-    Home: {
-        screen: PostListStreamers,
-        navigationOptions: {
-            headerShown: false
-        },
-    },
-
 });
 
 const BottomTabNavigator = createMaterialBottomTabNavigator(
     {
-        Games: {
-            screen: GamesStack,
+        Posts: {
+            screen: PostsStack,
             navigationOptions: {
                 tabBarIcon: ({tintColor}) => {
-                    return <MaterialCommunityIcons name="controller-classic" color={tintColor} size={25}/>;
-                }
-            }
-        },
-        Online: {
-            screen: OnlineStack,
-            navigationOptions: {
-                tabBarIcon: ({tintColor}) => {
-                    return <MaterialCommunityIcons name="account-group" color={tintColor} size={25}/>;
-                }
-            }
-        },
-        Streamers: {
-            screen: StreamersStack,
-            navigationOptions: {
-                tabBarIcon: ({tintColor}) => {
-                    return <MaterialCommunityIcons name="twitch" color={tintColor} size={25}/>;
+                    return <MaterialCommunityIcons name="comment-text-multiple" color={tintColor} size={25}/>;
                 }
             }
         },
@@ -83,7 +44,7 @@ const BottomTabNavigator = createMaterialBottomTabNavigator(
                 tabBarIcon: ({tintColor}) => {
                     return <MaterialCommunityIcons name="account" color={tintColor} size={25}/>;
                 }
-            }
+            },
         }
     },
     {
@@ -162,6 +123,12 @@ const HomeDetailStack = createStackNavigator({
     },
     Error: {
         screen: ErrorScreen,
+        navigationOptions: {
+            headerShown: false
+        }
+    },
+    UserAccountsEdit: {
+        screen: UserAccountsEditScreen,
         navigationOptions: {
             headerShown: false
         }

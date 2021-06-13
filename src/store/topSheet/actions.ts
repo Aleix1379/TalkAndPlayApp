@@ -2,13 +2,14 @@ import * as actionTypes from './actionsTypes'
 import {ModalOption} from "../../screens/PostDetail/PostDetail";
 import {DispatchType, TopSheetAction} from "./types";
 
-export const openModal = (options: ModalOption[], onChange?: () => void) => {
+export const openModal = (options: ModalOption[], top: number, onChange?: () => void) => {
     const action: TopSheetAction = {
         type: actionTypes.OPEN_TOP_SHEET,
         state: {
             visible: true,
             options,
-            onChange
+            onChange,
+            top
         }
     }
 
@@ -22,7 +23,8 @@ export const closeModal = () => {
         type: actionTypes.CLOSE_TOP_SHEET,
         state: {
             visible: false,
-            options: []
+            options: [],
+            top: 0
         }
     }
 

@@ -1,21 +1,21 @@
-import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, View} from "react-native";
-import {withTheme} from 'react-native-paper';
-import {Theme} from "react-native-paper/lib/typescript/types";
-import TextInputComponent from "../../components/TextInputComponent";
-import {ErrorType} from "../../utils/Validator/types";
-import {availablePlatforms, Comment, Option, PostInfo, SelectItem} from "../../types/PostsTypes";
-import {UserState} from "../../store/user/types";
-import {connect, shallowEqual, useSelector} from "react-redux";
-import {ApplicationState} from "../../store";
-import CheckBoxListComponent from "../../components/CheckBoxListComponent";
-import ButtonComponent from "../../components/ButtonComponent";
-import Validator from "../../utils/Validator/Validator";
-import {setLoading} from "../../store/loading/actions";
-import PostsService from "../../services/Posts";
-import HeaderComponent from "../../components/HeaderComponent";
+import React, {useEffect, useState} from 'react'
+import {ScrollView, StyleSheet, View} from "react-native"
+import {withTheme} from 'react-native-paper'
+import {Theme} from "react-native-paper/lib/typescript/types"
+import TextInputComponent from "../../components/TextInputComponent"
+import {ErrorType} from "../../utils/Validator/types"
+import {availablePlatforms, Comment, Option, PostInfo, PostType, SelectItem} from "../../types/PostsTypes"
+import {UserState} from "../../store/user/types"
+import {connect, shallowEqual, useSelector} from "react-redux"
+import {ApplicationState} from "../../store"
+import CheckBoxListComponent from "../../components/CheckBoxListComponent"
+import ButtonComponent from "../../components/ButtonComponent"
+import Validator from "../../utils/Validator/Validator"
+import {setLoading} from "../../store/loading/actions"
+import PostsService from "../../services/Posts"
+import HeaderComponent from "../../components/HeaderComponent"
 import languages from '../../store/languages.json'
-import {logout} from "../../store/user/actions";
+import {logout} from "../../store/user/actions"
 
 interface PostCreateProperties {
     navigation: any,
@@ -28,8 +28,9 @@ interface Errors {
     title: ErrorType
     game: ErrorType
     text: ErrorType
-    platforms: ErrorType
+    platforms?: ErrorType
     language: ErrorType
+    channels?: ErrorType
 }
 
 
@@ -71,13 +72,14 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
             marginTop: 16,
             marginBottom: 8,
         }
-    });
+    })
 
     const [post, setPost] = useState<PostInfo>({
         id: 0,
         title: '',
         game: '',
         platforms: [],
+        channels: [],
         language: {id: 0, name: ''},
         user: null,
         lastUpdate: '',
@@ -98,71 +100,6 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
         },
     })
 
-    const [errors, setFormErrors] = useState<Errors>({
-        title: {
-            message: '',
-            touched: false,
-            label: 'Title',
-            validations: [
-                {
-                    key: 'REQUIRED',
-                },
-                {
-                    key: 'MAX_LENGTH',
-                    value: 40,
-                },
-            ],
-        },
-        game: {
-            message: '',
-            touched: false,
-            label: 'Game',
-            validations: [
-                {
-                    key: 'REQUIRED',
-                },
-                {
-                    key: 'MAX_LENGTH',
-                    value: 40,
-                },
-            ],
-        },
-        text: {
-            message: '',
-            touched: false,
-            label: 'Message',
-            validations: [
-                {
-                    key: 'REQUIRED',
-                },
-                {
-                    key: 'MAX_LENGTH',
-                    value: 5000,
-                },
-            ],
-        },
-        platforms: {
-            message: '',
-            touched: false,
-            label: 'Platforms',
-            validations: [
-                {
-                    key: 'REQUIRED',
-                },
-            ],
-        },
-        language: {
-            message: '',
-            touched: false,
-            label: 'Language',
-            validations: [
-                {
-                    key: 'REQUIRED',
-                },
-            ],
-        },
-    })
-
     useEffect(() => {
         const data: PostInfo = {...post}
 
@@ -172,6 +109,139 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
 
         setPost(data)
     }, [])
+
+    const initErrors = (): Errors => {
+        switch (postType) {
+            case PostType.GENERAL:
+            case PostType.STREAMERS:
+                return {
+                    title: {
+                        message: '',
+                        touched: false,
+                        label: 'Title',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 40,
+                            },
+                        ],
+                    },
+                    game: {
+                        message: '',
+                        touched: false,
+                        label: 'Game',
+                        validations: [
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 40,
+                            },
+                        ],
+                    },
+                    text: {
+                        message: '',
+                        touched: false,
+                        label: 'Message',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 5000,
+                            },
+                        ],
+                    },
+                    language: {
+                        message: '',
+                        touched: false,
+                        label: 'Language',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                        ],
+                    },
+                    platforms: {
+                        message: '',
+                        touched: false,
+                        label: 'Platforms',
+                        validations: [],
+                    },
+                }
+            default:
+                return {
+                    title: {
+                        message: '',
+                        touched: false,
+                        label: 'Title',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 40,
+                            },
+                        ],
+                    },
+                    game: {
+                        message: '',
+                        touched: false,
+                        label: 'Game',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 40,
+                            },
+                        ],
+                    },
+                    text: {
+                        message: '',
+                        touched: false,
+                        label: 'Message',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 5000,
+                            },
+                        ],
+                    },
+                    platforms: {
+                        message: '',
+                        touched: false,
+                        label: 'Platforms',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                        ],
+                    },
+                    language: {
+                        message: '',
+                        touched: false,
+                        label: 'Language',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                        ],
+                    },
+                }
+        }
+
+    }
+
+    const [errors, setFormErrors] = useState<Errors>(initErrors())
+
 
     const validator = new Validator(errors, setFormErrors)
 
@@ -225,7 +295,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                     navigation.navigate('Detail', {title: postCreated.title, id: postCreated.id})
                 )
                 .catch(error => {
-                    console.log('create post')
+                    console.log('create post');
                     console.log(JSON.stringify(error))
                     console.log('----------------------------------------------------------------')
                     console.log('|' + error.message + '|')
@@ -252,6 +322,57 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
         }
 
         return values
+    }
+
+    const isButtonEnabled = (): boolean => {
+        switch (postType) {
+            case PostType.GENERAL:
+                return untouched ||
+                    !!errors.title.message ||
+                    !!errors.text.message ||
+                    !!errors.language.message ||
+                    !post.language.name
+            case PostType.GAMES:
+                return untouched ||
+                    !!errors.title.message ||
+                    !!errors.game?.message ||
+                    !!errors.text.message ||
+                    !!errors.language.message ||
+                    !post.language.name ||
+                    !!errors.platforms?.message
+            case PostType.ONLINE:
+                return untouched ||
+                    !!errors.title.message ||
+                    !!errors.game?.message ||
+                    !!errors.text.message ||
+                    !!errors.language.message ||
+                    !post.language.name ||
+                    !!errors.platforms?.message
+            case PostType.STREAMERS:
+                return untouched ||
+                    !!errors.title.message ||
+                    !!errors.text.message ||
+                    !!errors.language.message ||
+                    !post.language.name
+            default:
+                return true
+        }
+    }
+
+    const addPlatForms = () => {
+        if (postType === PostType.STREAMERS) {
+            return null
+        }
+
+        return <CheckBoxListComponent
+            id="platforms"
+            label="Platforms"
+            values={availablePlatforms}
+            initialValues={post.platforms}
+            error={errors.platforms}
+            onChange={(items) => handleChange(items, 'platforms')}
+            style={styles.accordion}
+        />
     }
 
     return (
@@ -302,15 +423,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                         style={styles.accordion}
                     />
 
-                    <CheckBoxListComponent
-                        id="platforms"
-                        label="Platforms"
-                        values={availablePlatforms}
-                        initialValues={post.platforms}
-                        error={errors.platforms}
-                        onChange={(items) => handleChange(items, 'platforms')}
-                        style={styles.accordion}
-                    />
+                    {addPlatForms()}
 
                 </ScrollView>
 
@@ -318,15 +431,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                                  icon="content-save"
                                  onPress={() => save()}
                                  style={styles.button}
-                                 disabled={
-                                     untouched ||
-                                     !!errors.game.message ||
-                                     !!errors.title.message ||
-                                     !!errors.text.message ||
-                                     !!errors.language.message ||
-                                     !post.language.name ||
-                                     !!errors.platforms.message
-                                 }
+                                 disabled={isButtonEnabled()}
                 />
             </View>
         </>

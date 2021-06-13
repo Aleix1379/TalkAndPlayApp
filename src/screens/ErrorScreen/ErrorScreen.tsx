@@ -6,10 +6,16 @@ import HeaderComponent from "../../components/HeaderComponent";
 import ButtonComponent from "../../components/ButtonComponent";
 
 interface ErrorProperties {
+    navigation: any
     theme: Theme
 }
 
-const ErrorScreen: React.FC<ErrorProperties> = ({theme}) => {
+const ErrorScreen: React.FC<ErrorProperties> = ({theme, navigation}) => {
+    const {err} = navigation.state.params
+    let message = ""
+    if (err) {
+        message = JSON.parse(err).name + ": " + JSON.parse(err).message
+    }
     const styles = StyleSheet.create({
         error: {
             flex: 1,
@@ -28,6 +34,10 @@ const ErrorScreen: React.FC<ErrorProperties> = ({theme}) => {
         button: {
             width: '100%',
             marginBottom: 24
+        },
+        message: {
+            color: theme.colors.background,
+            marginBottom: 'auto'
         }
     });
 
@@ -46,6 +56,8 @@ const ErrorScreen: React.FC<ErrorProperties> = ({theme}) => {
 
                 <Text style={styles.text}>I tried my best but it looks like there is no connectivity. Please check your
                     internet connection and i'll be alive again.</Text>
+
+                {message && <Text style={styles.message}>{message}</Text>}
 
                 <ButtonComponent label='Retry' style={styles.button} onPress={() => retry()}/>
             </View>

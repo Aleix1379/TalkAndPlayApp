@@ -15,6 +15,7 @@ import PostListOnline from "../screens/PostListOnline/PostListOnline";
 import PostListStreamers from "../screens/PostListStreamers/PostListStreamers";
 import ShowConditionsScreen from "../screens/ShowConditionsScreen";
 import ErrorScreen from "../screens/ErrorScreen";
+import PostsScreen from "../screens/PostsScreen/PostsScreen";
 
 
 const GamesStack = createStackNavigator({
@@ -46,29 +47,23 @@ const StreamersStack = createStackNavigator({
 
 });
 
+const PostsStack = createStackNavigator({
+    Home: {
+        screen: PostsScreen,
+        navigationOptions: {
+            headerShown: false
+        },
+    },
+});
+
+
 const BottomTabNavigator = createMaterialBottomTabNavigator(
     {
-        Games: {
-            screen: GamesStack,
-            navigationOptions: {
-                tabBarIcon: ({tintColor}) => {
-                    return <MaterialCommunityIcons name="controller-classic" color={tintColor} size={25}/>;
-                }
-            }
-        },
-        Online: {
-            screen: OnlineStack,
+        Posts: {
+            screen: PostsStack,
             navigationOptions: {
                 tabBarIcon: ({tintColor}) => {
                     return <MaterialCommunityIcons name="account-group" color={tintColor} size={25}/>;
-                }
-            }
-        },
-        Streamers: {
-            screen: StreamersStack,
-            navigationOptions: {
-                tabBarIcon: ({tintColor}) => {
-                    return <MaterialCommunityIcons name="twitch" color={tintColor} size={25}/>;
                 }
             }
         },

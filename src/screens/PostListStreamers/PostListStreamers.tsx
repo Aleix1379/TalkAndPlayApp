@@ -8,8 +8,7 @@ class PostListStreamers extends PostListScreen {
 
 const mapStateToProps = (state: any) => {
     return {
-        user: state.user,
-        postType: PostType.STREAMERS
+
     }
 }
 export default connect(mapStateToProps)(withTheme(PostListStreamers))

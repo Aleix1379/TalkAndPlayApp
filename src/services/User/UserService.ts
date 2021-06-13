@@ -41,7 +41,7 @@ class UserService extends Api {
     }
 
     updateProfile(id: number, data: UserState): Promise<UserState> {
-        return this.http.put(`${this.getUrl()}/${id}`, data)
+        return this.http.put(`${this.getUrl()}/${id}`, data).then((res) => res.data)
     }
 
     async fileUpload(image: ImagePickerResponse, name: string): Promise<number> {

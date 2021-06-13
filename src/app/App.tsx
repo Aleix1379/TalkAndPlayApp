@@ -36,7 +36,7 @@ const App = () => {
                 colors: {
                     ...DefaultTheme.colors,
                     primary: '#212121',
-                    text: '#fafafa',
+                    text: '#bdbdbd',
                     background: '#363636',
                     accent: '#075aab',
                     onSurface: '#1976d2',

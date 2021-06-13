@@ -116,7 +116,9 @@ const Content: React.FC<ContentProperties> = ({theme, login, closeDialog, setThe
             <TopSheetComponent
                 visible={topSheet.visible}
                 onChange={topSheet.onChange}
-                options={topSheet.options}/>
+                options={topSheet.options}
+                top={topSheet.top}
+            />
             {user.id >= 0 ? <Container/> : <ContainerAnonymous/>}
 
         </View>

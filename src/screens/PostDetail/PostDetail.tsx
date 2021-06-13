@@ -25,7 +25,7 @@ import {BannerAd, BannerAdSize, TestIds} from "@react-native-firebase/admob";
 interface PostDetailProperties {
     navigation: any
     theme: Theme
-    openModal: (options: ModalOption[], onChange?: () => void) => void
+    openModal: (options: ModalOption[], top: number, onChange?: () => void) => void
     closeModal: () => void
     setLoading: (visible: boolean) => void
     openDialog: (title: string, content: string[], actions: DialogOption[]) => void
@@ -88,7 +88,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         },
 
         postDetail: {
-            marginTop: 12
+            marginTop: 4
         },
         ads: {
             marginTop: 10,
@@ -217,7 +217,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         return usr?.id === user.id
     }
 
-    const editPost = () => navigation.navigate('PostEdit', {title, id, updatePost: setPost})
+    const editPost = () => navigation.navigate('PostEdit', {title, id, updatePost: setPost, postType})
 
     const reportPost = () => navigation.navigate('Report', {id, type: 'post'})
 
@@ -382,7 +382,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     }
 
     const toggleModal = () => {
-        openModal(modalOptions, () => closeModal())
+        openModal(modalOptions, 0, () => closeModal())
         setIsModalOpened(!isModalOpened)
     }
 
@@ -510,7 +510,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     }
 
     const goBack = () => {
-        navigation.navigate(capitalize(postType))
+        navigation.navigate('Posts')
     }
 
     const processYoutubeUrl = (message: string, initialPosition: number = 0): string => {
@@ -552,9 +552,9 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                     post &&
                     <View>
 
-                        <Info style={styles.postDetail} label={'🎮'} value={post.game}/>
+                        {post.game.length > 0 && <Info style={styles.postDetail} label={'🎮'} value={post.game}/>}
 
-                        <Info style={{...styles.postDetail, marginTop: 8}}
+                        <Info style={{...styles.postDetail, marginTop: 4}}
                               valueAlign={'right'}
                               label={post.language.name}
                               value={post.platforms.map((platform: Option) => platform.name).join(', ')}
@@ -597,7 +597,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                         {comments.map((comment, index) =>
                             <View key={comment.id}
                                   style={{
-                                      marginTop: index === 0 ? 10 : 8,
+                                      marginTop: index === 0 ? 4 : 0,
                                       marginBottom: index === comments.length - 1 ? 10 : 2
                                   }}
                                   onLayout={(event) => {
@@ -633,13 +633,11 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 
                                 {
                                     index === comments.length || index % 5 === 0 &&
-                                    <View style={{marginTop: 8}}>
+                                    <View style={{marginTop: 4, marginBottom: 1}}>
                                         <BannerAd
                                             unitId={TestIds.BANNER}
                                             size={BannerAdSize.ADAPTIVE_BANNER}
-                                            onAdLoaded={() => {
-                                                console.log('Advert loaded');
-                                            }}
+                                            onAdLoaded={() => {}}
                                             onAdFailedToLoad={(error) => {
                                                 console.error('Advert failed to load: ', error);
                                             }}
@@ -709,8 +707,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     )
 }
 
-export default connect(null,
-    {
+export default connect(null, {
         openModal: openModal,
         closeModal: closeModal,
         setLoading: setLoading,

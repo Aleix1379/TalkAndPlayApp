@@ -10,9 +10,10 @@ interface TopSheetProperties {
     visible: boolean
     options: ModalOption[]
     onChange?: () => void
+    top?: number
 }
 
-const TopSheetComponent: React.FC<TopSheetProperties> = ({theme, visible = false, options, onChange}) => {
+const TopSheetComponent: React.FC<TopSheetProperties> = ({theme, visible = false, options, onChange, top = 0}) => {
     const [upperAnimation] = useState(new Animated.Value(0))
 
     const startAnimation = () => {
@@ -37,7 +38,7 @@ const TopSheetComponent: React.FC<TopSheetProperties> = ({theme, visible = false
     const styles = StyleSheet.create({
         container: {
             position: "absolute",
-            top: 0,
+            top: top,
             left: 0,
             width: '100%',
             zIndex: 99999999,
@@ -47,14 +48,14 @@ const TopSheetComponent: React.FC<TopSheetProperties> = ({theme, visible = false
             position: "absolute",
             top: 4,
             right: 6,
-            shadowColor: theme.colors.background,
+            shadowColor: theme.colors.surface,
             shadowOffset: {
-                width: 2.5,
-                height: 2.5,
+                width: 5,
+                height: 5,
             },
-            shadowOpacity: 0.75,
+            shadowOpacity: 0.95,
             shadowRadius: 1,
-            elevation: 5,
+            elevation: 10,
             backgroundColor: theme.colors.background,
             paddingHorizontal: 8
 

@@ -13,6 +13,7 @@ interface TextInputProperties {
     error?: ErrorType
     onChange?: (id: string, value: string) => void
     onBlur?: () => void
+    onFocus?: () => void
     password?: boolean
     theme: Theme
     style?: StyleProp<TextStyle>
@@ -21,6 +22,9 @@ interface TextInputProperties {
     maxLength?: number
     setRef?: (ref: TextInput | null) => void
     onImageChange?: (event: any) => void
+    borderColor?: string
+    labelColor?: string
+    textColor?: string
 }
 
 const TextInputComponent: React.FC<TextInputProperties> = ({
@@ -36,8 +40,12 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
                                                                multiLine = false,
                                                                maxLength,
                                                                onBlur,
+                                                               onFocus,
                                                                setRef,
-                                                               onImageChange
+                                                               onImageChange,
+                                                               borderColor = theme?.colors.accent,
+                                                               labelColor = theme?.colors.text,
+                                                               textColor = theme?.colors.text,
                                                            }) => {
     let reference: TextInput | null = null
     const [showText, setShowText] = useState(!password)
@@ -82,7 +90,7 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
             paddingBottom: 4,
             borderRadius: 3,
             paddingRight: password ? 40 : 0,
-            color: theme.colors.text,
+            color: textColor,
             backgroundColor: 'rgba(20,20,20, 0.6)',
             lineHeight: 15
         },
@@ -97,6 +105,8 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
         setIsFocused(focus)
         if (!focus) {
             onBlur && onBlur()
+        } else {
+            onFocus && onFocus()
         }
     }
 
@@ -119,7 +129,7 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
         }
 
         if (isFocused) {
-            item.borderColor = theme?.colors.accent
+            item.borderColor = borderColor
         }
 
         return item
@@ -145,7 +155,7 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
             {
                 label &&
                 <Animated.View style={[styles.label, animatedStyles.translate]}>
-                    <Text onPress={() => reference?.focus()}>{label}</Text>
+                    <Text style={{color: labelColor}} onPress={() => reference?.focus()}>{label}</Text>
                 </Animated.View>
             }
             <TextInput
@@ -156,6 +166,7 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
                 placeholder={placeholder}
                 multiline={multiLine}
                 maxLength={maxLength}
+                selectionColor={textColor}
                 placeholderTextColor={theme.colors.text}
                 onChangeText={(text: string) => onChange && onChange(id, text)}
                 editable={!!onChange}

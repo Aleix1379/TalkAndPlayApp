@@ -1,29 +1,51 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, useWindowDimensions, View} from 'react-native';
-import {login} from "../../store/user/actions";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {ModalOption} from "../PostDetail/PostDetail";
-import {closeModal, openModal} from "../../store/topSheet/actions";
-import {SceneMap, TabBar, TabView} from "react-native-tab-view";
-import {connect, shallowEqual, useSelector} from 'react-redux';
-import {withTheme} from "react-native-paper";
-import HeaderComponent from "../../components/HeaderComponent";
-import {UserState} from "../../store/user/types";
-import {ApplicationState} from "../../store";
-import AvatarComponent from "../../components/AvatarComponent/AvatarComponent";
-import UserUtils from "../../utils/UserUtils";
-import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
-import Info from "../../components/Info/Info";
-import FollowersCounterComponent from "../../components/FollowersCounterComponent";
+import React, {useEffect, useState} from 'react'
+import {
+    Dimensions,
+    GestureResponderEvent,
+    StyleSheet,
+    useWindowDimensions,
+    View
+} from 'react-native'
+import {login} from "../../store/user/actions"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {ModalOption} from "../PostDetail/PostDetail"
+import {closeModal, openModal} from "../../store/topSheet/actions"
+import {SceneMap, TabBar, TabView} from "react-native-tab-view"
+import {connect, shallowEqual, useSelector} from 'react-redux'
+import {Snackbar, Text, withTheme} from "react-native-paper"
+import HeaderComponent from "../../components/HeaderComponent"
+import {UserState} from "../../store/user/types"
+import {ApplicationState} from "../../store"
+import AvatarComponent from "../../components/AvatarComponent/AvatarComponent"
+import UserUtils from "../../utils/UserUtils"
+import Info from "../../components/Info/Info"
+import FollowersCounterComponent from "../../components/FollowersCounterComponent"
+import ChannelComponent from "../../components/ChannelComponent";
+import Image from "react-native-scalable-image";
+import Clipboard from '@react-native-clipboard/clipboard';
 
 interface ProfileProperties {
     navigation: any,
-    openModal: (options: ModalOption[], onChange?: () => void) => void
+    openModal: (options: ModalOption[], top: number, onChange?: () => void) => void
     closeModal: () => void
-    theme: Theme;
+    theme: Theme
+}
+
+interface SnackBar {
+    visible: boolean
+    content: string
+    color?: string
 }
 
 const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, openModal, closeModal}) => {
+    const [index, setIndex] = useState(0)
+    const [snackbar, setSnackbar] = useState<SnackBar>({
+        visible: false,
+        content: '',
+        color: theme.colors.primary
+    })
+    const oldIndex = navigation.state?.params?.index
+
     const styles = StyleSheet.create({
         tab: {
             backgroundColor: theme.colors.primary
@@ -40,7 +62,7 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, openModa
             paddingTop: 8,
             display: "flex",
             flex: 1,
-            alignItems: "center"
+            // alignItems: "center"
         },
         avatar: {
             marginTop: 8,
@@ -53,6 +75,30 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, openModa
         button: {
             flex: 1,
             marginHorizontal: 8
+        },
+        channel: {
+            marginVertical: 8,
+            backgroundColor: theme.colors.primary
+        },
+        noDataContainer: {
+            display: "flex",
+            alignItems: 'center',
+            justifyContent: "center",
+            height: Dimensions.get('screen').height
+
+        },
+        noDataText: {
+            fontSize: 22,
+        },
+        image: {
+            marginTop: 50,
+            marginBottom: 100,
+        },
+        snackBarContainer: {
+            backgroundColor: theme.colors.primary,
+        },
+        snackBarWrapper: {
+            width: Dimensions.get('window').width,
         }
     })
 
@@ -62,8 +108,23 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, openModa
     }, shallowEqual)
 
     useEffect(() => {
-        loadPostOptions()
+        if (oldIndex !== index) {
+            setIndex(oldIndex)
+        }
     }, [])
+
+    useEffect(() => {
+        loadPostOptions()
+    }, [index])
+
+    const goToEdit = () => {
+        console.log('Go to edit index => ' + index)
+        if (index === 0) {
+            navigation.navigate('ProfileEdit')
+        } else if (index === 1) {
+            navigation.navigate('UserAccountsEdit')
+        }
+    }
 
     const loadPostOptions = () => {
         const options: ModalOption[] = []
@@ -73,7 +134,7 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, openModa
                 id: 'edit',
                 icon: 'account-edit',
                 title: 'Edit',
-                action: () => navigation.navigate('ProfileEdit')
+                action: () => goToEdit()
             })
 
             options.push({
@@ -95,7 +156,7 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, openModa
                     style={styles.avatar} uri={UserUtils.getImageUrl(user)}
                 />
 
-                <FollowersCounterComponent />
+                <FollowersCounterComponent/>
 
                 <Info label="Email" value={user.email} style={styles.info}/>
                 <Info label="Languages"
@@ -107,25 +168,73 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, openModa
             </View>}
         </>
     )
-    const SecondRoute = () => (
-        <View style={{flex: 1, backgroundColor: theme.colors.background}}/>
-    );
+    const SecondRoute = () => {
+        let startX = 0
+
+        const onTouchStart = (event: GestureResponderEvent) => {
+            startX = event.nativeEvent.locationX
+        }
+
+        const onTouchEnd = (event: GestureResponderEvent, value: string, color?: string) => {
+            if (startX === event.nativeEvent.locationX) {
+                Clipboard.setString(value)
+                setSnackbar({
+                    visible: true,
+                    content: `${value} copied`,
+                    color
+                })
+            }
+        }
+
+        return <View style={styles.user}>
+            <Snackbar
+                visible={snackbar.visible}
+                duration={1000}
+                onDismiss={() => setSnackbar({visible: false, content: ''})}
+                wrapperStyle={styles.snackBarWrapper}
+                style={[styles.snackBarContainer, {backgroundColor: snackbar.color}]}
+            >
+                <Text>{snackbar.content}</Text>
+            </Snackbar>
+
+            {
+                user?.profiles?.filter(account => account.value).map(account => (
+                    <ChannelComponent
+                        key={account.name}
+                        style={styles.channel}
+                        account={account}
+                        onTouchStart={onTouchStart}
+                        onTouchEnd={((event, color?: string) => onTouchEnd(event, account.value, color))}
+                    />
+                ))
+            }
+
+            {
+                user?.profiles?.filter(account => account.value).length < 1 &&
+                <View style={styles.noDataContainer}>
+                    <Text style={styles.noDataText}>Edit to add an account.</Text>
+                    <Image width={Dimensions.get('window').width * 0.75} style={styles.image}
+                           source={require('../../assets/images/undraw_empty_xct9.png')}/>
+                </View>
+            }
+
+        </View>
+    }
 
     const renderScene = SceneMap({
-        data: UserScreen,
+        info: UserScreen,
         accounts: SecondRoute,
-    });
+    })
 
-    const layout = useWindowDimensions();
+    const layout = useWindowDimensions()
 
-    const [index, setIndex] = React.useState(0);
     const [routes] = React.useState([
-        {key: 'data', title: 'User'},
+        {key: 'info', title: 'Info'},
         {key: 'accounts', title: 'Accounts'},
-    ]);
+    ])
 
     const toggleModal = () => {
-        openModal(modalOptions, () => closeModal())
+        openModal(modalOptions, 0, () => closeModal())
     }
 
     return (
@@ -140,7 +249,7 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, openModa
             <TabView
                 navigationState={{index, routes}}
                 renderScene={renderScene}
-                onIndexChange={setIndex}
+                onIndexChange={(num => setIndex(num))}
                 initialLayout={{width: layout.width}}
                 renderTabBar={props => (
                     <TabBar

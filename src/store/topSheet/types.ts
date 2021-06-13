@@ -4,6 +4,7 @@ export type TopSheetState = {
     visible: boolean
     options: ModalOption[]
     onChange?: () => void
+    top: number
 }
 
 export type TopSheetAction = {

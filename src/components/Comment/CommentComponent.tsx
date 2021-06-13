@@ -7,21 +7,21 @@ import {Theme} from "react-native-paper/lib/typescript/types"
 import Time from "../../utils/Time"
 // @ts-ignore
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
-import RoundButtonComponent from "../RoundButtonComponent";
+import RoundButtonComponent from "../RoundButtonComponent"
 // @ts-ignore
-import InView from "react-native-component-inview";
-import AvatarComponent from "../AvatarComponent";
-import TopSheetComponent from "../TopSheetComponent/TopSheetComponent";
-import {UserState} from "../../store/user/types";
-import {connect, shallowEqual, useSelector} from "react-redux";
-import {ApplicationState} from "../../store";
-import {ModalOption} from "../../screens/PostDetail/PostDetail";
-import {closeDialog, openDialog} from "../../store/dialog/actions";
-import {DialogOption} from "../../store/dialog/types";
+import InView from "react-native-component-inview"
+import AvatarComponent from "../AvatarComponent"
+import TopSheetComponent from "../TopSheetComponent/TopSheetComponent"
+import {UserState} from "../../store/user/types"
+import {connect, shallowEqual, useSelector} from "react-redux"
+import {ApplicationState} from "../../store"
+import {ModalOption} from "../../screens/PostDetail/PostDetail"
+import {closeDialog, openDialog} from "../../store/dialog/actions"
+import {DialogOption} from "../../store/dialog/types"
 // @ts-ignore
 import Markdown from 'react-native-simple-markdown'
-import Image from 'react-native-scalable-image';
-import YoutubePlayer from "react-native-youtube-iframe";
+import Image from 'react-native-scalable-image'
+import YoutubePlayer from "react-native-youtube-iframe"
 
 interface CommentProperties {
     comment: Comment
@@ -182,7 +182,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
 
     const buildReplies = (com: Comment) => {
         replies.push({
-            author: com.author.name + '  |  ' + Time.diff(com.lastUpdate),
+            author: com.author.name + '  ❱  ' + Time.diff(com.lastUpdate),
             text: com.text
         })
         if (com.reply) {
@@ -262,7 +262,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                         image: getCustomImage()
                     }}
                 >
-                    {message || '_Comment deleted_'}
+                    {message || '💀 _Comment deleted_'}
                 </Markdown>)
             }
         }
@@ -300,9 +300,9 @@ const CommentComponent: React.FC<CommentProperties> = ({
                 <Text
                     style={{
                         fontSize: 18,
-                        color: user.id !== comment.author.id ? theme.colors.accent : theme.colors.text
+                        color: user.id >= 0 && user.id !== comment.author.id ? theme.colors.accent : theme.colors.text
                     }}
-                    onPress={() => goToProfile(comment.author.email)}>{comment.author.name}</Text>
+                    onPress={() => user.id >= 0 && goToProfile(comment.author.email)}>{comment.author.name}</Text>
                 <Text style={styles.date}>{Time.diff(comment.lastUpdate)}</Text>
                 {
                     !!comment.text && user.id >= 0 &&
@@ -321,7 +321,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
             <Markdown
                 styles={{
                     text: {
-                        color: theme.colors.text
+                        color: comment.text ? theme.colors.text : '#909090'
                     },
                     view: {
                         marginTop: 4,
@@ -330,7 +330,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                 }}
                 rules={{image: getCustomImage()}}
             >
-                {comment.text || '_Comment deleted_'}
+                {comment.text || '💀 _Comment deleted_'}
             </Markdown>
 
             <TopSheetComponent

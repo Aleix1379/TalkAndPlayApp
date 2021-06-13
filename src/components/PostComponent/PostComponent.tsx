@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {StyleSheet, View} from "react-native"
 import {Text, withTheme} from 'react-native-paper'
 import UserUtils from "../../utils/UserUtils"
@@ -18,6 +18,7 @@ interface PostProperties {
 
 const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMessages, totalMessages}) => {
     const {id, title, game, platforms, user, language, lastUpdate} = post
+    let startX = 0
 
     const styles = StyleSheet.create({
         post: {
@@ -43,7 +44,7 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
             marginRight: 12
         },
         avatar: {
-            marginBottom: 10
+            marginBottom: 5
         },
         game: {
             flex: 1,
@@ -73,9 +74,14 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
 
     return (
         <View
+            key='view-post'
             style={styles.post}
-            onTouchEnd={() => onClick(id, title)}>
-
+            onTouchStart={(e) => startX = e.nativeEvent.locationX}
+            onTouchEnd={(e) => {
+                if (startX === e.nativeEvent.locationX) {
+                    onClick(id, title)
+                }
+            }}>
             <View style={styles.user}>
                 {/*<Image
                     style={styles.avatar}

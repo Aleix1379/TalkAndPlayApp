@@ -26,6 +26,7 @@ interface Form {
     languages: Option[]
     platforms: Option[]
     user: string
+    //channels: Channel[]
 }
 
 export interface PostListState {
@@ -124,6 +125,7 @@ class PostListScreen extends React.Component<PostListProperties, PostListState> 
             game: '',
             languages: [],
             platforms: [],
+            //           channels: [],
             user: ''
         },
     }
@@ -132,7 +134,7 @@ class PostListScreen extends React.Component<PostListProperties, PostListState> 
         if (this.mounted) {
             this.loadData()
         } else {
-            this.unsubscribe()
+            typeof this.unsubscribe === "function" && this.unsubscribe()
         }
     });
 

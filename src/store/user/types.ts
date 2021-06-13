@@ -1,4 +1,4 @@
-import {Option} from "../../types/PostsTypes";
+import {Account, Option} from "../../types/PostsTypes";
 
 export type UserState = {
   id: number
@@ -7,6 +7,7 @@ export type UserState = {
   imageVersion: number
   languages: Option[]
   platforms: Option[]
+  profiles: Account[]
 }
 export type UserAction = {
   user: UserState

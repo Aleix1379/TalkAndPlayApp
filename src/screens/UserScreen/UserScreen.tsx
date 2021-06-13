@@ -1,8 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {StyleSheet, View} from "react-native";
 import {Theme} from "react-native-paper/lib/typescript/types";
-import HeaderComponent from "../../components/HeaderComponent";
-import {ModalOption} from "../PostDetail/PostDetail";
 import {UserState} from "../../store/user/types";
 import {connect, shallowEqual, useSelector} from "react-redux";
 import {ApplicationState} from "../../store";
@@ -10,18 +8,14 @@ import AvatarComponent from "../../components/AvatarComponent";
 import UserUtils from "../../utils/UserUtils";
 import Info from "../../components/Info";
 import {withTheme} from "react-native-paper";
-import {closeModal, openModal} from "../../store/topSheet/actions";
-import {login} from "../../store/user/actions";
 import ButtonComponent from "../../components/ButtonComponent";
 
 interface UserProperties {
     navigation: any,
-    openModal: (options: ModalOption[], onChange?: () => void) => void
-    closeModal: () => void
     theme: Theme;
 }
 
-const UserScreen: React.FC<UserProperties> = ({navigation, theme, openModal, closeModal}) => {
+const UserScreen: React.FC<UserProperties> = ({navigation, theme}) => {
     const styles = StyleSheet.create({
         title: {
             textAlign: 'center',
@@ -78,10 +72,4 @@ const UserScreen: React.FC<UserProperties> = ({navigation, theme, openModal, clo
     )
 }
 
-export default connect(null,
-    {
-        openModal: openModal,
-        closeModal: closeModal,
-        login: login,
-    }
-)(withTheme(UserScreen))
+export default withTheme(UserScreen)

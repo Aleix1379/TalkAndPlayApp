@@ -29,7 +29,8 @@ const FollowersCounterComponent: React.FC<FollowersCounterProperties> = ({theme}
             marginBottom: 8
         },
         value: {
-            fontWeight: "bold"
+            fontWeight: "bold",
+            color: theme.colors.accent
         },
         label: {
             color: '#c4c4c4'
@@ -40,8 +41,8 @@ const FollowersCounterComponent: React.FC<FollowersCounterProperties> = ({theme}
     const [followers, setFollowers] = useState(0)
 
     useEffect(() => {
-        setFollowers(Math.floor(Math.random() * 50000000) + 100000)
-        setFollowing(Math.floor(Math.random() * 50000000) + 100000)
+        setFollowers(Math.floor(Math.random() * 1000))
+        setFollowing(Math.floor(Math.random() * 1000))
     }, [])
 
     return (
