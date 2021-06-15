@@ -207,7 +207,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                 backgroundColor: 'rgba(7,90,171,0.32)',
                 flex: 1,
                 flexDirection: 'row',
-                marginTop: 4 * index,
+                marginTop: index > 0 ?  14 : 0,
                 paddingLeft: 4,
                 marginBottom: 4,
             }}>
