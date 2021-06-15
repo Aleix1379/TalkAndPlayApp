@@ -5,7 +5,7 @@ import {withTheme} from "react-native-paper";
 import HeaderComponent from "../../components/HeaderComponent";
 import TextInputComponent from "../../components/TextInputComponent/TextInputComponent";
 import CheckBoxListComponent from "../../components/CheckBoxListComponent/CheckBoxListComponent";
-import {availablePlatforms, Option, PostInfo, PostType, SelectItem} from "../../types/PostsTypes";
+import {availableChannels, availablePlatforms, Option, PostInfo, PostType, SelectItem} from "../../types/PostsTypes";
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
 import {ErrorType} from "../../utils/Validator/types";
 import PostsService from "../../services/Posts";
@@ -78,6 +78,7 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
     const initErrors = (): Errors => {
         switch (postType) {
             case PostType.GENERAL:
+            case PostType.STREAMERS:
                 return {
                     title: {
                         message: '',
@@ -120,6 +121,12 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
                         label: 'Platforms',
                         validations: [],
                     },
+                    channels: {
+                        message: '',
+                        touched: false,
+                        label: 'Channels',
+                        validations: []
+                    }
                 }
             default:
                 return {
@@ -311,6 +318,18 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
                         onChange={(items) => handleChange(items, 'platforms')}
                         style={styles.accordion}
                     />
+
+                    {
+                        postType === PostType.STREAMERS &&
+                        <CheckBoxListComponent
+                            id="channels"
+                            label="Channels"
+                            values={availableChannels}
+                            error={errors.channels}
+                            onChange={(items) => handleChange(items, 'channels')}
+                            style={styles.accordion}
+                        />
+                    }
 
                 </ScrollView>
 

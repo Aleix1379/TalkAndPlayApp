@@ -10,7 +10,8 @@ export default class LocalStorage {
         COMMENT_SEEN: 'comment-seen',
         FILTER: 'filter',
         FCM_TOKEN: 'fcm-token',
-        THEME: 'theme'
+        THEME: 'theme',
+        POST_TAB_INDEX: 'post-tab-index'
     };
 
     public static setAuthToken = async (token: string) => {
@@ -180,6 +181,22 @@ export default class LocalStorage {
     public static getTheme = async (): Promise<'dark' | 'light'> => {
         const value = await AsyncStorage.getItem(LocalStorage.keys.THEME)
         return value === 'light' ? 'light' : 'dark'
+    }
+
+    public static setPostTabIndex = async (index: number) => {
+        try {
+            await AsyncStorage.setItem(LocalStorage.keys.POST_TAB_INDEX, JSON.stringify(index))
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    public static getPostTabIndex = async (): Promise<number> => {
+        const value = await AsyncStorage.getItem(LocalStorage.keys.POST_TAB_INDEX)
+        if (value) {
+           return JSON.parse(value)
+        }
+        return -1
     }
 
 }

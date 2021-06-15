@@ -97,8 +97,9 @@ const CommentComponent: React.FC<CommentProperties> = ({
 
     const markDownStyles = {
         view: {
-            marginTop: 8,
+            marginTop: 10,
             marginLeft: 6,
+            marginBottom: 8,
             backgroundColor: theme.colors.background,
             paddingHorizontal: 4,
             paddingVertical: 4,
@@ -172,7 +173,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
 
     const getQuotes = (max: number): string => {
         let quotes = '>'
-        for (let i = 0; i < max; i++) {
+        for (let i = 0; i < max && i < 1; i++) {
             quotes += '>'
         }
         if (max > 0) {
@@ -214,23 +215,25 @@ const CommentComponent: React.FC<CommentProperties> = ({
         </View>
     }
 
-    const getCustomImage = () => {
+    const getCustomImage = (width: number) => {
         return {
             react: (node: any, output: any, state: any) => {
                 if (node.target.includes("youtube.com") || node.target.includes("youtu.be")) {
-                    return <YoutubePlayer
-                        key={node.target}
-                        height={0.56 * getImageSize()}
-                        width={getImageSize()}
-                        videoId={CommentUtils.getIdByUrl(node.target)}
-                        webViewStyle={{ marginTop: 8, opacity:0.99}}
-                    />
+                    return (
+                        <YoutubePlayer
+                            key={node.target}
+                            height={0.56 * width}
+                            width={width}
+                            videoId={CommentUtils.getIdByUrl(node.target)}
+                            webViewStyle={{marginTop: 8, marginBottom: 8, opacity: 0.99}}
+                        />
+                    )
 
                 }
                 return <Image
                     key={state.key}
                     source={{uri: node.target}}
-                    width={getImageSize()}
+                    width={width}
                     resizeMode={'contain'}
                     style={{marginTop: 4, marginBottom: 8}}
                 />
@@ -248,23 +251,25 @@ const CommentComponent: React.FC<CommentProperties> = ({
                 })
 
 
-                setResultReplies(<Markdown
-                    styles={markDownStyles}
-                    rules={{
-                        blockQuote: {
-                            react: (node: any, output: any, state: any) => {
-                                let items: any[] = []
-                                node.content.forEach((item: any) => {
-                                    items.push({index: state.key, content: item.content})
-                                })
-                                return items.map((it) => buildLine(it.content, it.index))
-                            }
-                        },
-                        image: getCustomImage()
-                    }}
-                >
-                    {CommentUtils.processYoutubeUrl(message) || '💀 _Comment deleted_'}
-                </Markdown>)
+                setResultReplies(
+                    <Markdown
+                        styles={markDownStyles}
+                        rules={{
+                            blockQuote: {
+                                react: (node: any, output: any, state: any) => {
+                                    const items: any[] = []
+                                    node.content.forEach((item: any) => {
+                                        items.push({index: state.key, content: item.content})
+                                    })
+                                    return items.map((it) => buildLine(it.content, it.index))
+                                }
+                            },
+                            image: getCustomImage(getImageSize() - 15)
+                        }}
+                    >
+                        {CommentUtils.processYoutubeUrl(message) || '💀 _Comment deleted_'}
+                    </Markdown>
+                )
             }
         }
     }
@@ -319,7 +324,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                         marginBottom: 8
                     }
                 }}
-                rules={{image: getCustomImage()}}
+                rules={{image: getCustomImage(getImageSize())}}
             >
                 {CommentUtils.processYoutubeUrl(comment.text) || '💀 _Comment deleted_'}
             </Markdown>

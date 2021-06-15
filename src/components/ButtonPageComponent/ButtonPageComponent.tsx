@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react'
-import {Animated, StyleProp, StyleSheet, View, ViewStyle} from "react-native"
+import {Animated, StyleProp, StyleSheet, TextStyle, View, ViewStyle} from "react-native"
 import {Text, withTheme} from 'react-native-paper'
 import {Theme} from "react-native-paper/lib/typescript/types"
 
@@ -62,10 +62,11 @@ const ButtonPageComponent: React.FC<ButtonPageProperties> = ({
         }
     }
 
-    const getNumberStyles = () => {
+    const getNumberStyles = ():StyleProp<TextStyle> => {
         return {
             fontFamily: 'Ranchers-Regular',
             fontSize: 18,
+            textDecorationLine: isCurrentPage ? 'underline' : 'none',
         }
     }
 

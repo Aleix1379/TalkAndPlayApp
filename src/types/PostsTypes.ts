@@ -61,7 +61,7 @@ export interface Filter {
     game: string;
     languages: Option[];
     platforms: Option[];
-//    channels: Channel[]
+    channels: Channel[]
     user: string
 }
 

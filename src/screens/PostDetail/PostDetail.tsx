@@ -57,6 +57,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     const {title, id} = navigation.state.params
     const postType: PostType = navigation.state.params.postType
     const [post, setPost] = useState<PostInfo | null>(navigation.state.params.post)
+    const lastIndex = navigation.state.params.lastIndex
     const [comments, setComments] = useState<Comment[]>()
     const postService = new PostsService()
     const [elementsPerPage, setElementsPerPage] = useState(10)
@@ -403,9 +404,12 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         }
     }
 
-    const loadComment = async (commentSeen: Comment) => {
-        if (post) {
-            await LocalStorage.addCommentSeen(post.id, commentSeen.id)
+    const loadComment =  (commentSeen: Comment) => {
+        if (post && (commentSeen.id && commentSeen.id >= lastCommentId || !lastCommentId)) {
+            LocalStorage.addCommentSeen(post.id, commentSeen.id).catch(err => {
+                console.log('error addCommentSeen')
+                console.log(err)
+            })
         }
     }
 
@@ -521,7 +525,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     }
 
     const goBack = () => {
-        navigation.navigate('Posts')
+        navigation.navigate('Posts', {lastIndex})
     }
 
     return (
@@ -565,7 +569,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                 }
 
                 {
-                    comments &&
+                    // comments &&
                     <View style={styles.comments}>
 
                         {
@@ -596,7 +600,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                             </View>
                         }
 
-                        {comments.map((comment, index) =>
+                        {comments?.map((comment, index) =>
                             <View key={comment.id}
                                   style={{
                                       marginTop: index === 0 ? 4 : 0,

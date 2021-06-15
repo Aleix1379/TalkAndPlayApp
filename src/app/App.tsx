@@ -93,8 +93,6 @@ const App = () => {
 
     const getToken = async () => {
         let fcmToken = await LocalStorage.getFcmToken()
-        console.log('GET TOKEN:')
-        console.log(fcmToken)
         if (!fcmToken) {
             fcmToken = await firebase.messaging().getToken();
             if (fcmToken) {
@@ -137,8 +135,8 @@ const App = () => {
 
         // This listener triggered when app is closed and we click,tapped and opened notification
         const notificationOpen = await firebase.notifications().getInitialNotification();
-        console.log('notificationOpen')
-        console.log(notificationOpen)
+        // console.log('notificationOpen')
+        // console.log(notificationOpen)
         if (notificationOpen) {
             const {title, body} = notificationOpen.notification
             displayNotification(title, body)

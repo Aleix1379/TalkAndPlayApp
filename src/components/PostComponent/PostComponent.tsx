@@ -4,7 +4,7 @@ import {Text, withTheme} from 'react-native-paper'
 import UserUtils from "../../utils/UserUtils"
 import Time from "../../utils/Time"
 import {Theme} from "react-native-paper/lib/typescript/types"
-import {Option, PostInfo} from "../../types/PostsTypes"
+import {Channel, Option, PostInfo} from "../../types/PostsTypes"
 import MessageCounterComponent from "../MessageCounterComponent/MessageCounterComponent";
 import AvatarComponent from "../AvatarComponent/AvatarComponent";
 
@@ -17,7 +17,7 @@ interface PostProperties {
 }
 
 const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMessages, totalMessages}) => {
-    const {id, title, game, platforms, user, language, lastUpdate} = post
+    const {id, title, game, platforms, channels, user, language, lastUpdate} = post
     let startX = 0
 
     const styles = StyleSheet.create({
@@ -41,10 +41,11 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
         user: {
             display: "flex",
             alignItems: "center",
-            marginRight: 12
+            marginRight: 12,
+            justifyContent: "space-between"
         },
         avatar: {
-            marginBottom: 5
+            marginBottom: 6
         },
         game: {
             flex: 1,
@@ -70,6 +71,11 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
             flex: 1,
             color: theme.colors.text
         },
+        userName: {
+            color: theme.colors.text,
+            textAlign: "right",
+            marginTop: 'auto'
+        },
         counter: {}
     })
 
@@ -93,7 +99,7 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
                     style={styles.avatar}
                     uri={UserUtils.getImageUrl(user)}
                 />
-                <Text style={styles.text}>{user?.name}</Text>
+                <Text style={styles.userName}>{user?.name}</Text>
             </View>
 
             <View style={styles.game}>
@@ -123,6 +129,17 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
                         alignSelf: 'center'
                     }}>{platforms.map((platform: Option) => platform.name).join(', ')}</Text>
                 </View>
+
+                {
+                    channels.length > 0 &&
+                    <View style={styles.details}>
+                        <Text style={{
+                            ...styles.text,
+                            alignSelf: 'center'
+                        }}>
+                            {channels.map((channel: Channel) => channel.name).join(', ')}</Text>
+                    </View>
+                }
 
                 <View style={styles.details}>
                     <Text style={styles.label}>{language.name}</Text>

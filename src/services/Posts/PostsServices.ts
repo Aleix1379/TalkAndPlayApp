@@ -1,9 +1,5 @@
 import {Comment, CommentResponse, Filter, PostInfo, PostsResponse, PostType} from "../../types/PostsTypes";
 import Api from "../Api";
-import {ImagePickerResponse} from "react-native-image-picker/src/types";
-import {UserState} from "../../store/user/types";
-import LocalStorage from "../../utils/LocalStorage/LocalStorage";
-import {Platform} from "react-native";
 
 class PostsService extends Api {
     constructor() {
@@ -22,17 +18,20 @@ class PostsService extends Api {
         let platforms: number[] = [];
         let language: number[] = [];
         let userName = ''
+        let channels: number[] = []
+
         if (filter) {
             title = filter.title;
             game = filter.game;
             platforms = filter.platforms.map((platform) => platform.id);
             language = filter.languages.map((language) => language.id);
             userName = filter.user
+            channels = filter.channels.map((channel) => channel.id)
         }
 
         return this.http
             .get(
-                `${this.getUrl()}?page=${page}&title=${title}&game=${game}&platforms=${platforms}&languages=${language}&postType=${postType}&userName=${userName}`
+                `${this.getUrl()}?page=${page}&title=${title}&game=${game}&platforms=${platforms}&languages=${language}&postType=${postType}&userName=${userName}&channels=${channels}`
             )
             .then((res) => {
                 return res.data;

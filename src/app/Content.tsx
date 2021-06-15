@@ -46,7 +46,6 @@ const Content: React.FC<ContentProperties> = ({theme, login, closeDialog, setThe
     }, shallowEqual)
 
     const getTheme = (): Theme => {
-        console.log('GET THEME IS DARK: ' + isDarkTheme)
         if (isDarkTheme) {
             return {
                 ...DefaultTheme,
@@ -100,7 +99,6 @@ const Content: React.FC<ContentProperties> = ({theme, login, closeDialog, setThe
     }, [])
 
     useEffect(() => {
-        console.log('use effect dark theme: ' + isDarkTheme)
         loadCustomTheme()
     }, [isDarkTheme])
 

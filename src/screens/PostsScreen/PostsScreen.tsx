@@ -7,6 +7,7 @@ import {NavigationState} from "react-native-tab-view/lib/typescript/src/types";
 import {
     availableChannels,
     availablePlatforms,
+    Channel,
     Filter,
     Option,
     PostsResponse,
@@ -40,6 +41,7 @@ interface Form {
     languages: Option[]
     platforms: Option[]
     user: string
+    channels: Channel[]
 }
 
 export interface PostListState {
@@ -54,6 +56,7 @@ export interface PostListState {
     postType: PostType
     upperAnimation: Animated.Value
     headerVisible: boolean
+    lastIndex: number
 }
 
 interface RouteItem {
@@ -92,7 +95,8 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
             game: '',
             languages: [],
             platforms: [],
-            user: ''
+            user: '',
+            channels: []
         },
         navigationState: {
             index: 0,
@@ -105,7 +109,8 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
         },
         postType: PostType.GENERAL,
         upperAnimation: new Animated.Value(0),
-        headerVisible: true
+        headerVisible: true,
+        lastIndex: -1
     }
 
     readonly styles = StyleSheet.create({
@@ -204,9 +209,19 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
         }
     }
 
-    unsubscribe = this.props.navigation.addListener('didFocus', () => {
+    unsubscribe = this.props.navigation.addListener('didFocus', async (response: any) => {
+        if (response.action.params?.lastIndex) {
+            console.log('update index => ' + response.action.params?.lastIndex)
+            this.updateIndex(response.action.params?.lastIndex)
+        }
+
+        const indexSaved = await LocalStorage.getPostTabIndex()
+
+        if (indexSaved > 0) {
+            this.updateIndex(indexSaved)
+        }
+
         if (this.mounted) {
-            console.log('load data...')
             this.loadData()
         } else {
             typeof this.unsubscribe === "function" && this.unsubscribe()
@@ -255,13 +270,18 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
             .then(filter => {
                 if (filter) {
                     this.setState({form: filter})
-                    this.fetchData(0, filter)
+                    this.fetchData(0, {
+                        ...filter,
+                        channels: this.state.postType === PostType.STREAMERS ? filter.channels : []
+                    })
                     const data: Form = {...filter}
                     data.title = ''
                     data.user = ''
                     data.game = ''
                     data.languages = filter.languages
                     data.platforms = filter.platforms
+                    data.channels = filter.channels
+
                     LocalStorage.saveFilter(data)
                         .then(() => this.setState({form: data}))
                         .catch(err => console.log(err))
@@ -307,11 +327,19 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     }
 
     goToDetail = (id: number, title: string) => {
-        this.props.navigation.navigate('Detail', {title, id, postType: this.state.postType})
+        this.props.navigation.navigate('Detail', {
+            title,
+            id,
+            postType: this.state.postType,
+            lastIndex: this.state.lastIndex
+        })
     }
 
     search = (filter: Filter) => {
-        this.postsService.get(0, this.state.postType, filter)
+        this.postsService.get(0, this.state.postType, {
+            ...filter,
+            channels: this.state.postType === PostType.STREAMERS ? filter.channels : []
+        })
             .then(data => {
                 this.setState({
                     data: data,
@@ -326,7 +354,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
 
     loadMore = () => {
         if (this.state.data) {
-            this.postService.get(this.state.data.number + 1, this.state.postType)
+            this.postService.get(this.state.data.number + 1, this.state.postType, this.state.form)
                 .then((response: PostsResponse) => {
                     let newValue: PostsResponse | null = {...response}
                     if (this.state.data) {
@@ -512,6 +540,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                                 id="channels"
                                 label="Channels"
                                 values={availableChannels}
+                                initialValues={this.state.form.channels}
                                 onChange={(items) => this.handleChange(items, 'channels')}
                                 style={this.styles.accordion}
                             />
@@ -527,7 +556,8 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                                 game: this.state.form.game,
                                 languages: this.state.form.languages,
                                 platforms: this.state.form.platforms,
-                                user: this.state.form.user
+                                user: this.state.form.user,
+                                channels: this.state.form.channels
                             }
                             LocalStorage.saveFilter(filter)
                                 .then(() => {
@@ -562,10 +592,15 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     }
 
     updateIndex = (index: number) => {
+        LocalStorage.setPostTabIndex(index).catch(err => {
+            console.log('Error set post tab index')
+            console.log(err)
+        })
         this.setState({
             data: null,
             navigationState: {...this.state.navigationState, ...{index}},
-            postType: this.getPostType(index)
+            postType: this.getPostType(index),
+            lastIndex: index
         })
         this.loadData()
     }
