@@ -338,6 +338,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                 visible={optionsVisible}
                 onChange={() => setModalVisible(null)}
                 options={options}
+                style={{marginLeft: 16}}
             />
 
         </View>

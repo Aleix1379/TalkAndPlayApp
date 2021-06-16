@@ -1,7 +1,7 @@
 import React, {MutableRefObject, useEffect, useRef, useState} from 'react'
-import {withTheme} from 'react-native-paper'
+import {Text, withTheme} from 'react-native-paper'
 import {Theme} from "react-native-paper/lib/typescript/types"
-import {BackHandler, ScrollView, StyleSheet, View} from "react-native"
+import {BackHandler, Dimensions, ScrollView, StyleSheet, View} from "react-native"
 import {Channel, Comment, CommentResponse, Option, PostInfo, PostType} from "../../types/PostsTypes"
 import PostsService from "../../services/Posts"
 import Info from "../../components/Info"
@@ -77,6 +77,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     const [commentToReply, setCommentToReply] = useState<Comment | null>(null)
     const [editModeEnabled, setEditModeEnabled] = useState(false)
     const [commentId, setCommentId] = useState<number | null>(null)
+    const [comment, setComment] = useState<Comment | null>()
     let inputRef: any = null
     const user: UserState = useSelector((state: ApplicationState) => {
         return state.user
@@ -430,7 +431,8 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         }
     }
 
-    const setModalVisible = (id: number | null) => {
+    const setModalVisible = (com: Comment, id: number | null) => {
+        setComment(com)
         let values = {}
         comments?.forEach(c => {
             // @ts-ignore
@@ -623,7 +625,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                     checkVisible={() => loadComment(comment)}
                                     optionsVisible={optionsVisible[comment.id!]}
                                     reply={(comment) => reply(comment)}
-                                    setModalVisible={(id: number | null) => setModalVisible(id)}
+                                    setModalVisible={(id: number | null) => setModalVisible(comment, id)}
                                     onCommentDelete={(id: number | null) => deleteComment(id)}
                                     editComment={(comment) => editComment(comment)}
                                     onReport={(id) => reportComment(id)}
@@ -696,23 +698,22 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                 uploadPicture={uploadPicture}
             />}
 
-            {/*<DialogComponent
-                visible={showDialog} onDismiss={() => setShowDialog(false)}
-                title="Delete post"
-                content={["Permanently delete this post and all the comments?", "You can't undo this"]}
-                actions={[
-                    {
-                        label: "Cancel",
-                        onPress: () => setShowDialog(false)
-                    },
-                    {
-                        label: "Delete",
-                        backgroundColor: theme.colors.error,
-                        onPress: () => deletePost()
-                    }
-                ]}
-            />*/}
-
+            {
+                comment && optionsVisible[comment.id!] &&
+                <View
+                    style={{
+                        backgroundColor: 'rgba(66,66,66,0)',
+                        flex: 1,
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        height: Dimensions.get('window').height,
+                        width: Dimensions.get('window').width
+                    }}
+                    onTouchEnd={() => setModalVisible(comment, null)}>
+                    <Text/>
+                </View>
+            }
         </>
     )
 }

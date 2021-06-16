@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Animated, StyleSheet, View} from "react-native";
+import {Animated, StyleProp, StyleSheet, View, ViewStyle} from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {Text, withTheme} from "react-native-paper";
 import {ModalOption} from "../../screens/PostDetail/PostDetail";
@@ -11,9 +11,17 @@ interface TopSheetProperties {
     options: ModalOption[]
     onChange?: () => void
     top?: number
+    style?: StyleProp<ViewStyle>
 }
 
-const TopSheetComponent: React.FC<TopSheetProperties> = ({theme, visible = false, options, onChange, top = 0}) => {
+const TopSheetComponent: React.FC<TopSheetProperties> = ({
+                                                             theme,
+                                                             visible = false,
+                                                             options,
+                                                             onChange,
+                                                             top = 0,
+                                                             style
+                                                         }) => {
     const [upperAnimation] = useState(new Animated.Value(0))
 
     const startAnimation = () => {
@@ -80,7 +88,7 @@ const TopSheetComponent: React.FC<TopSheetProperties> = ({theme, visible = false
     }, [visible])
 
     return (
-        <View style={styles.container} onTouchEnd={() => onChange && onChange()}>
+        <View style={[styles.container, style]} onTouchEnd={() => onChange && onChange()}>
             <Animated.View style={[styles.topSheet, animatedStyles.upper]}>
                 {options.map((option) => (
                     <View key={option.id} style={{backgroundColor: 'rgba(0,0,0,0)'}} onTouchEnd={() => option.action()}>
