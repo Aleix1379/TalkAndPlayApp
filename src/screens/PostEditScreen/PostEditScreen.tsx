@@ -23,7 +23,7 @@ interface PostEditProperties {
 
 interface Errors {
     title: ErrorType
-    game: ErrorType
+    game?: ErrorType
     platforms?: ErrorType
     language: ErrorType
     channels?: ErrorType
@@ -126,6 +126,43 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
                         touched: false,
                         label: 'Channels',
                         validations: []
+                    }
+                }
+            case PostType.SETUP:
+                return {
+                    title: {
+                        message: '',
+                        touched: false,
+                        label: 'Title',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 40,
+                            },
+                        ],
+                    },
+                    language: {
+                        message: '',
+                        touched: false,
+                        label: 'Language',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                        ],
+                    },
+                    platforms: {
+                        message: '',
+                        touched: false,
+                        label: 'Platforms',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                        ]
                     }
                 }
             default:
@@ -262,6 +299,12 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
                     !!errors.language.message ||
                     !post.language.name ||
                     !!errors.channels?.message
+            case PostType.SETUP:
+                return untouched ||
+                    !!errors.title.message ||
+                    !!errors.language.message ||
+                    !post.language.name ||
+                    !!errors.platforms?.message
             default:
                 return true
         }
@@ -287,13 +330,16 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
                                         error={errors.title}
                     />
 
-                    <TextInputComponent id="game"
-                                        label="Game"
-                                        value={post.game}
-                                        style={styles.input}
-                                        onChange={update}
-                                        error={errors.game}
-                    />
+                    {
+                        postType === PostType.STREAMERS &&
+                        <TextInputComponent id="game"
+                                            label="Game"
+                                            value={post.game}
+                                            style={styles.input}
+                                            onChange={update}
+                                            error={errors.game}
+                        />
+                    }
 
                     <CheckBoxListComponent
                         id="languages"

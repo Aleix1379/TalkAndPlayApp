@@ -20,6 +20,10 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
     const {id, title, game, platforms, channels, user, language, lastUpdate} = post
     let startX = 0
 
+    const getColorText = () => {
+        return unreadMessages > 0 ?  theme.colors.text : '#959595'
+    }
+
     const styles = StyleSheet.create({
         post: {
             backgroundColor: theme.colors.primary,
@@ -27,7 +31,8 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
             flexDirection: "row",
             paddingTop: 12,
             paddingBottom: 8,
-            paddingHorizontal: 12,
+            paddingLeft: 4,
+            paddingRight: 8,
             borderRadius: 4,
             shadowColor: theme.colors.primary,
             shadowOffset: {
@@ -42,13 +47,14 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
             display: "flex",
             alignItems: "center",
             marginRight: 12,
-            justifyContent: "space-between"
+            justifyContent: "space-between",
+            flex: 1,
         },
         avatar: {
             marginBottom: 6
         },
         game: {
-            flex: 1,
+            flex: 4,
             justifyContent: "space-between",
             color: theme.colors.accent
         },
@@ -59,20 +65,21 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
         },
         title: {
             flex: 1,
-            color: theme.colors.text,
-            fontWeight: unreadMessages > 0 ? 'bold' : 'normal'
+            color: getColorText(),
+            fontWeight: unreadMessages > 0 ? 'bold' : 'normal',
+            fontSize: 18
         },
         text: {
-            color: theme.colors.text,
+            color: getColorText(),
             textAlign: "right",
             flex: 1
         },
         label: {
             flex: 1,
-            color: theme.colors.text
+            color: getColorText(),
         },
         userName: {
-            color: theme.colors.text,
+            color: getColorText(),
             textAlign: "right",
             marginTop: 'auto'
         },
@@ -104,7 +111,7 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
 
             <View style={styles.game}>
 
-                <View style={styles.details}>
+                <View style={[styles.details, {alignItems: "center"}]}>
                     <Text style={styles.title}>{title}</Text>
 
 

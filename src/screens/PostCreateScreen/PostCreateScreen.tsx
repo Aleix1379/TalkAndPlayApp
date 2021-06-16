@@ -34,7 +34,7 @@ interface PostCreateProperties {
 
 interface Errors {
     title: ErrorType
-    game: ErrorType
+    game?: ErrorType
     text: ErrorType
     platforms?: ErrorType
     language: ErrorType
@@ -183,6 +183,57 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                         touched: false,
                         label: 'Channels',
                         validations: []
+                    }
+                }
+            case PostType.SETUP:
+                return {
+                    title: {
+                        message: '',
+                        touched: false,
+                        label: 'Title',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 40,
+                            },
+                        ],
+                    },
+                    text: {
+                        message: '',
+                        touched: false,
+                        label: 'Message',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 5000,
+                            },
+                        ],
+                    },
+                    language: {
+                        message: '',
+                        touched: false,
+                        label: 'Language',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                        ],
+                    },
+                    platforms: {
+                        message: '',
+                        touched: false,
+                        label: 'Platforms',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                        ]
                     }
                 }
             default:
@@ -368,6 +419,13 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                     !!errors.text.message ||
                     !!errors.language.message ||
                     !post.language.name
+            case PostType.SETUP:
+                return untouched ||
+                    !!errors.title.message ||
+                    !!errors.text.message ||
+                    !!errors.language.message ||
+                    !post.language.name ||
+                    !!errors.platforms?.message
             default:
                 return true
         }
@@ -392,14 +450,16 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                                         onChange={update}
                                         error={errors.title}
                     />
-
-                    <TextInputComponent id="game"
-                                        label="Game"
-                                        value={post.game}
-                                        style={styles.input}
-                                        onChange={update}
-                                        error={errors.game}
-                    />
+                    {
+                        postType !== PostType.SETUP &&
+                        < TextInputComponent id="game"
+                                             label="Game"
+                                             value={post.game}
+                                             style={styles.input}
+                                             onChange={update}
+                                             error={errors.game}
+                        />
+                    }
 
                     <TextInputComponent id="text"
                                         label="Message"

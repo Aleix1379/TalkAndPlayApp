@@ -92,7 +92,12 @@ const CommentComponent: React.FC<CommentProperties> = ({
             marginRight: 12,
             borderWidth: 0,
         },
-        options: {}
+        options: {},
+        imageContainer: {
+            marginTop: 4,
+            marginBottom: 8,
+            borderRadius: 3,
+        }
     })
 
     const markDownStyles = {
@@ -207,7 +212,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                 backgroundColor: 'rgba(7,90,171,0.32)',
                 flex: 1,
                 flexDirection: 'row',
-                marginTop: index > 0 ?  14 : 0,
+                marginTop: index > 0 ? 14 : 0,
                 paddingLeft: 4,
                 marginBottom: 4,
             }}>
@@ -235,7 +240,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                     source={{uri: node.target}}
                     width={width}
                     resizeMode={'contain'}
-                    style={{marginTop: 4, marginBottom: 8}}
+                    style={styles.imageContainer}
                 />
             }
         }

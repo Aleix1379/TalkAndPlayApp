@@ -14,6 +14,7 @@ import {withTheme} from "react-native-paper"
 import {ImagePickerResponse, launchImageLibrary} from "react-native-image-picker";
 import {closeDialog, openDialog} from "../../store/dialog/actions";
 import {DialogOption} from "../../store/dialog/types";
+import ImagePicker from 'react-native-image-crop-picker';
 
 interface Errors {
     message: ErrorType
@@ -129,8 +130,7 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
             borderRadius: 0,
             marginLeft: 6
         },
-        imageIcon: {
-        },
+        imageIcon: {},
         button: {
             marginLeft: 12,
             right: 5,
@@ -173,9 +173,32 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
     }
 
     const choosePicture = (): void => {
+        ImagePicker.openPicker({
+            cropping: true,
+            multiple: true,
+            maxFiles: 10,
+            showsSelectedCount: true
+        })
+            .then(response => {
+                let images: any[]
+                if (Array.isArray(response)) {
+                    images = response
+                } else {
+                    images = [response]
+                }
+                console.log(images)
+            })
+            .catch(err => {
+                console.log('Error image picker')
+                console.log(err)
+            })
+        /*
         launchImageLibrary(
             {
-                mediaType: "photo"
+                mediaType: "photo",
+                // @ts-ignore
+                allowsMultiple: true
+
             },
             (result) => {
                 if (!result.didCancel) {
@@ -196,6 +219,7 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
                 }
             }
         )
+        */
     }
 
     return (

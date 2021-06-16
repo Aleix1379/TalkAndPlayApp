@@ -26,6 +26,7 @@ export enum PostType {
     GAMES = "GAMES",
     ONLINE = "ONLINE",
     STREAMERS = "STREAMERS",
+    SETUP = "SETUP"
 }
 
 export interface PostInfo {

@@ -105,6 +105,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                 {key: 'games', title: 'Games', postType: PostType.GAMES},
                 {key: 'online', title: 'Online', postType: PostType.ONLINE},
                 {key: 'streamers', title: 'Streaming', postType: PostType.STREAMERS},
+                {key: 'setup', title: 'Setup', postType: PostType.SETUP}
             ]
         },
         postType: PostType.GENERAL,
@@ -412,8 +413,10 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
             return 'Talk about games'
         } else if (this.state.postType === PostType.GENERAL) {
             return 'News and general topics'
-        } else {
+        } else if (this.state.postType === PostType.STREAMERS) {
             return 'Talk about streamers'
+        } else if (this.state.postType === PostType.SETUP) {
+            return 'Talk about different setup'
         }
     }
 
@@ -500,13 +503,16 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                             style={this.styles.input}
                         />
 
-                        <TextInputComponent
-                            id="game"
-                            label="Game"
-                            value={this.state.form.game}
-                            onChange={this.update}
-                            style={this.styles.input}
-                        />
+                        {
+                            this.state.postType !== PostType.SETUP &&
+                            <TextInputComponent
+                                id="game"
+                                label="Game"
+                                value={this.state.form.game}
+                                onChange={this.update}
+                                style={this.styles.input}
+                            />
+                        }
 
                         <TextInputComponent
                             id='user'
@@ -579,6 +585,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     )
 
     getPostType = (index: number): PostType => {
+        console.log('getPostType: INDEX => ' + index)
         switch (index) {
             case 0:
                 return PostType.GENERAL
@@ -586,8 +593,12 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                 return PostType.GAMES
             case 2:
                 return PostType.ONLINE
-            default:
+            case 3:
                 return PostType.STREAMERS
+            case 4:
+                return PostType.SETUP
+            default:
+                return PostType.GENERAL
         }
     }
 
