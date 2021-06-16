@@ -35,9 +35,9 @@ const App = () => {
                 ...DefaultTheme,
                 colors: {
                     ...DefaultTheme.colors,
-                    primary: '#212121',
+                    primary: '#2d2d2d',
                     text: '#bdbdbd',
-                    background: '#363636',
+                    background: '#636363',
                     accent: '#075aab',
                     onSurface: '#1976d2',
                     surface: '#0f0f0f',
