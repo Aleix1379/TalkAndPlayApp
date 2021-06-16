@@ -702,7 +702,8 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                 comment && optionsVisible[comment.id!] &&
                 <View
                     style={{
-                        backgroundColor: 'rgba(66,66,66,0)',
+                        backgroundColor: 'rgba(66,66,66,1)',
+                        zIndex: 100,
                         flex: 1,
                         position: "absolute",
                         top: 0,

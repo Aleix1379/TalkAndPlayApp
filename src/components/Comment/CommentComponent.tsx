@@ -240,7 +240,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                     source={{uri: node.target}}
                     width={width}
                     resizeMode={'contain'}
-                    style={styles.imageContainer}
+                    style={[styles.imageContainer, {marginTop: isEmoji() ? 8 : 4}]}
                 />
             }
         }
@@ -279,9 +279,11 @@ const CommentComponent: React.FC<CommentProperties> = ({
         }
     }
 
+    const isEmoji = (): boolean => {
+        return comment.text.startsWith("![gif](https://media.googleusercontent.com") || comment.text.startsWith("![gif](https://www.gstatic.com")
+    }
     const getImageSize = () => {
-        if (comment.text.startsWith("![gif](https://media.googleusercontent.com") ||
-            comment.text.startsWith("![gif](https://www.gstatic.com")) {
+        if (isEmoji()) {
             return 100
         }
         return Dimensions.get('window').width - 25
@@ -304,12 +306,14 @@ const CommentComponent: React.FC<CommentProperties> = ({
                         color: user.id >= 0 && user.id !== comment.author.id ? '#238cff' : theme.colors.text
                     }}
                     onPress={() => user.id >= 0 && goToProfile(comment.author.email)}>{comment.author.name}</Text>
-                <Text style={styles.date}>{Time.diff(comment.lastUpdate)}</Text>
+                <Text
+                    style={[styles.date, {marginRight: !!comment.text && user.id >= 0 ? 0 : 6}]}>
+                    {Time.diff(comment.lastUpdate)}
+                </Text>
                 {
                     !!comment.text && user.id >= 0 &&
                     <RoundButtonComponent
                         icon="dots-vertical"
-                        style={{marginLeft: 6}}
                         iconSize={20}
                         containerSize={25}
                         onPress={() => setModalVisible(comment.id)}
@@ -322,10 +326,10 @@ const CommentComponent: React.FC<CommentProperties> = ({
             <Markdown
                 styles={{
                     text: {
-                        color: comment.text ? theme.colors.text : '#909090'
+                        color: comment.text ? theme.colors.text : '#747474'
                     },
                     view: {
-                        marginTop: 4,
+                        marginTop: 12,
                         marginBottom: 8
                     }
                 }}

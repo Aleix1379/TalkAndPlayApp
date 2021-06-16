@@ -130,7 +130,9 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
             borderRadius: 0,
             marginLeft: 6
         },
-        imageIcon: {},
+        imageIcon: {
+            marginLeft: 2,
+        },
         button: {
             marginLeft: 12,
             right: 5,
@@ -260,9 +262,7 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
             <View onTouchEnd={() => sendComment()}>
                 <Animated.View style={[styles.button, animatedStyles.rotation]}>
                     <Animated.Text style={{color: color}}>
-                        <MaterialCommunityIcons name="send"
-                                                size={26}
-                        />
+                        <MaterialCommunityIcons name="send" size={26}/>
                     </Animated.Text>
                 </Animated.View>
             </View>

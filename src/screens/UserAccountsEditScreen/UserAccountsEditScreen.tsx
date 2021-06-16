@@ -50,7 +50,7 @@ const UserAccountsEditScreen: React.FC<UserAccountsEditProperties> = ({theme, na
             {id: user.id + '-5', name: 'Discord', value: ''},
             {id: user.id + '-6', name: 'Twitch', value: ''},
             {id: user.id + '-7', name: 'Youtube', value: ''},
-            {id: user.id + '-8', name: 'Facebook Gaming', value: ''},
+            {id: user.id + '-8', name: 'Facebook', value: ''},
         ]
     )
 
