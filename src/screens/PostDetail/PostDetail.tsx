@@ -404,7 +404,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         }
     }
 
-    const loadComment =  (commentSeen: Comment) => {
+    const loadComment = (commentSeen: Comment) => {
         if (post && (commentSeen.id && commentSeen.id >= lastCommentId || !lastCommentId)) {
             LocalStorage.addCommentSeen(post.id, commentSeen.id).catch(err => {
                 console.log('error addCommentSeen')
@@ -518,6 +518,9 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         setEditModeEnabled(true)
         setMessage(comment.text)
         setCommentId(comment.id)
+        if (inputRef) {
+            inputRef.focus()
+        }
     }
 
     const reportComment = (id: number): void => {
