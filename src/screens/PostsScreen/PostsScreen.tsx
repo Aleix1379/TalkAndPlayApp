@@ -128,7 +128,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
         loadMore: {
             display: "flex",
             alignItems: "center",
-            marginTop: 4,
+            marginTop: 6,
             marginBottom: 8
         },
         loadMoreText: {
