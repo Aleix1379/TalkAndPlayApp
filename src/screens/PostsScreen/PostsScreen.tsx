@@ -585,7 +585,6 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     )
 
     getPostType = (index: number): PostType => {
-        console.log('getPostType: INDEX => ' + index)
         switch (index) {
             case 0:
                 return PostType.GENERAL
