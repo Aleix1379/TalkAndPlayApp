@@ -90,7 +90,8 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         },
 
         postDetail: {
-            marginTop: 4
+            marginTop: 4,
+            marginHorizontal: 4
         },
         ads: {
             marginTop: 10,
