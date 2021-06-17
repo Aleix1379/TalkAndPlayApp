@@ -557,8 +557,8 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 
                         <Info style={{...styles.postDetail, marginTop: 4}}
                               valueAlign={'right'}
-                              label={post.language.name}
-                              value={post.platforms.map((platform: Option) => platform.name).join(', ')}
+                              label={post.platforms.map((platform: Option) => platform.name).join(', ')}
+                              value={post.language.name}
                         />
 
                         {
