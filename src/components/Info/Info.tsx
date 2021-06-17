@@ -1,5 +1,5 @@
 import React from 'react'
-import {StyleProp, View, ViewStyle} from "react-native"
+import {StyleProp, StyleSheet, View, ViewStyle} from "react-native"
 import {Text, withTheme} from 'react-native-paper'
 import {Theme} from "react-native-paper/lib/typescript/types"
 
@@ -19,8 +19,8 @@ const Info: React.FC<InfoProperties> = ({
                                             valueAlign = 'right'
                                         }) => {
 
-    const getStyles = (): StyleProp<ViewStyle> => {
-        const item: StyleProp<ViewStyle> = {
+    const styles = StyleSheet.create({
+        info: {
             display: "flex",
             flexDirection: "row",
             justifyContent: "space-between",
@@ -36,17 +36,18 @@ const Info: React.FC<InfoProperties> = ({
             shadowOpacity: 0.25,
             shadowRadius: 3.84,
             elevation: 5,
+        },
+        text: {
+            textAlign: valueAlign,
+            flex: 1,
+            marginRight: 4
         }
-
-        return {
-            ...item, ...style as {}
-        }
-    }
+    })
 
     return (
-        <View style={getStyles()}>
+        <View style={[styles.info, style]}>
             {label && <Text>{label}</Text>}
-            <Text style={{textAlign: valueAlign, flex: 1, marginRight: 4}}>{value}</Text>
+            <Text style={styles.text}>{value}</Text>
         </View>
     )
 }

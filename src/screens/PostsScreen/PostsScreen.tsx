@@ -258,8 +258,6 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     loadData = () => {
         LocalStorage.getMessagesSeen()
             .then(data => {
-                console.log('GET MESSAGES SEEN')
-                console.log(data)
                 this.postService.getCommentsUnseen(data).then(values => {
                     this.setState({commentsUnSeen: values})
                 }).catch(err => {
