@@ -109,9 +109,8 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         },
         goToFirstUnSeen: {
             backgroundColor: theme.colors.accent,
-            marginLeft: 6,
+            marginLeft: 8,
             marginTop: 4,
-            marginRight: 'auto',
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -317,7 +316,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                     scrollTo === 'bottom' && page
                         ? page.totalOfElements < page.totalPages * size
                         ? page.totalPages - 1
-                        : page.totalPages
+                        : page.totalPages - 1
                         : newPage! >= 0
                         ? newPage
                         : currentPage,
@@ -418,7 +417,15 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         setManualScrollEnabled(true)
         setUnseenMessages(0)
         console.log('lastCommentId ===> ' + lastCommentId)
+        console.log('gotoFirstUnseenMessage: ' + pageFirstUnseenComment)
         fetchComments('top', pageFirstUnseenComment, lastCommentId)
+    }
+
+    const goToLastComment = () => {
+        if (page) {
+            console.log('go to last page: ' + (page.totalPages - 1))
+            fetchComments('bottom', page.totalPages - 1)
+        }
     }
 
     const reply = (comment: Comment | null): void => {
@@ -593,6 +600,16 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                         />
                                     </View>
                                 }
+
+                                <View
+                                    style={styles.goToFirstUnSeen}
+                                    onTouchEnd={() => goToLastComment()}
+                                >
+                                    <MaterialCommunityIcons name="page-last"
+                                                            color={theme.colors.text}
+                                                            size={15}
+                                    />
+                                </View>
 
                                 <View style={{marginLeft: 'auto'}}>
                                     <PaginationComponent

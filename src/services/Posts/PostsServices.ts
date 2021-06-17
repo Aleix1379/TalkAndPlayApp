@@ -47,6 +47,7 @@ class PostsService extends Api {
         page: number = 0,
         size: number = 10
     ): Promise<CommentResponse> {
+        console.log('get comments by post page => ' + page)
         return this.http
             .get(`${this.getUrl(postId)}/comments?page=${page}&size=${size}`)
             .then((res) => res.data)
