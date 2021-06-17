@@ -624,7 +624,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                         title={this.getTitle()}
                         rightAction={{
                             image: "magnify",
-                            onPress: () => this.setState({showModal: true})
+                            onPress: () => this.setState({showModal: !this.state.showModal})
                         }}
                     />
                 </Animated.View>
