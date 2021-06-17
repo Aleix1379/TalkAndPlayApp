@@ -435,7 +435,6 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                     <View key={post.id}
                           style={{
                               marginTop: index === 0 ? 5 : 0,
-                              marginHorizontal: 2,
                               marginBottom: 2
                           }}>
                         <PostComponent

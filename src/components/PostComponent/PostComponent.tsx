@@ -28,11 +28,9 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
         post: {
             backgroundColor: theme.colors.primary,
             display: "flex",
-            paddingTop: 12,
-            paddingBottom: 8,
-            paddingLeft: 4,
-            paddingRight: 8,
-            borderRadius: 4,
+            paddingTop: 6,
+            paddingBottom: 4,
+            paddingHorizontal: 6,
             shadowColor: theme.colors.primary,
             shadowOffset: {
                 width: 0,
@@ -45,12 +43,7 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
         user: {
             display: "flex",
             flexDirection: "row",
-            marginBottom: 6,
-            // alignItems: "center",
-            // marginRight: 12,
-            // justifyContent: "space-between",
-            // flex: 1,
-            // backgroundColor: '#ff0077'
+            marginBottom: 6
         },
         avatar: {
             alignSelf: "center",
@@ -143,11 +136,11 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
                 </View>
 
                 <View style={styles.details}>
-                    <Text style={styles.label}>{language.name}</Text>
                     <Text style={{
-                        ...styles.text,
+                        ...styles.label,
                         alignSelf: 'center'
                     }}>{platforms.map((platform: Option) => platform.name).join(', ')}</Text>
+                    <Text style={styles.text}>{language.name}</Text>
                 </View>
 
                 {

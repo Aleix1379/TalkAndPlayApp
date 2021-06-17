@@ -63,10 +63,9 @@ const CommentComponent: React.FC<CommentProperties> = ({
     const styles = StyleSheet.create({
         comment: {
             backgroundColor: theme.colors.primary,
-            paddingTop: 12,
+            paddingTop: 6,
             paddingBottom: 0,
-            paddingHorizontal: 8,
-            borderRadius: 4,
+            paddingHorizontal: 6,
             shadowColor: theme.colors.primary,
             shadowOffset: {
                 width: 0,
@@ -83,7 +82,8 @@ const CommentComponent: React.FC<CommentProperties> = ({
             marginBottom: 0
         },
         date: {
-            marginLeft: "auto"
+            marginLeft: "auto",
+            fontSize: 12
         },
         image: {
             height: imageSize,

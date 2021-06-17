@@ -86,7 +86,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     const styles = StyleSheet.create({
         post: {
             backgroundColor: theme.colors.background,
-            paddingHorizontal: 4
+            // paddingHorizontal: 4
         },
 
         postDetail: {
