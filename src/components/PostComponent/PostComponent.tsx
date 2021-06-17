@@ -21,14 +21,13 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
     let startX = 0
 
     const getColorText = () => {
-        return unreadMessages > 0 ?  theme.colors.text : '#959595'
+        return unreadMessages > 0 ? theme.colors.text : '#959595'
     }
 
     const styles = StyleSheet.create({
         post: {
             backgroundColor: theme.colors.primary,
             display: "flex",
-            flexDirection: "row",
             paddingTop: 12,
             paddingBottom: 8,
             paddingLeft: 4,
@@ -45,13 +44,18 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
         },
         user: {
             display: "flex",
-            alignItems: "center",
-            marginRight: 12,
-            justifyContent: "space-between",
-            flex: 1,
+            flexDirection: "row",
+            marginBottom: 6,
+            // alignItems: "center",
+            // marginRight: 12,
+            // justifyContent: "space-between",
+            // flex: 1,
+            // backgroundColor: '#ff0077'
         },
         avatar: {
-            marginBottom: 6
+            alignSelf: "center",
+            marginLeft: 3,
+            marginRight: 8
         },
         game: {
             flex: 4,
@@ -62,12 +66,12 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
             display: "flex",
             flexDirection: "row",
             justifyContent: "space-between",
+            marginVertical: 1
         },
         title: {
             flex: 1,
             color: getColorText(),
             fontWeight: unreadMessages > 0 ? 'bold' : 'normal',
-            fontSize: 18
         },
         text: {
             color: getColorText(),
@@ -102,19 +106,18 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
                     source={{uri: UserUtils.getImageUrl(user)}}/>*/}
                 <AvatarComponent
                     borderWidth={0}
-                    size={50}
+                    size={35}
                     style={styles.avatar}
                     uri={UserUtils.getImageUrl(user)}
                 />
-                <Text style={styles.userName}>{user?.name}</Text>
-            </View>
+                <View style={{
+                    alignItems: "flex-start"
+                }}>
+                    <Text style={styles.userName}>{user?.name}</Text>
+                    <Text style={[styles.text, {fontSize: 12}]}>{Time.diff(lastUpdate)}</Text>
+                </View>
 
-            <View style={styles.game}>
-
-                <View style={[styles.details, {alignItems: "center"}]}>
-                    <Text style={styles.title}>{title}</Text>
-
-
+                <View style={[styles.details, {marginLeft: 'auto', alignItems: "center"}]}>
                     {unreadMessages >= 0 &&
                     <MessageCounterComponent
                         icon={'email-mark-as-unread'}
@@ -129,8 +132,18 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
                     />}
                 </View>
 
+            </View>
+
+            <View style={styles.game}>
+
+
                 <View style={styles.details}>
-                    <Text style={styles.label}>{game}</Text>
+                    <Text style={styles.label}>{title}</Text>
+                    <Text style={styles.text}>{game}</Text>
+                </View>
+
+                <View style={styles.details}>
+                    <Text style={styles.label}>{language.name}</Text>
                     <Text style={{
                         ...styles.text,
                         alignSelf: 'center'
@@ -148,10 +161,6 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
                     </View>
                 }
 
-                <View style={styles.details}>
-                    <Text style={styles.label}>{language.name}</Text>
-                    <Text style={styles.text}>{Time.diff(lastUpdate)}</Text>
-                </View>
             </View>
         </View>
     )

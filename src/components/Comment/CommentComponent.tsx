@@ -54,7 +54,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                                                            goToProfile
                                                        }) => {
     const [options, setOptions] = useState<ModalOption[]>([])
-    const imageSize = 50
+    const imageSize = 35
     let replies: any[] = []
     const [resultReplies, setResultReplies] = useState<any>([])
     const user: UserState = useSelector((state: ApplicationState) => {
@@ -94,7 +94,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
         },
         options: {},
         imageContainer: {
-            marginTop: 4,
+            marginTop: 0,
             marginBottom: 8,
             borderRadius: 3,
         }
@@ -240,7 +240,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                     source={{uri: node.target}}
                     width={width}
                     resizeMode={'contain'}
-                    style={[styles.imageContainer, {marginTop: isEmoji() ? 8 : 4}]}
+                    style={styles.imageContainer}
                 />
             }
         }
@@ -302,12 +302,11 @@ const CommentComponent: React.FC<CommentProperties> = ({
                 </View>
                 <Text
                     style={{
-                        fontSize: 18,
-                        color: user.id >= 0 && user.id !== comment.author.id ? '#238cff' : theme.colors.text
+                        color: user.id >= 0 && user.id !== comment.author.id ? '#238cff' : '#959595'
                     }}
                     onPress={() => user.id >= 0 && goToProfile(comment.author.email)}>{comment.author.name}</Text>
                 <Text
-                    style={[styles.date, {marginRight: !!comment.text && user.id >= 0 ? 0 : 6}]}>
+                    style={[styles.date, {color: '#959595', marginRight: !!comment.text && user.id >= 0 ? 0 : 6}]}>
                     {Time.diff(comment.lastUpdate)}
                 </Text>
                 {
@@ -329,7 +328,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                         color: comment.text ? theme.colors.text : '#747474'
                     },
                     view: {
-                        marginTop: 12,
+                        marginTop: 10,
                         marginBottom: 8
                     }
                 }}

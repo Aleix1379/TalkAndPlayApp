@@ -415,7 +415,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
         } else if (this.state.postType === PostType.STREAMERS) {
             return 'Talk about streamers'
         } else if (this.state.postType === PostType.SETUP) {
-            return 'Talk about different setup'
+            return 'Talk about gaming setup'
         }
     }
 

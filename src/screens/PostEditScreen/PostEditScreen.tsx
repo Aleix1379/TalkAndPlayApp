@@ -331,7 +331,7 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
                     />
 
                     {
-                        postType === PostType.STREAMERS &&
+                        postType !== PostType.STREAMERS &&
                         <TextInputComponent id="game"
                                             label="Game"
                                             value={post.game}
