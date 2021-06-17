@@ -130,13 +130,13 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
             <View style={styles.game}>
 
 
-                <View style={styles.details}>
+                <View style={[styles.details, {marginTop: 2,marginLeft: 45}]}>
                     <Text style={styles.label}>{title}</Text>
                     <Text style={styles.text}>{game}</Text>
                 </View>
 
-                <View style={styles.details}>
-                    <Text style={{
+                <View style={[styles.details, {marginTop: 2,marginLeft: 45}]}>
+                <Text style={{
                         ...styles.label,
                         alignSelf: 'center'
                     }}>{platforms.map((platform: Option) => platform.name).join(', ')}</Text>
