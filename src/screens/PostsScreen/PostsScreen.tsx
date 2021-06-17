@@ -635,11 +635,13 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                     onIndexChange={this.updateIndex}
                     initialLayout={{width: this.layout.width}}
                     renderTabBar={props => (
-                        !this.state.showModal && <TabBar
-                            scrollEnabled={true}
-                            indicatorStyle={{backgroundColor: this.props.theme.colors.text}}
-                            style={this.styles.tab} {...props}
-                        />
+                        <View>
+                            <TabBar
+                                scrollEnabled={true}
+                                indicatorStyle={{backgroundColor: this.props.theme.colors.text}}
+                                style={this.styles.tab} {...props}
+                            />
+                        </View>
                     )}
                 />
             </View>
