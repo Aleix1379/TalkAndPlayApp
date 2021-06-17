@@ -269,7 +269,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                                     return items.map((it) => buildLine(it.content, it.index))
                                 }
                             },
-                            image: getCustomImage(getImageSize() - 15)
+                            image: getCustomImage(getImageSize())
                         }}
                     >
                         {CommentUtils.processYoutubeUrl(message) || '💀 _Comment deleted_'}
@@ -286,7 +286,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
         if (isEmoji()) {
             return 100
         }
-        return Dimensions.get('window').width - 25
+        return Dimensions.get('window').width - 12
     }
 
     return (
