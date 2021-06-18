@@ -180,7 +180,7 @@ const PasswordEditScreen: React.FC<PasswordEditProperties> = ({navigation, theme
                 title="Edit password"
                 leftAction={{
                     image: "arrow-left",
-                    onPress: () => navigation.navigate('Profile')
+                    onPress: () => navigation.goBack()
                 }}
             />
 
