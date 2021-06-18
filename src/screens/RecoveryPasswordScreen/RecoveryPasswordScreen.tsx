@@ -144,7 +144,7 @@ const RecoveryPasswordScreen: React.FC<RecoveryPasswordProperties> = ({navigatio
 
                     <Text style={styles.title}>Enter the email address associated with your account</Text>
 
-                    <Text style={styles.subTitle}>We will email you a link to reset your password</Text>
+                    <Text style={styles.subTitle}>We will email you a code to reset your password</Text>
 
                     <TextInputComponent
                         id='email'
