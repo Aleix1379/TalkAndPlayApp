@@ -77,7 +77,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-            marginBottom: 0
+            marginBottom: 8
         },
         date: {
             marginLeft: "auto",
@@ -92,8 +92,8 @@ const CommentComponent: React.FC<CommentProperties> = ({
         },
         options: {},
         imageContainer: {
-            marginTop: 0,
-            marginBottom: 8,
+            marginTop: 8,
+            marginBottom: 6,
             borderRadius: 3,
         },
         option: {
@@ -280,7 +280,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                                     return items.map((it) => buildLine(it.content, it.index))
                                 }
                             },
-                            image: getCustomImage(getImageSize())
+                            image: getCustomImage(getImageSize() - 15)
                         }}
                     >
                         {CommentUtils.processYoutubeUrl(message) || '💀 _Comment deleted_'}
@@ -344,7 +344,6 @@ const CommentComponent: React.FC<CommentProperties> = ({
                         color: comment.text ? theme.colors.text : '#747474'
                     },
                     view: {
-                        marginTop: 10,
                         marginBottom: 8
                     }
                 }}
@@ -352,13 +351,6 @@ const CommentComponent: React.FC<CommentProperties> = ({
             >
                 {CommentUtils.processYoutubeUrl(comment.text) || '💀 _Comment deleted_'}
             </Markdown>
-
-            {/*<TopSheetComponent
-                visible={optionsVisible}
-                onChange={() => setModalVisible(null)}
-                options={options}
-                style={{marginLeft: 16}}
-            />*/}
 
             <RBSheet
                 // @ts-ignore
@@ -370,13 +362,16 @@ const CommentComponent: React.FC<CommentProperties> = ({
                 closeOnPressBack={true}
                 customStyles={{
                     wrapper: {
-                        backgroundColor: 'transparent'
+                        backgroundColor: 'rgba(33,33,33,0.25)'
                     },
                     draggableIcon: {
                         backgroundColor: theme.colors.accent
                     },
                     container: {
-                        backgroundColor: theme.colors.primary
+                        backgroundColor: theme.colors.surface,
+                        borderTopLeftRadius: 16,
+                        borderTopRightRadius: 16,
+                        paddingLeft: 12
                     }
                 }}
             >

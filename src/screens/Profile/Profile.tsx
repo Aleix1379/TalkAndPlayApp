@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {
     Dimensions,
     GestureResponderEvent,
@@ -9,7 +9,6 @@ import {
 import {login} from "../../store/user/actions"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {ModalOption} from "../PostDetail/PostDetail"
-import {closeModal, openModal} from "../../store/topSheet/actions"
 import {SceneMap, TabBar, TabView} from "react-native-tab-view"
 import {connect, shallowEqual, useSelector} from 'react-redux'
 import {Snackbar, Text, withTheme} from "react-native-paper"
@@ -23,11 +22,11 @@ import FollowersCounterComponent from "../../components/FollowersCounterComponen
 import ChannelComponent from "../../components/ChannelComponent";
 import Image from "react-native-scalable-image";
 import Clipboard from '@react-native-clipboard/clipboard';
+import RBSheet from "react-native-raw-bottom-sheet";
+import BottomSheetComponent from "../../components/BottomSheetContentComponent/BottomSheetComponent";
 
 interface ProfileProperties {
     navigation: any,
-    openModal: (options: ModalOption[], top: number, onChange?: () => void) => void
-    closeModal: () => void
     theme: Theme
 }
 
@@ -37,7 +36,8 @@ interface SnackBar {
     color?: string
 }
 
-const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, openModal, closeModal}) => {
+const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
+    const refRBSheet = useRef()
     const [index, setIndex] = useState(0)
     const [snackbar, setSnackbar] = useState<SnackBar>({
         visible: false,
@@ -234,7 +234,8 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, openModa
     ])
 
     const toggleModal = () => {
-        openModal(modalOptions, 0, () => closeModal())
+        // @ts-ignore
+        refRBSheet.current?.open()
     }
 
     return (
@@ -258,6 +259,32 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, openModa
                     />
                 )}
             />
+
+            <RBSheet
+                // @ts-ignore
+                ref={refRBSheet}
+                height={modalOptions.length === 1 ? modalOptions.length * 90 : modalOptions.length * 70}
+                openDuration={250}
+                closeOnDragDown={true}
+                closeOnPressMask={true}
+                closeOnPressBack={true}
+                customStyles={{
+                    wrapper: {
+                        backgroundColor: 'rgba(33,33,33,0.25)'
+                    },
+                    draggableIcon: {
+                        backgroundColor: theme.colors.accent
+                    },
+                    container: {
+                        backgroundColor: theme.colors.surface,
+                        borderTopLeftRadius: 16,
+                        borderTopRightRadius: 16,
+                        paddingLeft: 12
+                    }
+                }}
+            >
+                <BottomSheetComponent options={modalOptions} sheet={refRBSheet}/>
+            </RBSheet>
         </>
     )
 }
@@ -265,8 +292,6 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, openModa
 
 export default connect(null,
     {
-        openModal: openModal,
-        closeModal: closeModal,
         login: login,
     }
 )(withTheme(ProfileScreen))
