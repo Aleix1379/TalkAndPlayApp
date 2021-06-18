@@ -28,9 +28,10 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
         post: {
             backgroundColor: theme.colors.primary,
             display: "flex",
-            paddingTop: 6,
-            paddingBottom: 4,
-            paddingHorizontal: 6,
+            paddingTop: 10,
+            paddingBottom: 8,
+            paddingLeft: 6,
+            paddingRight: 10,
             shadowColor: theme.colors.primary,
             shadowOffset: {
                 width: 0,
@@ -47,8 +48,7 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
         },
         avatar: {
             alignSelf: "center",
-            marginLeft: 3,
-            marginRight: 8
+            marginRight: 12
         },
         game: {
             flex: 4,
@@ -130,17 +130,17 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
             <View style={styles.game}>
 
 
-                <View style={[styles.details, {marginTop: 2,marginLeft: 45}]}>
+                <View style={[styles.details, {marginTop: 2}]}>
                     <Text style={styles.label}>{title}</Text>
-                    <Text style={styles.text}>{game}</Text>
+                    <Text style={styles.text}>{language.name}</Text>
                 </View>
 
-                <View style={[styles.details, {marginTop: 2,marginLeft: 45}]}>
-                <Text style={{
-                        ...styles.label,
+                <View style={[styles.details, {marginTop: 2}]}>
+                    <Text style={styles.label}>{game}</Text>
+                    <Text style={{
+                        ...styles.text,
                         alignSelf: 'center'
                     }}>{platforms.map((platform: Option) => platform.name).join(', ')}</Text>
-                    <Text style={styles.text}>{language.name}</Text>
                 </View>
 
                 {

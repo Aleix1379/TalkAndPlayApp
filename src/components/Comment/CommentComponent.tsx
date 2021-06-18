@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {Comment} from "../../types/PostsTypes"
 import {Dimensions, StyleSheet, View} from "react-native"
 import {Text, withTheme} from 'react-native-paper'
@@ -11,7 +11,6 @@ import RoundButtonComponent from "../RoundButtonComponent"
 // @ts-ignore
 import InView from "react-native-component-inview"
 import AvatarComponent from "../AvatarComponent"
-import TopSheetComponent from "../TopSheetComponent/TopSheetComponent"
 import {UserState} from "../../store/user/types"
 import {connect, shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
@@ -23,14 +22,14 @@ import Markdown from 'react-native-simple-markdown'
 import Image from 'react-native-scalable-image'
 import YoutubePlayer from "react-native-youtube-iframe"
 import CommentUtils from "../../utils/Comment";
+import RBSheet from "react-native-raw-bottom-sheet"
+import BottomSheetComponent from "../BottomSheetContentComponent";
 
 interface CommentProperties {
     comment: Comment
     theme: Theme
     checkVisible: () => void
     reply: (comment: Comment | null) => void
-    optionsVisible: boolean,
-    setModalVisible: (id: number | null) => void
     onCommentDelete: (id: number | null) => void
     openDialog: (title: string, content: string[], actions: DialogOption[]) => void
     closeDialog: () => void
@@ -44,8 +43,6 @@ const CommentComponent: React.FC<CommentProperties> = ({
                                                            theme,
                                                            checkVisible,
                                                            reply,
-                                                           optionsVisible = false,
-                                                           setModalVisible,
                                                            onCommentDelete,
                                                            openDialog,
                                                            closeDialog,
@@ -53,6 +50,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                                                            onReport,
                                                            goToProfile
                                                        }) => {
+    const refRBSheet = useRef()
     const [options, setOptions] = useState<ModalOption[]>([])
     const imageSize = 35
     let replies: any[] = []
@@ -63,7 +61,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
     const styles = StyleSheet.create({
         comment: {
             backgroundColor: theme.colors.primary,
-            paddingTop: 6,
+            paddingTop: 10,
             paddingBottom: 0,
             paddingHorizontal: 6,
             shadowColor: theme.colors.primary,
@@ -97,6 +95,19 @@ const CommentComponent: React.FC<CommentProperties> = ({
             marginTop: 0,
             marginBottom: 8,
             borderRadius: 3,
+        },
+        option: {
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            marginVertical: 8,
+            marginLeft: 8,
+            paddingVertical: 4
+        },
+        optionText: {
+            fontSize: 18,
+            marginLeft: 16,
+            flex: 1,
         }
     })
 
@@ -289,6 +300,8 @@ const CommentComponent: React.FC<CommentProperties> = ({
         return Dimensions.get('window').width - 12
     }
 
+    // @ts-ignore
+    // @ts-ignore
     return (
         <View style={styles.comment} onLayout={(_) => checkVisible()}>
             <View style={styles.details}>
@@ -315,7 +328,10 @@ const CommentComponent: React.FC<CommentProperties> = ({
                         icon="dots-vertical"
                         iconSize={20}
                         containerSize={25}
-                        onPress={() => setModalVisible(comment.id)}
+                        onPress={() => {
+                            // @ts-ignore
+                            refRBSheet?.current?.open()
+                        }}
                     />
                 }
             </View>
@@ -337,12 +353,35 @@ const CommentComponent: React.FC<CommentProperties> = ({
                 {CommentUtils.processYoutubeUrl(comment.text) || '💀 _Comment deleted_'}
             </Markdown>
 
-            <TopSheetComponent
+            {/*<TopSheetComponent
                 visible={optionsVisible}
                 onChange={() => setModalVisible(null)}
                 options={options}
                 style={{marginLeft: 16}}
-            />
+            />*/}
+
+            <RBSheet
+                // @ts-ignore
+                ref={refRBSheet}
+                height={options.length * 70}
+                openDuration={250}
+                closeOnDragDown={true}
+                closeOnPressMask={true}
+                closeOnPressBack={true}
+                customStyles={{
+                    wrapper: {
+                        backgroundColor: 'transparent'
+                    },
+                    draggableIcon: {
+                        backgroundColor: theme.colors.accent
+                    },
+                    container: {
+                        backgroundColor: theme.colors.primary
+                    }
+                }}
+            >
+                <BottomSheetComponent options={options} sheet={refRBSheet}/>
+            </RBSheet>
 
         </View>
     )

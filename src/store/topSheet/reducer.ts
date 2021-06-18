@@ -3,6 +3,7 @@ import {TopSheetAction, TopSheetState} from "./types";
 
 const initialState: TopSheetState = {
     visible: false,
+    top: 0,
     options: []
 }
 

@@ -1,7 +1,7 @@
 import React, {MutableRefObject, useEffect, useRef, useState} from 'react'
-import {Text, withTheme} from 'react-native-paper'
+import {withTheme} from 'react-native-paper'
 import {Theme} from "react-native-paper/lib/typescript/types"
-import {BackHandler, Dimensions, ScrollView, StyleSheet, View} from "react-native"
+import {BackHandler, ScrollView, StyleSheet, View} from "react-native"
 import {Channel, Comment, CommentResponse, Option, PostInfo, PostType} from "../../types/PostsTypes"
 import PostsService from "../../services/Posts"
 import Info from "../../components/Info"
@@ -21,12 +21,12 @@ import {closeDialog, openDialog} from "../../store/dialog/actions";
 import {DialogOption} from "../../store/dialog/types";
 import {ImagePickerResponse} from "react-native-image-picker";
 import {BannerAd, BannerAdSize, TestIds} from "@react-native-firebase/admob";
+import RBSheet from "react-native-raw-bottom-sheet";
+import BottomSheetComponent from "../../components/BottomSheetContentComponent/BottomSheetComponent";
 
 interface PostDetailProperties {
     navigation: any
     theme: Theme
-    openModal: (options: ModalOption[], top: number, onChange?: () => void) => void
-    closeModal: () => void
     setLoading: (visible: boolean) => void
     openDialog: (title: string, content: string[], actions: DialogOption[]) => void
     closeDialog: () => void
@@ -48,12 +48,11 @@ export interface ModalOption {
 const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                                               navigation,
                                                               theme,
-                                                              openModal,
-                                                              closeModal,
                                                               setLoading,
                                                               openDialog,
                                                               closeDialog
                                                           }) => {
+    const refRBSheet = useRef()
     const {title, id} = navigation.state.params
     const postType: PostType = navigation.state.params.postType
     const [post, setPost] = useState<PostInfo | null>(navigation.state.params.post)
@@ -64,8 +63,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     const [currentPage, setCurrentPage] = useState<number>(0)
     const [page, setPage] = useState<InfoPage>()
     const scrollRef: MutableRefObject<any> = useRef()
-    const sheetRef = React.useRef(null)
-    const [isModalOpened, setIsModalOpened] = useState(true)
     const [modalOptions, setModalOptions] = useState<ModalOption[]>([])
     const [message, setMessage] = useState('')
     const [unseenMessages, setUnseenMessages] = useState(0)
@@ -73,11 +70,9 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     const [lastCommentId, setLastCommentId] = useState(0)
     const [dataSourceCords, setDataSourceCords] = useState<any>([])
     const [manualScrollEnabled, setManualScrollEnabled] = useState(false)
-    const [optionsVisible, setOptionsVisible] = useState<any>({})
     const [commentToReply, setCommentToReply] = useState<Comment | null>(null)
     const [editModeEnabled, setEditModeEnabled] = useState(false)
     const [commentId, setCommentId] = useState<number | null>(null)
-    const [comment, setComment] = useState<Comment | null>()
     let inputRef: any = null
     const user: UserState = useSelector((state: ApplicationState) => {
         return state.user
@@ -85,13 +80,12 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 
     const styles = StyleSheet.create({
         post: {
-            backgroundColor: theme.colors.background,
-            // paddingHorizontal: 4
+            backgroundColor: theme.colors.background
         },
 
         postDetail: {
             marginTop: 4,
-            marginHorizontal: 4
+            marginHorizontal: 6
         },
         ads: {
             marginTop: 10,
@@ -211,11 +205,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         loadPostOptions()
     }, [post])
 
-    useEffect(() => {
-        // @ts-ignore
-        isModalOpened ? sheetRef.current?.snapTo(0) : sheetRef.current?.snapTo(1)
-    }, [isModalOpened])
-
     const isOwner = (usr: UserState | null): boolean => {
         return usr?.id === user.id
     }
@@ -317,7 +306,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                     scrollTo === 'bottom' && page
                         ? page.totalOfElements < page.totalPages * size
                         ? page.totalPages - 1
-                        : page.totalPages - 1
+                        : page.totalPages
                         : newPage! >= 0
                         ? newPage
                         : currentPage,
@@ -374,7 +363,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                     setCommentToReply(null)
                     inputRef.blur()
                     setComments([])
-                    fetchComments('bottom')
+                    fetchComments()
                     setEditModeEnabled(false)
                     setCommentId(null)
                 })
@@ -386,8 +375,8 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     }
 
     const toggleModal = () => {
-        openModal(modalOptions, 0, () => closeModal())
-        setIsModalOpened(!isModalOpened)
+        // @ts-ignore
+        refRBSheet.current?.open()
     }
 
     const deletePost = () => {
@@ -422,13 +411,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         fetchComments('top', pageFirstUnseenComment, lastCommentId)
     }
 
-    const goToLastComment = () => {
-        if (page) {
-            console.log('go to last page: ' + (page.totalPages - 1))
-            fetchComments('bottom', page.totalPages - 1)
-        }
-    }
-
     const reply = (comment: Comment | null): void => {
         console.log('author: ' + comment?.author.name)
         console.log('TEXT: ' + comment?.text)
@@ -437,22 +419,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
             setCommentToReply(comment)
             inputRef.focus()
         }
-    }
-
-    const setModalVisible = (com: Comment, id: number | null) => {
-        setComment(com)
-        let values = {}
-        comments?.forEach(c => {
-            // @ts-ignore
-            values[c.id] = false
-        })
-
-        if (id) {
-            // @ts-ignore
-            values[id] = true
-        }
-
-        setOptionsVisible(values)
     }
 
     const refreshComments = (commentId: number): void => {
@@ -602,16 +568,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                     </View>
                                 }
 
-                                <View
-                                    style={styles.goToFirstUnSeen}
-                                    onTouchEnd={() => goToLastComment()}
-                                >
-                                    <MaterialCommunityIcons name="page-last"
-                                                            color={theme.colors.text}
-                                                            size={15}
-                                    />
-                                </View>
-
                                 <View style={{marginLeft: 'auto'}}>
                                     <PaginationComponent
                                         number={currentPage}
@@ -641,9 +597,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                     key={comment.id}
                                     comment={comment}
                                     checkVisible={() => loadComment(comment)}
-                                    optionsVisible={optionsVisible[comment.id!]}
                                     reply={(comment) => reply(comment)}
-                                    setModalVisible={(id: number | null) => setModalVisible(comment, id)}
                                     onCommentDelete={(id: number | null) => deleteComment(id)}
                                     editComment={(comment) => editComment(comment)}
                                     onReport={(id) => reportComment(id)}
@@ -693,46 +647,58 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                 }
             </ScrollView>
 
-            {commentToReply &&
-            <ReplyToComponent
-                comment={commentToReply}
-                close={() => {
-                    setCommentToReply(null)
-                    inputRef.blur()
-                }}
-            />}
-
-            {user.id >= 0 &&
-            <NewCommentComponent
-                send={sendComment}
-                message={message}
-                onChange={(value: string) => setMessage(value)}
-                setRef={ref => {
-                    if (ref) {
-                        inputRef = ref
-                    }
-                }}
-                onImageChange={onImageChange}
-                uploadPicture={uploadPicture}
-            />}
+            {
+                commentToReply &&
+                <ReplyToComponent
+                    comment={commentToReply}
+                    close={() => {
+                        setCommentToReply(null)
+                        inputRef.blur()
+                    }}
+                />
+            }
 
             {
-                comment && optionsVisible[comment.id!] &&
-                <View
-                    style={{
-                        backgroundColor: 'rgba(66,66,66,1)',
-                        zIndex: 100,
-                        flex: 1,
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        height: Dimensions.get('window').height,
-                        width: Dimensions.get('window').width
+                user.id >= 0 &&
+                <NewCommentComponent
+                    send={sendComment}
+                    message={message}
+                    onChange={(value: string) => setMessage(value)}
+                    setRef={ref => {
+                        if (ref) {
+                            inputRef = ref
+                        }
                     }}
-                    onTouchEnd={() => setModalVisible(comment, null)}>
-                    <Text/>
-                </View>
+                    onImageChange={onImageChange}
+                    uploadPicture={uploadPicture}
+                />
             }
+
+            <RBSheet
+                // @ts-ignore
+                ref={refRBSheet}
+                height={modalOptions.length === 1 ? modalOptions.length * 90 : modalOptions.length * 70}
+                openDuration={250}
+                closeOnDragDown={true}
+                closeOnPressMask={true}
+                closeOnPressBack={true}
+                customStyles={{
+                    wrapper: {
+                        backgroundColor: 'rgba(33,33,33,0.25)'
+                    },
+                    draggableIcon: {
+                        backgroundColor: theme.colors.accent
+                    },
+                    container: {
+                        backgroundColor: theme.colors.surface,
+                        borderTopLeftRadius: 15,
+                        borderTopRightRadius: 15,
+                        paddingLeft: 12
+                    }
+                }}
+            >
+                <BottomSheetComponent options={modalOptions} sheet={refRBSheet}/>
+            </RBSheet>
         </>
     )
 }

@@ -114,6 +114,7 @@ const ReportScreen: React.FC<ReportProperties> = ({theme, navigation}) => {
                     label='Send report'
                     icon='alert-octagon'
                     onPress={() => sendReport()}
+                    disabled={untouched || !!errors.report.message}
                     style={{
                         marginTop: 8,
                         marginBottom: 8
