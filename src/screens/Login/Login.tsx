@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Image, ScrollView, StyleSheet, View} from 'react-native';
+import {Image, StyleSheet, View} from 'react-native';
 import {Text, withTheme} from 'react-native-paper';
 import {Theme} from "react-native-paper/lib/typescript/types";
 import TextInputComponent from "../../components/TextInputComponent";
@@ -81,7 +81,8 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading, navig
             marginTop: 20,
             zIndex: 10,
             color: theme.colors.text,
-            marginHorizontal: 16
+            marginHorizontal: 16,
+            paddingBottom: 25
         },
         image: {
             width: '100%',
@@ -109,15 +110,10 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading, navig
             marginBottom: 16
         },
         signInButton: {
-            marginTop: 32,
+            marginTop: 0,
             marginBottom: 32,
             marginHorizontal: 0,
 
-        },
-        registerButton: {
-            backgroundColor: theme.colors.accent,
-            marginTop: 8,
-            marginHorizontal: 8
         },
         noAccount: {
             display: "flex",
@@ -139,8 +135,8 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading, navig
             flexDirection: "row",
             fontSize: 20,
             marginHorizontal: 8,
-            marginTop: 24,
-            marginBottom: 8
+            marginTop: 16,
+            marginBottom: 20
         }
     });
 
@@ -189,7 +185,7 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading, navig
 
                 <Image style={styles.image} source={require('../../assets/images/controller.png')}/>
 
-                <ScrollView style={styles.content}>
+                <View style={styles.content}>
 
                     <View style={styles.inputs}>
                         <View style={styles.input}>
@@ -235,7 +231,7 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading, navig
                         <Text>Forgot password?</Text>
                         <Text style={styles.singUp} onPress={() => goToRecoveryAccount()}>Restore password 🔑</Text>
                     </View>
-                </ScrollView>
+                </View>
             </View>
         </>
     );
