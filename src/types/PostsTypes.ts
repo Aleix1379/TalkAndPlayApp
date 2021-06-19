@@ -9,6 +9,7 @@ export type User = {
     imageVersion: number;
     languages: Option[];
     platforms: Option[];
+    seenMessages: { [id: number]: number }
 };
 
 export interface PostUser {
@@ -19,6 +20,7 @@ export interface PostUser {
     languages: Option[];
     platforms: Option[];
     profiles: Account[]
+    seenMessages: { [id: number]: number }
 }
 
 export enum PostType {

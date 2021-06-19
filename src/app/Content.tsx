@@ -16,6 +16,7 @@ import DialogComponent from "../components/DialogComponent/DialogComponent";
 import {DialogState} from "../store/dialog/types";
 import {closeDialog} from "../store/dialog/actions";
 import {setTheme} from "../store/theme/actions";
+import UserService from "../services/User";
 
 interface ContentProperties {
     theme: Theme;
@@ -44,6 +45,8 @@ const Content: React.FC<ContentProperties> = ({theme, login, closeDialog, setThe
     const isDarkTheme: boolean = useSelector((state: ApplicationState) => {
         return state.theme.isDarkTheme
     }, shallowEqual)
+
+    const userService = new UserService()
 
     const getTheme = (): Theme => {
         if (isDarkTheme) {
@@ -92,7 +95,9 @@ const Content: React.FC<ContentProperties> = ({theme, login, closeDialog, setThe
             LocalStorage.getUser()
                 .then(userSaved => {
                     if (userSaved) {
-                        login(userSaved)
+                        userService.getProfile().then(userData => {
+                            login(userData)
+                        })
                     }
                 })
         }, 100)

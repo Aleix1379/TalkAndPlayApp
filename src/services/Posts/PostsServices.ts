@@ -69,14 +69,6 @@ class PostsService extends Api {
         return this.http.delete(this.getUrl(postId))
     }
 
-    getCommentsUnseen(values: any): Promise<any> {
-        return this.http.get(`${this.getUrl()}/comments/unseen`, {
-            params: {
-                data: JSON.stringify(values)
-            }
-        }).then((res) => res.data)
-    }
-
     getPageFirstUnseenComment(postId: number, commentId: number, itemsPerPage: number = 10): Promise<number> {
         return this.http.get(`${this.getUrl(postId)}/firstUnseen/${commentId}?itemsPerPage=${itemsPerPage}`).then((res) => res.data)
     }

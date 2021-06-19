@@ -8,6 +8,8 @@ export type UserState = {
   languages: Option[]
   platforms: Option[]
   profiles: Account[]
+  seenMessages: { [id: number]: number }
+
 }
 export type UserAction = {
   user: UserState

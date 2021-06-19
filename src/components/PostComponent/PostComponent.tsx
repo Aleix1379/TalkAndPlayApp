@@ -7,6 +7,9 @@ import {Theme} from "react-native-paper/lib/typescript/types"
 import {Channel, Option, PostInfo} from "../../types/PostsTypes"
 import MessageCounterComponent from "../MessageCounterComponent/MessageCounterComponent";
 import AvatarComponent from "../AvatarComponent/AvatarComponent";
+import {UserState} from "../../store/user/types";
+import {shallowEqual, useSelector} from "react-redux";
+import {ApplicationState} from "../../store";
 
 interface PostProperties {
     post: PostInfo,
@@ -19,6 +22,10 @@ interface PostProperties {
 const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMessages, totalMessages}) => {
     const {id, title, game, platforms, channels, user, language, lastUpdate} = post
     let startX = 0
+
+    const userConnected: UserState = useSelector((state: ApplicationState) => {
+        return state.user
+    }, shallowEqual)
 
     const getColorText = () => {
         return unreadMessages > 0 ? theme.colors.text : '#959595'
@@ -111,18 +118,22 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
                 </View>
 
                 <View style={[styles.details, {marginLeft: 'auto', alignItems: "center"}]}>
-                    {unreadMessages >= 0 &&
-                    <MessageCounterComponent
-                        icon={'email-mark-as-unread'}
-                        color={'#c87a26'}
-                        value={unreadMessages}
-                    />}
+                    {
+                        userConnected.id >= 0 && unreadMessages >= 0 &&
+                        <MessageCounterComponent
+                            icon={'email-mark-as-unread'}
+                            color={'#c87a26'}
+                            value={unreadMessages}
+                        />
+                    }
 
-                    {totalMessages && <MessageCounterComponent
-                        icon={'email'}
-                        color={'#267a26'}
-                        value={totalMessages}
-                    />}
+                    {
+                        totalMessages && <MessageCounterComponent
+                            icon={'email'}
+                            color={'#267a26'}
+                            value={totalMessages}
+                        />
+                    }
                 </View>
 
             </View>

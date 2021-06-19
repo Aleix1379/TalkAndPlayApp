@@ -30,7 +30,7 @@ const BottomTabNavigator = createMaterialBottomTabNavigator(
             screen: PostsStack,
             navigationOptions: {
                 tabBarIcon: ({tintColor}) => {
-                    return <MaterialCommunityIcons name="account-group" color={tintColor} size={25}/>;
+                    return <MaterialCommunityIcons name="comment-text-multiple" color={tintColor} size={25}/>;
                 }
             }
         },

@@ -71,7 +71,8 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading, navig
     const styles = StyleSheet.create({
         login: {
             flex: 1,
-            backgroundColor: theme.colors.background
+            backgroundColor: theme.colors.background,
+            justifyContent: "space-between"
         },
         title: {
             textAlign: 'center',
@@ -99,7 +100,7 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading, navig
             borderTopRightRadius: 30,
             paddingHorizontal: 12,
             display: "flex",
-            flex: 1,
+            // marginTop: 'auto',
         },
         inputs: {
             marginTop: 'auto',

@@ -113,6 +113,19 @@ class UserService extends Api {
         return this.http.get(`${this.getUrl()}?email=${email}`).then((res) => res.data)
     }
 
+    getCommentsUnseen(userId: number, values: any): Promise<any> {
+        return this.http.get(`${this.getUrl(userId)}/comments/unseen`, {
+            params: {
+                data: JSON.stringify(values)
+            }
+        }).then((res) => res.data)
+    }
+
+    updateCommentsUnseen(userId: number, data: any): Promise<UserState> {
+        return this.http.put(`${this.getUrl(userId)}/comments/unseen`, data)
+            .then((res) => res.data)
+    }
+
 }
 
 export default UserService

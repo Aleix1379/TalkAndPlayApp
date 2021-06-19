@@ -27,6 +27,7 @@ import languages from "../../store/languages.json";
 import {connect} from "react-redux";
 import {ApplicationState} from "../../store";
 import Image from "react-native-scalable-image";
+import UserService from "../../services/User";
 
 export interface PostsProperties {
     navigation: any,
@@ -68,7 +69,7 @@ interface RouteItem {
 
 class PostsScreen extends React.Component<PostsProperties, PostListState> {
     readonly postService = new PostsService()
-    readonly postsService = new PostsService()
+    readonly userService = new UserService()
     mounted: boolean = false
     offset = null
     readonly animationDuration = 100
@@ -258,7 +259,32 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     loadData = () => {
         LocalStorage.getMessagesSeen()
             .then(data => {
-                this.postService.getCommentsUnseen(data).then(values => {
+                console.log('GET MESSAGES LOCAL: ' + JSON.stringify(data))
+                console.log('USER UNSEEN MESSAGES: ' + JSON.stringify(this.props.user.seenMessages))
+
+                let keys: number[] = Object.keys(data).concat(Object.keys(this.props.user.seenMessages).filter(it => Object.keys(data).findIndex(el => el === it) < 0)).map(it => Number(it))
+
+                console.log('keys => ' + keys)
+
+                let result: { [id: number]: number } = {}
+
+                keys.forEach((key: number) => {
+                    if (!this.props.user.seenMessages[key]) {
+                        result[key] = data[key]
+                    } else if (!data[key]) {
+                        result[key] = this.props.user.seenMessages[key]
+                    } else {
+                        if (this.props.user.seenMessages[key] > data[key]) {
+                            result[key] = this.props.user.seenMessages[key]
+                        } else {
+                            result[key] = data[key]
+                        }
+                    }
+                })
+
+                console.log('RESULT => ' + JSON.stringify(result))
+
+                this.userService.getCommentsUnseen(this.props.user.id, result).then(values => {
                     this.setState({commentsUnSeen: values})
                 }).catch(err => {
                     console.log('error get messages seen')
@@ -336,7 +362,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     }
 
     search = (filter: Filter) => {
-        this.postsService.get(0, this.state.postType, {
+        this.postService.get(0, this.state.postType, {
             ...filter,
             channels: this.state.postType === PostType.STREAMERS ? filter.channels : []
         })

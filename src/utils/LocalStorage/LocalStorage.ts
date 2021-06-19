@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import {UserState} from "../../store/user/types";
 import {Filter} from "../../types/PostsTypes";
+import {NewCommentSeen} from "../../types/NewCommentSeen";
 
 export default class LocalStorage {
     private static keys = {
@@ -11,7 +12,8 @@ export default class LocalStorage {
         FILTER: 'filter',
         FCM_TOKEN: 'fcm-token',
         THEME: 'theme',
-        POST_TAB_INDEX: 'post-tab-index'
+        POST_TAB_INDEX: 'post-tab-index',
+        NEW_MAP: 'new-map'
     };
 
     public static setAuthToken = async (token: string) => {
@@ -111,7 +113,7 @@ export default class LocalStorage {
         }
     }
 
-    public static addCommentSeen = async (postId: number, lastCommentId: number | null) => {
+    public static addCommentSeen = async (postId: number, lastCommentId: number | null): Promise<{ [id: number]: number } | null> => {
         let map
         let current: number | undefined
         try {
@@ -121,8 +123,10 @@ export default class LocalStorage {
                 map[postId] = lastCommentId
             }
             await AsyncStorage.setItem(LocalStorage.keys.COMMENT_SEEN, JSON.stringify(map))
+            return map
         } catch (error) {
             console.log(error)
+            return null
         }
     }
 
@@ -194,9 +198,27 @@ export default class LocalStorage {
     public static getPostTabIndex = async (): Promise<number> => {
         const value = await AsyncStorage.getItem(LocalStorage.keys.POST_TAB_INDEX)
         if (value) {
-           return JSON.parse(value)
+            return JSON.parse(value)
         }
         return -1
+    }
+
+    public static setNewCommentSeen = async (newMap: NewCommentSeen): Promise<boolean> => {
+        try {
+            await AsyncStorage.setItem(LocalStorage.keys.NEW_MAP, JSON.stringify(newMap))
+            return true
+        } catch (error) {
+            console.log(error)
+            return false
+        }
+    }
+
+    public static getNewCommentSeen = async (): Promise<NewCommentSeen | null> => {
+        const value = await AsyncStorage.getItem(LocalStorage.keys.NEW_MAP)
+        if (value) {
+            return JSON.parse(value)
+        }
+        return null
     }
 
 }

@@ -8,6 +8,8 @@ const initialState: UserState = {
     imageVersion: 0,
     languages: [],
     platforms: [],
+    profiles: [],
+    seenMessages: []
 }
 
 const reducer = (state: UserState = initialState, action: UserAction) => {

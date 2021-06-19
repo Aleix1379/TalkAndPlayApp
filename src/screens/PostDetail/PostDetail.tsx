@@ -1,7 +1,7 @@
 import React, {MutableRefObject, useEffect, useRef, useState} from 'react'
 import {withTheme} from 'react-native-paper'
 import {Theme} from "react-native-paper/lib/typescript/types"
-import {BackHandler, ScrollView, StyleSheet, View} from "react-native"
+import {AppState, AppStateStatus, BackHandler, ScrollView, StyleSheet, View} from "react-native"
 import {Channel, Comment, CommentResponse, Option, PostInfo, PostType} from "../../types/PostsTypes"
 import PostsService from "../../services/Posts"
 import Info from "../../components/Info"
@@ -13,7 +13,6 @@ import {UserState} from "../../store/user/types"
 import {connect, shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
 import HeaderComponent from "../../components/HeaderComponent";
-import {closeModal, openModal} from "../../store/topSheet/actions";
 import {setLoading} from "../../store/loading/actions";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import ReplyToComponent from "../../components/ReplyToComponent";
@@ -23,11 +22,14 @@ import {ImagePickerResponse} from "react-native-image-picker";
 import {BannerAd, BannerAdSize, TestIds} from "@react-native-firebase/admob";
 import RBSheet from "react-native-raw-bottom-sheet";
 import BottomSheetComponent from "../../components/BottomSheetContentComponent/BottomSheetComponent";
+import UserService from "../../services/User";
+import {login} from "../../store/user/actions";
 
 interface PostDetailProperties {
     navigation: any
     theme: Theme
     setLoading: (visible: boolean) => void
+    login: (user: UserState, token?: string) => void
     openDialog: (title: string, content: string[], actions: DialogOption[]) => void
     closeDialog: () => void
 }
@@ -59,6 +61,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     const lastIndex = navigation.state.params.lastIndex
     const [comments, setComments] = useState<Comment[]>()
     const postService = new PostsService()
+    const userService = new UserService()
     const [elementsPerPage, setElementsPerPage] = useState(10)
     const [currentPage, setCurrentPage] = useState<number>(0)
     const [page, setPage] = useState<InfoPage>()
@@ -73,6 +76,8 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     const [commentToReply, setCommentToReply] = useState<Comment | null>(null)
     const [editModeEnabled, setEditModeEnabled] = useState(false)
     const [commentId, setCommentId] = useState<number | null>(null)
+    const appState = useRef(AppState.currentState);
+    const [appStateVisible, setAppStateVisible] = useState(appState.current);
     let inputRef: any = null
     const user: UserState = useSelector((state: ApplicationState) => {
         return state.user
@@ -129,12 +134,30 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         return true
     }
 
+    const handleAppStateChange = (nextAppState: AppStateStatus) => {
+        if (
+            appState.current.match(/inactive|background/) &&
+            nextAppState === "active"
+        ) {
+            console.log("App has come to the foreground!")
+        }
+
+        appState.current = nextAppState
+        setAppStateVisible(appState.current)
+        console.log("AppState", appState.current)
+        if (appState.current === 'background') {
+            console.log('updateMessagesSeen()...............................')
+            updateMessagesSeen()
+        }
+    }
+
     useEffect(() => {
+            AppState.addEventListener("change", handleAppStateChange);
             BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick)
 
             LocalStorage.getMessagesSeen()
                 .then(data => {
-                    postService.getCommentsUnseen(data).then(values => {
+                    userService.getCommentsUnseen(user.id, data).then(values => {
                         let lastId = data[id]
                         setLastCommentId(lastId)
                         if (id && lastId) {
@@ -190,6 +213,9 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 
             return () => {
                 BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick)
+                AppState.removeEventListener("change", handleAppStateChange)
+                console.log(' *** *** *** *** *** WILL UNMOUNT *** *** *** *** *** ')
+                updateMessagesSeen()
             }
 
         }, []
@@ -204,6 +230,40 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     useEffect(() => {
         loadPostOptions()
     }, [post])
+
+    const updateMessagesSeen = () => {
+        console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ updateMessagesSeen @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+        console.log('user.id => ' + user.id)
+        console.log('post => ' + post)
+        console.log('lastCommentId => ' + lastCommentId)
+        if (user.id >= 0)
+            LocalStorage.getMessagesSeen().then(data => {
+                console.log('GET MESSAGES SEEN => ' + JSON.stringify(data))
+                console.log('GET MESSAGES SEEN last  => ' + JSON.stringify(data[post?.id || -1]))
+
+                userService.updateCommentsUnseen(user.id, data)
+                    .catch(err => {
+                        console.log('updateCommentsUnseen')
+                        console.log(err)
+                    })
+            })
+
+
+/*            LocalStorage.getNewCommentSeen().then(newCommentSeen => {
+                console.log('------------------------------------------------------------------------------------------------')
+                console.log('dataToSend - newCommentSeen')
+                console.log(newCommentSeen)
+                console.log('------------------------------------------------------------------------------------------------')
+                if (newCommentSeen) {
+                    userService.updateCommentsUnseen(user.id, newCommentSeen.postId, newCommentSeen.commentId)
+                        .then()
+                        .catch(err => {
+                            console.log('error addCommentSeen')
+                            console.log(err)
+                        })
+                }
+            })*/
+    }
 
     const isOwner = (usr: UserState | null): boolean => {
         return usr?.id === user.id
@@ -292,6 +352,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         newPage?: number,
         commentId?: number
     ) => {
+        // temporalSeenMessages = 0
         // setShowDummy(true)
         if (post) {
             if (!commentId && scrollTo === 'top') {
@@ -704,11 +765,9 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 }
 
 export default connect(null, {
-        openModal: openModal,
-        closeModal: closeModal,
         setLoading: setLoading,
         openDialog: openDialog,
-        closeDialog: closeDialog
+        closeDialog: closeDialog,
     }
 )
 (withTheme(PostDetailScreen))
