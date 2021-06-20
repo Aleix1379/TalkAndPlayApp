@@ -28,6 +28,7 @@ import {connect} from "react-redux";
 import {ApplicationState} from "../../store";
 import Image from "react-native-scalable-image";
 import UserService from "../../services/User";
+import SeenMessageUtils from "../../utils/SeenMessage";
 
 export interface PostsProperties {
     navigation: any,
@@ -259,28 +260,11 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     loadData = () => {
         LocalStorage.getMessagesSeen()
             .then(data => {
+                data = data || {}
                 console.log('GET MESSAGES LOCAL: ' + JSON.stringify(data))
                 console.log('USER UNSEEN MESSAGES: ' + JSON.stringify(this.props.user.seenMessages))
 
-                let keys: number[] = Object.keys(data).concat(Object.keys(this.props.user.seenMessages).filter(it => Object.keys(data).findIndex(el => el === it) < 0)).map(it => Number(it))
-
-                console.log('keys => ' + keys)
-
-                let result: { [id: number]: number } = {}
-
-                keys.forEach((key: number) => {
-                    if (!this.props.user.seenMessages[key]) {
-                        result[key] = data[key]
-                    } else if (!data[key]) {
-                        result[key] = this.props.user.seenMessages[key]
-                    } else {
-                        if (this.props.user.seenMessages[key] > data[key]) {
-                            result[key] = this.props.user.seenMessages[key]
-                        } else {
-                            result[key] = data[key]
-                        }
-                    }
-                })
+                let result: { [id: number]: number } = SeenMessageUtils.mergeSeenMessages(data, this.props.user.seenMessages)
 
                 console.log('RESULT => ' + JSON.stringify(result))
 

@@ -23,7 +23,7 @@ import {BannerAd, BannerAdSize, TestIds} from "@react-native-firebase/admob";
 import RBSheet from "react-native-raw-bottom-sheet";
 import BottomSheetComponent from "../../components/BottomSheetContentComponent/BottomSheetComponent";
 import UserService from "../../services/User";
-import {login} from "../../store/user/actions";
+import SeenMessageUtils from "../../utils/SeenMessage";
 
 interface PostDetailProperties {
     navigation: any
@@ -157,7 +157,10 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 
             LocalStorage.getMessagesSeen()
                 .then(data => {
-                    userService.getCommentsUnseen(user.id, data).then(values => {
+
+                    let result: { [id: number]: number } = SeenMessageUtils.mergeSeenMessages(data, user.seenMessages)
+
+                    userService.getCommentsUnseen(user.id, result).then(values => {
                         let lastId = data[id]
                         setLastCommentId(lastId)
                         if (id && lastId) {
@@ -170,6 +173,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                     console.log(err)
                                 })
                             if (values[id] > 0) {
+                                console.log('values => ' + JSON.stringify(values))
                                 setUnseenMessages(values[id])
                             }
                         }
@@ -249,20 +253,20 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
             })
 
 
-/*            LocalStorage.getNewCommentSeen().then(newCommentSeen => {
-                console.log('------------------------------------------------------------------------------------------------')
-                console.log('dataToSend - newCommentSeen')
-                console.log(newCommentSeen)
-                console.log('------------------------------------------------------------------------------------------------')
-                if (newCommentSeen) {
-                    userService.updateCommentsUnseen(user.id, newCommentSeen.postId, newCommentSeen.commentId)
-                        .then()
-                        .catch(err => {
-                            console.log('error addCommentSeen')
-                            console.log(err)
-                        })
-                }
-            })*/
+        /*            LocalStorage.getNewCommentSeen().then(newCommentSeen => {
+                        console.log('------------------------------------------------------------------------------------------------')
+                        console.log('dataToSend - newCommentSeen')
+                        console.log(newCommentSeen)
+                        console.log('------------------------------------------------------------------------------------------------')
+                        if (newCommentSeen) {
+                            userService.updateCommentsUnseen(user.id, newCommentSeen.postId, newCommentSeen.commentId)
+                                .then()
+                                .catch(err => {
+                                    console.log('error addCommentSeen')
+                                    console.log(err)
+                                })
+                        }
+                    })*/
     }
 
     const isOwner = (usr: UserState | null): boolean => {
