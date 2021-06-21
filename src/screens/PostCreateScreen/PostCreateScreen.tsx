@@ -105,6 +105,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
             imageVersion: 0,
             languages: [],
             platforms: [],
+            seenMessages: {}
         },
     })
 

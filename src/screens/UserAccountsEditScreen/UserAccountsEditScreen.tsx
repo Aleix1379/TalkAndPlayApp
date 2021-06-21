@@ -43,14 +43,14 @@ const UserAccountsEditScreen: React.FC<UserAccountsEditProperties> = ({theme, na
     const [untouched, setUntouched] = useState(true)
     const [accounts, setAccounts] = useState<any[]>(
         [
-            {id: user.id + '-1', name: 'Xbox', value: ''},
-            {id: user.id + '-2', name: 'Playstation', value: ''},
-            {id: user.id + '-3', name: 'Nintendo', value: ''},
-            {id: user.id + '-4', name: 'Steam', value: ''},
-            {id: user.id + '-5', name: 'Discord', value: ''},
-            {id: user.id + '-6', name: 'Twitch', value: ''},
-            {id: user.id + '-7', name: 'Youtube', value: ''},
-            {id: user.id + '-8', name: 'Facebook', value: ''},
+            {id: 1, name: 'Xbox', value: ''},
+            {id: 2, name: 'Playstation', value: ''},
+            {id: 3, name: 'Nintendo', value: ''},
+            {id: 4, name: 'Steam', value: ''},
+            {id: 5, name: 'Discord', value: ''},
+            {id: 6, name: 'Twitch', value: ''},
+            {id: 7, name: 'Youtube', value: ''},
+            {id: 8, name: 'Facebook', value: ''},
         ]
     )
 
@@ -88,6 +88,10 @@ const UserAccountsEditScreen: React.FC<UserAccountsEditProperties> = ({theme, na
 
     const save = () => {
         user.profiles = accounts.filter(ac => ac.value || inputsUpdated[ac.name])
+
+        console.log('user:')
+        console.log(user)
+
 
         userService.updateProfile(user.id, user)
             .then((userUpdated) => {

@@ -236,37 +236,14 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     }, [post])
 
     const updateMessagesSeen = () => {
-        console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ updateMessagesSeen @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-        console.log('user.id => ' + user.id)
-        console.log('post => ' + post)
-        console.log('lastCommentId => ' + lastCommentId)
         if (user.id >= 0)
             LocalStorage.getMessagesSeen().then(data => {
-                console.log('GET MESSAGES SEEN => ' + JSON.stringify(data))
-                console.log('GET MESSAGES SEEN last  => ' + JSON.stringify(data[post?.id || -1]))
-
                 userService.updateCommentsUnseen(user.id, data)
                     .catch(err => {
                         console.log('updateCommentsUnseen')
                         console.log(err)
                     })
             })
-
-
-        /*            LocalStorage.getNewCommentSeen().then(newCommentSeen => {
-                        console.log('------------------------------------------------------------------------------------------------')
-                        console.log('dataToSend - newCommentSeen')
-                        console.log(newCommentSeen)
-                        console.log('------------------------------------------------------------------------------------------------')
-                        if (newCommentSeen) {
-                            userService.updateCommentsUnseen(user.id, newCommentSeen.postId, newCommentSeen.commentId)
-                                .then()
-                                .catch(err => {
-                                    console.log('error addCommentSeen')
-                                    console.log(err)
-                                })
-                        }
-                    })*/
     }
 
     const isOwner = (usr: UserState | null): boolean => {
@@ -569,6 +546,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     }
 
     const goBack = () => {
+        console.log('go back.....')
         navigation.navigate('Posts', {lastIndex})
     }
 

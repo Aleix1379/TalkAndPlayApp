@@ -3,11 +3,10 @@ class SeenMessageUtils {
         localData: { [id: number]: number },
         userData: { [id: number]: number }
     ): { [id: number]: number } {
+        localData = localData || {}
+        userData = userData || {}
+
         let keys: number[] = Object.keys(localData).concat(Object.keys(userData).filter(it => Object.keys(localData).findIndex(el => el === it) < 0)).map(it => Number(it))
-
-
-        console.log('keys => ' + keys)
-
         let result: { [id: number]: number } = {}
 
         keys.forEach((key: number) => {
@@ -23,7 +22,6 @@ class SeenMessageUtils {
                 }
             }
         })
-
         return result
     }
 }

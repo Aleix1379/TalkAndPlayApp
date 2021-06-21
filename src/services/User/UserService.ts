@@ -6,6 +6,7 @@ import {Platform} from "react-native";
 import {ImagePickerResponse} from "react-native-image-picker/src/types";
 import {RecoveryPasswordResponse} from "../../types/EmailTypes";
 import {VerificationResponse} from "../../types/VerificationTypes";
+import {FollowCounter} from "../../types/FollowCounter";
 
 class UserService extends Api {
     constructor() {
@@ -123,6 +124,31 @@ class UserService extends Api {
 
     updateCommentsUnseen(userId: number, data: any): Promise<UserState> {
         return this.http.put(`${this.getUrl(userId)}/comments/unseen`, data)
+            .then((res) => res.data)
+    }
+
+    addFollowing(userId: number, followingId: number): Promise<boolean> {
+        return this.http.post(`${this.getUrl(userId)}/following/${followingId}`)
+            .then((res) => res.data)
+    }
+
+    deleteFollowing(userId: number, followerId: number): Promise<boolean> {
+        return this.http.delete(`${this.getUrl(userId)}/following/${followerId}`)
+            .then((res) => res.data)
+    }
+
+    getFollowCounter(userId: number): Promise<FollowCounter> {
+        return this.http.get(`${this.getUrl(userId)}/followCounter`)
+            .then((res) => res.data)
+    }
+
+    getFollowing(userId: number): Promise<UserState[]> {
+        return this.http.get(`${this.getUrl(userId)}/following`)
+            .then((res) => res.data)
+    }
+
+    getFollowers(userId: number): Promise<UserState[]> {
+        return this.http.get(`${this.getUrl(userId)}/followers`)
             .then((res) => res.data)
     }
 

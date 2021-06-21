@@ -63,7 +63,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
             backgroundColor: theme.colors.primary,
             paddingTop: 10,
             paddingBottom: 0,
-            paddingHorizontal: 6,
+            paddingHorizontal: 8,
             shadowColor: theme.colors.primary,
             shadowOffset: {
                 width: 0,

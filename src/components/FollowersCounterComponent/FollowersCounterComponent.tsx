@@ -2,12 +2,14 @@ import React, {useEffect, useState} from 'react';
 import {NativeModules, Platform, StyleSheet, View} from "react-native";
 import {Theme} from "react-native-paper/lib/typescript/types";
 import {Text, withTheme} from "react-native-paper";
+import {FollowCounter} from "../../types/FollowCounter";
 
 interface FollowersCounterProperties {
     theme: Theme
+    followCounter: FollowCounter
 }
 
-const FollowersCounterComponent: React.FC<FollowersCounterProperties> = ({theme}) => {
+const FollowersCounterComponent: React.FC<FollowersCounterProperties> = ({theme, followCounter}) => {
     const locale =
         Platform.OS === 'ios'
             ? NativeModules.SettingsManager.settings.AppleLocale.replace("_", "-")
@@ -37,22 +39,14 @@ const FollowersCounterComponent: React.FC<FollowersCounterProperties> = ({theme}
         }
     });
 
-    const [following, setFollowing] = useState(0)
-    const [followers, setFollowers] = useState(0)
-
-    useEffect(() => {
-        setFollowers(Math.floor(Math.random() * 1000))
-        setFollowing(Math.floor(Math.random() * 1000))
-    }, [])
-
     return (
         <View style={styles.followersCounter}>
             <Text>
-                <Text style={styles.value}>{following.toLocaleString()}</Text>
+                <Text style={styles.value}>{followCounter.following}</Text>
                 <Text style={styles.label}> Following</Text>
             </Text>
             <Text>
-                <Text style={styles.value}>{followers.toLocaleString()}</Text>
+                <Text style={styles.value}>{followCounter.followers}</Text>
                 <Text style={styles.label}> Followers</Text>
             </Text>
         </View>

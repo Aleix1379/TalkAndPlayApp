@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {BackHandler, Dimensions, StyleSheet, View} from "react-native"
+import {AppState, BackHandler, Dimensions, StyleSheet, View} from "react-native"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import Image from "react-native-scalable-image"
 import {withTheme} from "react-native-paper"
@@ -31,6 +31,7 @@ const PicturePreviewScreen: React.FC<PicturePreviewProperties> = ({theme, naviga
     })
 
     const handleBackButtonClick = (): boolean => {
+        console.log('PICTURE PREVIEW')
         console.log('title: ' + title)
         console.log('id: ' + id)
         navigation.navigate('Detail', {title, id})
@@ -39,6 +40,11 @@ const PicturePreviewScreen: React.FC<PicturePreviewProperties> = ({theme, naviga
 
     useEffect(() => {
         BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick)
+
+        return () => {
+            BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick)
+        }
+
     }, [])
 
     const sendGif = (): void => {
@@ -63,7 +69,7 @@ const PicturePreviewScreen: React.FC<PicturePreviewProperties> = ({theme, naviga
                     resizeMode={'contain'}
                     style={{alignSelf: "center", marginTop: 'auto'}}
                 />
-                
+
                 <View style={{marginTop: 'auto'}}>
                     <NewCommentComponent
                         send={sendGif}

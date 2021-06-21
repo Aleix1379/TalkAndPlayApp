@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {BackHandler, Dimensions, GestureResponderEvent, ScrollView, StyleSheet} from "react-native";
+import {BackHandler, Dimensions, GestureResponderEvent, ScrollView, StyleSheet, View} from "react-native";
 import {Theme} from "react-native-paper/lib/typescript/types";
 import {Snackbar, Text, withTheme} from "react-native-paper";
 import HeaderComponent from "../../components/HeaderComponent";
@@ -10,6 +10,9 @@ import {UserState} from "../../store/user/types";
 import UserService from "../../services/User";
 import ChannelComponent from "../../components/ChannelComponent/ChannelComponent";
 import Clipboard from "@react-native-clipboard/clipboard";
+import FollowButtonComponent from "../../components/FollowButtonComponent";
+import {shallowEqual, useSelector} from "react-redux";
+import {ApplicationState} from "../../store";
 
 interface ProfileViewerProperties {
     navigation: any,
@@ -40,7 +43,7 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
         },
         avatar: {
             marginTop: 8,
-            marginBottom: 24,
+            marginBottom: 16,
         },
         info: {
             marginVertical: 8,
@@ -59,16 +62,24 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
         },
         snackBarWrapper: {
             width: Dimensions.get('window').width,
+        },
+        follow: {
+            marginBottom: 8
         }
     });
+    const [following, setFollowing] = useState(false)
     const [snackbar, setSnackbar] = useState<SnackBar>({
         visible: false,
         content: '',
         color: theme.colors.primary
     })
     const {email, origin} = navigation.state.params
-    const [user, setUser] = useState<UserState>()
+    const [userVisited, setUserVisited] = useState<UserState>()
     const userService = new UserService()
+
+    const currentUser: UserState = useSelector((state: ApplicationState) => {
+        return state.user
+    }, shallowEqual)
 
     const goBack = () => {
         if (origin) {
@@ -95,9 +106,7 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
     useEffect(() => {
         userService.findUserByEmail(email)
             .then(response => {
-                console.log('response[0]:')
-                console.log(response[0])
-                setUser(response[0])
+                setUserVisited(response[0])
             })
             .catch(err => {
                 console.log('error find user by email')
@@ -114,12 +123,44 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
         })
     }
 
+    const follow = () => {
+        if (userVisited && !following) {
+            userService.addFollowing(currentUser.id, userVisited.id)
+                .then(response => setFollowing(response))
+                .catch(err => {
+                    console.log('error add following')
+                    console.log(err)
+                })
+        } else if (userVisited && following) {
+            userService.deleteFollowing(currentUser.id, userVisited.id)
+                .then(response => setFollowing(response))
+                .catch(err => {
+                    console.log('error delete following')
+                    console.log(err)
+                })
+        }
+    }
+
+    useEffect(() => {
+        if (userVisited) {
+            userService.getFollowing(currentUser.id)
+                .then(userList => {
+                    console.log('userList => ' + JSON.stringify(userList))
+                    setFollowing(userList.some(u => u.id === userVisited?.id))
+                })
+                .catch(err => {
+                    console.log('error getFollowing')
+                    console.log(err)
+                })
+        }
+    }, [userVisited])
+
     return (
         <>
             {
-                user &&
+                userVisited &&
                 <HeaderComponent
-                    title={user?.name}
+                    title={userVisited?.name}
                     leftAction={{
                         image: "arrow-left",
                         onPress: () => navigation.goBack()
@@ -128,21 +169,30 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
             }
 
             {
-                user &&
+                userVisited &&
                 <ScrollView style={styles.profileViewer}>
                     <AvatarComponent
-                        style={styles.avatar} uri={UserUtils.getImageUrl(user)}
+                        style={styles.avatar} uri={UserUtils.getImageUrl(userVisited)}
                     />
 
+                    <View style={{alignItems: "center"}}>
+                        <FollowButtonComponent
+                            style={styles.follow}
+                            onPress={follow}
+                            following={following}
+                            follower={false}
+                        />
+                    </View>
+
                     <Info label="Languages"
-                          value={user.languages.map(language => language.name).join(', ')}
+                          value={userVisited.languages.map(language => language.name).join(', ')}
                           style={styles.info}/>
                     <Info label="Platforms"
-                          value={user.platforms.map(platform => platform.name).join(', ')}
+                          value={userVisited.platforms.map(platform => platform.name).join(', ')}
                           style={styles.info}/>
 
                     {
-                        user?.profiles?.filter(account => account.value).map(account => (
+                        userVisited?.profiles?.filter(account => account.value).map(account => (
                             <ChannelComponent
                                 key={account.name}
                                 style={styles.channel}

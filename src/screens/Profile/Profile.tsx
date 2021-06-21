@@ -24,6 +24,8 @@ import Image from "react-native-scalable-image";
 import Clipboard from '@react-native-clipboard/clipboard';
 import RBSheet from "react-native-raw-bottom-sheet";
 import BottomSheetComponent from "../../components/BottomSheetContentComponent/BottomSheetComponent";
+import {FollowCounter} from "../../types/FollowCounter";
+import UserService from "../../services/User";
 
 interface ProfileProperties {
     navigation: any,
@@ -39,13 +41,17 @@ interface SnackBar {
 const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
     const refRBSheet = useRef()
     const [index, setIndex] = useState(0)
+    const [followCounter, setFollowCounter] = useState<FollowCounter>({
+        following: 0,
+        followers: 0
+    })
     const [snackbar, setSnackbar] = useState<SnackBar>({
         visible: false,
         content: '',
         color: theme.colors.primary
     })
     const oldIndex = navigation.state?.params?.index
-
+    let unsubscribe: Function | null = null
     const styles = StyleSheet.create({
         tab: {
             backgroundColor: theme.colors.primary
@@ -101,21 +107,46 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
             width: Dimensions.get('window').width,
         }
     })
-
+    const userService = new UserService()
     const [modalOptions, setModalOptions] = useState<ModalOption[]>([])
     const user: UserState = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
 
     useEffect(() => {
+        console.log('USER:')
+        console.log(JSON.stringify(user))
         if (oldIndex !== index) {
             setIndex(oldIndex)
         }
+
+        loadFollowCounter()
+        unsubscribe = navigation.addListener('didFocus', async () => {
+            console.log(' -------------------------- loadFollowCounter -------------------------- ')
+            loadFollowCounter()
+        })
+
+        return () => {
+            !!unsubscribe && typeof unsubscribe === "function" && unsubscribe()
+        }
+
     }, [])
 
     useEffect(() => {
         loadPostOptions()
     }, [index])
+
+    const loadFollowCounter = () => {
+        userService.getFollowCounter(user.id)
+            .then(response => {
+                console.log('getFollowCounter => ' + JSON.stringify(response))
+                setFollowCounter(response)
+            })
+            .catch(err => {
+                console.log('error getFollowCounter')
+                console.log(err)
+            })
+    }
 
     const goToEdit = () => {
         console.log('Go to edit index => ' + index)
@@ -156,7 +187,7 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
                     style={styles.avatar} uri={UserUtils.getImageUrl(user)}
                 />
 
-                <FollowersCounterComponent/>
+                <FollowersCounterComponent followCounter={followCounter}/>
 
                 <Info label="Email" value={user.email} style={styles.info}/>
                 <Info label="Languages"

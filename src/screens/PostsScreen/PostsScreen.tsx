@@ -260,20 +260,20 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     loadData = () => {
         LocalStorage.getMessagesSeen()
             .then(data => {
-                data = data || {}
-                console.log('GET MESSAGES LOCAL: ' + JSON.stringify(data))
-                console.log('USER UNSEEN MESSAGES: ' + JSON.stringify(this.props.user.seenMessages))
-
                 let result: { [id: number]: number } = SeenMessageUtils.mergeSeenMessages(data, this.props.user.seenMessages)
 
-                console.log('RESULT => ' + JSON.stringify(result))
-
-                this.userService.getCommentsUnseen(this.props.user.id, result).then(values => {
-                    this.setState({commentsUnSeen: values})
-                }).catch(err => {
-                    console.log('error get messages seen')
-                    console.log(err)
-                })
+                if (this.props.user.id >= 0) {
+                    this.userService.getCommentsUnseen(this.props.user.id, result).then(values => {
+                        this.setState({commentsUnSeen: values})
+                    }).catch(err => {
+                        console.log('error get messages seen')
+                        console.log(err)
+                    })
+                }
+            })
+            .catch(err => {
+                console.log('error LocalStorage.getMessagesSeen()')
+                console.log(err)
             })
 
         LocalStorage.getFilter()

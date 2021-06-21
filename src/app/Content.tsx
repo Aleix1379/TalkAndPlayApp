@@ -92,12 +92,16 @@ const Content: React.FC<ContentProperties> = ({theme, login, closeDialog, setThe
                         setTheme(newTheme)
                     }
                 })
-            LocalStorage.getUser()
-                .then(userSaved => {
-                    if (userSaved) {
+            LocalStorage.getAuthToken()
+                .then(tokenSaved => {
+                    if (tokenSaved) {
                         userService.getProfile().then(userData => {
                             login(userData)
                         })
+                            .catch(err => {
+                                console.log('error get Profile')
+                                console.log(err)
+                            })
                     }
                 })
         }, 100)
