@@ -17,9 +17,17 @@ interface PostProperties {
     theme: Theme
     unreadMessages: number
     totalMessages: number
+    lastAuthor?: string
 }
 
-const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMessages, totalMessages}) => {
+const PostComponent: React.FC<PostProperties> = ({
+                                                     post,
+                                                     onClick,
+                                                     theme,
+                                                     unreadMessages,
+                                                     totalMessages,
+                                                     lastAuthor = ''
+                                                 }) => {
     const {id, title, game, platforms, channels, user, language, lastUpdate} = post
     let startX = 0
 
@@ -85,7 +93,6 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
         userName: {
             color: getColorText(),
             textAlign: "right",
-            marginTop: 'auto'
         },
         counter: {}
     })
@@ -106,34 +113,38 @@ const PostComponent: React.FC<PostProperties> = ({post, onClick, theme, unreadMe
                     source={{uri: UserUtils.getImageUrl(user)}}/>*/}
                 <AvatarComponent
                     borderWidth={0}
-                    size={35}
+                    size={40}
                     style={styles.avatar}
                     uri={UserUtils.getImageUrl(user)}
                 />
                 <View style={{
-                    alignItems: "flex-start"
+                    justifyContent: "center",
+                    alignItems: "flex-start",
+                    flex: 1
                 }}>
                     <Text style={styles.userName}>{user?.name}</Text>
-                    <Text style={[styles.text, {fontSize: 12}]}>{Time.diff(lastUpdate)}</Text>
                 </View>
 
-                <View style={[styles.details, {marginLeft: 'auto', alignItems: "center"}]}>
-                    {
-                        userConnected.id >= 0 && unreadMessages >= 0 &&
-                        <MessageCounterComponent
-                            icon={'email-mark-as-unread'}
-                            color={'#c87a26'}
-                            value={unreadMessages}
-                        />
-                    }
+                <View style={{}}>
+                    <View style={[styles.details, {marginLeft: 'auto'}]}>
+                        {
+                            userConnected.id >= 0 && unreadMessages >= 0 &&
+                            <MessageCounterComponent
+                                icon={'email-mark-as-unread'}
+                                color={'#c87a26'}
+                                value={unreadMessages}
+                            />
+                        }
 
-                    {
-                        totalMessages && <MessageCounterComponent
-                            icon={'email'}
-                            color={'#267a26'}
-                            value={totalMessages}
-                        />
-                    }
+                        {
+                            totalMessages && <MessageCounterComponent
+                                icon={'email'}
+                                color={'#267a26'}
+                                value={totalMessages}
+                            />
+                        }
+                    </View>
+                    <Text style={[styles.text, {fontSize: 10}]}>{lastAuthor + ' | ' + Time.diff(lastUpdate)}</Text>
                 </View>
 
             </View>

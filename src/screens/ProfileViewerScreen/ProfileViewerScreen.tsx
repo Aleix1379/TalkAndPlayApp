@@ -143,11 +143,8 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
 
     useEffect(() => {
         if (userVisited) {
-            userService.getFollowing(currentUser.id)
-                .then(userList => {
-                    console.log('userList => ' + JSON.stringify(userList))
-                    setFollowing(userList.some(u => u.id === userVisited?.id))
-                })
+            userService.isFollowing(currentUser.id, userVisited.id)
+                .then(isFollowing => setFollowing(isFollowing))
                 .catch(err => {
                     console.log('error getFollowing')
                     console.log(err)

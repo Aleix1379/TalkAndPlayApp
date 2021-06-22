@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {NativeModules, Platform, StyleSheet, View} from "react-native";
 import {Theme} from "react-native-paper/lib/typescript/types";
 import {Text, withTheme} from "react-native-paper";
@@ -7,9 +7,14 @@ import {FollowCounter} from "../../types/FollowCounter";
 interface FollowersCounterProperties {
     theme: Theme
     followCounter: FollowCounter
+    onPress: (userType: 'following' | 'followers') => void
 }
 
-const FollowersCounterComponent: React.FC<FollowersCounterProperties> = ({theme, followCounter}) => {
+const FollowersCounterComponent: React.FC<FollowersCounterProperties> = ({
+                                                                             theme,
+                                                                             followCounter,
+                                                                             onPress
+                                                                         }) => {
     const locale =
         Platform.OS === 'ios'
             ? NativeModules.SettingsManager.settings.AppleLocale.replace("_", "-")
@@ -41,11 +46,11 @@ const FollowersCounterComponent: React.FC<FollowersCounterProperties> = ({theme,
 
     return (
         <View style={styles.followersCounter}>
-            <Text>
+            <Text onPress={() => onPress('following')}>
                 <Text style={styles.value}>{followCounter.following}</Text>
                 <Text style={styles.label}> Following</Text>
             </Text>
-            <Text>
+            <Text onPress={() => onPress('followers')}>
                 <Text style={styles.value}>{followCounter.followers}</Text>
                 <Text style={styles.label}> Followers</Text>
             </Text>

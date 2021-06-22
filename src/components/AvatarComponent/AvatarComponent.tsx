@@ -55,7 +55,7 @@ const AvatarComponent: React.FC<AvatarProperties> = ({
     })
 
     return (
-        <View style={{...styles.container, ...style as {}}} onTouchEnd={() => onPress && onPress()}>
+        <View style={[styles.container, style]} onTouchEnd={() => onPress && onPress()}>
             {uri !== '-1' && uri.length > 0 && <Image
                 style={styles.image}
                 source={{uri}}

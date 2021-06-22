@@ -85,6 +85,9 @@ class PostsService extends Api {
         return this.http.put(`${this.getUrl(postId)}/comments/${comment.id}`, comment)
     }
 
+    getAuthorLastComment(ids: number[]): Promise<{ [id: number]: string }> {
+        return this.http.get(`${this.getUrl()}/lastAuthor?ids=${ids}`).then((res) => res.data)
+    }
 }
 
 export default PostsService;

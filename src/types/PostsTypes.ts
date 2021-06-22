@@ -1,3 +1,5 @@
+import {UserState} from "../store/user/types";
+
 export interface CommentsSeen {
 
 }
@@ -41,7 +43,7 @@ export interface PostInfo {
     lastUpdate: any;
     postType: PostType
     channels: Channel[]
-
+    lastAuthor: UserState
 }
 
 export interface Comment {

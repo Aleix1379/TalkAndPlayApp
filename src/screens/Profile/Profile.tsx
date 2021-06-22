@@ -114,15 +114,12 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
     }, shallowEqual)
 
     useEffect(() => {
-        console.log('USER:')
-        console.log(JSON.stringify(user))
         if (oldIndex !== index) {
             setIndex(oldIndex)
         }
 
         loadFollowCounter()
         unsubscribe = navigation.addListener('didFocus', async () => {
-            console.log(' -------------------------- loadFollowCounter -------------------------- ')
             loadFollowCounter()
         })
 
@@ -138,10 +135,7 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
 
     const loadFollowCounter = () => {
         userService.getFollowCounter(user.id)
-            .then(response => {
-                console.log('getFollowCounter => ' + JSON.stringify(response))
-                setFollowCounter(response)
-            })
+            .then(response => setFollowCounter(response))
             .catch(err => {
                 console.log('error getFollowCounter')
                 console.log(err)
@@ -179,6 +173,10 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
         setModalOptions(options)
     }
 
+    const goToFollowingFollowersList = (userType: 'following' | 'followers') => {
+        navigation.navigate('FollowingFollowersList', {userType})
+    }
+
     const UserScreen = () => (
         <>
             {user &&
@@ -187,7 +185,7 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
                     style={styles.avatar} uri={UserUtils.getImageUrl(user)}
                 />
 
-                <FollowersCounterComponent followCounter={followCounter}/>
+                <FollowersCounterComponent followCounter={followCounter} onPress={goToFollowingFollowersList}/>
 
                 <Info label="Email" value={user.email} style={styles.info}/>
                 <Info label="Languages"

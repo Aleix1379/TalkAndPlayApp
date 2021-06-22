@@ -52,7 +52,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                                                        }) => {
     const refRBSheet = useRef()
     const [options, setOptions] = useState<ModalOption[]>([])
-    const imageSize = 35
+    const imageSize = 40
     let replies: any[] = []
     const [resultReplies, setResultReplies] = useState<any>([])
     const user: UserState = useSelector((state: ApplicationState) => {
@@ -63,7 +63,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
             backgroundColor: theme.colors.primary,
             paddingTop: 10,
             paddingBottom: 0,
-            paddingHorizontal: 8,
+            paddingHorizontal: 0,
             shadowColor: theme.colors.primary,
             shadowOffset: {
                 width: 0,
@@ -81,7 +81,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
         },
         date: {
             marginLeft: "auto",
-            fontSize: 12
+            fontSize: 10
         },
         image: {
             height: imageSize,
@@ -92,9 +92,8 @@ const CommentComponent: React.FC<CommentProperties> = ({
         },
         options: {},
         imageContainer: {
-            marginTop: 8,
-            marginBottom: 6,
             borderRadius: 3,
+            marginLeft: 0
         },
         option: {
             display: "flex",
@@ -113,7 +112,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
 
     const markDownStyles = {
         view: {
-            marginTop: 10,
+            // marginTop: 10,
             marginLeft: 6,
             marginBottom: 8,
             backgroundColor: theme.colors.background,
@@ -231,27 +230,39 @@ const CommentComponent: React.FC<CommentProperties> = ({
         </View>
     }
 
-    const getCustomImage = (width: number) => {
+    const isSmallImage = (text: string): boolean => text.startsWith("https://media.googleusercontent.com") || text.startsWith("https://www.gstatic.com")
+
+    const getCustomImage = (width: number, diff: number = 0) => {
         return {
             react: (node: any, output: any, state: any) => {
                 if (node.target.includes("youtube.com") || node.target.includes("youtu.be")) {
                     return (
-                        <YoutubePlayer
-                            key={node.target}
-                            height={0.56 * width}
-                            width={width}
-                            videoId={CommentUtils.getIdByUrl(node.target)}
-                            webViewStyle={{marginTop: 8, marginBottom: 8, opacity: 0.99}}
-                        />
+                        <View key={node.target} style={{left: diff === 16 ? -2 : 0, right: 8}}>
+                            <YoutubePlayer
+                                key={node.target}
+                                height={0.56 * width}
+                                width={width}
+                                videoId={CommentUtils.getIdByUrl(node.target)}
+                                webViewStyle={{opacity: 0.99}}
+                            />
+                        </View>
                     )
 
                 }
                 return <Image
                     key={state.key}
                     source={{uri: node.target}}
-                    width={width}
+                    width={isSmallImage(node.target) ? 100 : width - diff}
                     resizeMode={'contain'}
-                    style={styles.imageContainer}
+                    style={
+                        [styles.imageContainer,
+                            {
+                                marginLeft: isSmallImage(node.target) ? 8 : 0,
+                                right: isSmallImage(node.target) ? 0 : diff == 0 ? 8 : 0,
+                                marginBottom: isSmallImage(node.target) ? 0 : 8
+                            }
+                        ]
+                    }
                 />
             }
         }
@@ -280,7 +291,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                                     return items.map((it) => buildLine(it.content, it.index))
                                 }
                             },
-                            image: getCustomImage(getImageSize() - 15)
+                            image: getCustomImage(getImageSize(), 16)
                         }}
                     >
                         {CommentUtils.processYoutubeUrl(message) || '💀 _Comment deleted_'}
@@ -297,7 +308,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
         if (isEmoji()) {
             return 100
         }
-        return Dimensions.get('window').width - 12
+        return Dimensions.get('window').width
     }
 
     // @ts-ignore
@@ -309,7 +320,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                     <AvatarComponent
                         borderWidth={0}
                         size={imageSize}
-                        style={styles.image}
+                        style={[styles.image, {marginLeft: 8}]}
                         uri={UserUtils.getImageUrl(comment.author)}
                     />
                 </View>
@@ -341,10 +352,11 @@ const CommentComponent: React.FC<CommentProperties> = ({
             <Markdown
                 styles={{
                     text: {
-                        color: comment.text ? theme.colors.text : '#747474'
+                        color: comment.text ? theme.colors.text : '#747474',
                     },
                     view: {
-                        marginBottom: 8
+                        marginBottom: 8,
+                        paddingLeft: 8,
                     }
                 }}
                 rules={{image: getCustomImage(getImageSize())}}

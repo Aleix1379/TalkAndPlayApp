@@ -18,6 +18,7 @@ import ProfileViewerScreen from "../screens/ProfileViewerScreen";
 import ErrorScreen from "../screens/ErrorScreen";
 import PostsScreen from "../screens/PostsScreen";
 import UserAccountsEditScreen from "../screens/UserAccountsEditScreen";
+import FollowingFollowersListScreen from "../screens/FollowingFollowersListScreen";
 
 const PostsStack = createStackNavigator({
     Home: {
@@ -129,6 +130,12 @@ const HomeDetailStack = createStackNavigator({
     },
     UserAccountsEdit: {
         screen: UserAccountsEditScreen,
+        navigationOptions: {
+            headerShown: false
+        }
+    },
+    FollowingFollowersList: {
+        screen: FollowingFollowersListScreen,
         navigationOptions: {
             headerShown: false
         }

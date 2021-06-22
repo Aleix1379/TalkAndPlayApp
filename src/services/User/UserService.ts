@@ -152,6 +152,11 @@ class UserService extends Api {
             .then((res) => res.data)
     }
 
+    isFollowing(userId: number, followingId: number): Promise<boolean> {
+        return this.http.get(`${this.getUrl(userId)}/following/${followingId}`)
+            .then((res) => res.data)
+    }
+
 }
 
 export default UserService
