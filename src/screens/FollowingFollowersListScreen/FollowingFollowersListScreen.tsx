@@ -1,13 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet} from "react-native";
+import {Dimensions, ScrollView, StyleSheet, View} from "react-native";
 import {Theme} from "react-native-paper/lib/typescript/types";
-import {withTheme} from "react-native-paper";
+import {Text, withTheme} from "react-native-paper";
 import {UserState} from "../../store/user/types";
 import UserService from "../../services/User";
 import {shallowEqual, useSelector} from "react-redux";
 import {ApplicationState} from "../../store";
 import HeaderComponent from "../../components/HeaderComponent";
 import UserItemComponent from "../../components/UserItemComponent";
+import Image from "react-native-scalable-image";
 
 interface FollowingFollowersListProperties {
     theme: Theme
@@ -24,6 +25,19 @@ const FollowingFollowersListScreen: React.FC<FollowingFollowersListProperties> =
         followingFollowersList: {
             backgroundColor: theme.colors.background,
             flex: 1
+        },
+        followingFollowersEmpty: {
+            backgroundColor: theme.colors.background,
+            flex: 1,
+            alignItems: "center"
+        },
+        image: {
+            marginTop: 50,
+            marginBottom: 100,
+        },
+        followingFollowersEmptyText: {
+            marginTop: 'auto',
+            fontSize: 22
         }
     });
 
@@ -103,19 +117,32 @@ const FollowingFollowersListScreen: React.FC<FollowingFollowersListProperties> =
                     onPress: () => navigation.navigate('Profile')
                 }}
             />
-            <ScrollView style={styles.followingFollowersList}>
-                {
-                    list.map((user, index) =>
-                        <UserItemComponent
-                            key={index}
-                            user={user}
-                            onFollowUpdate={toggleFollowing}
-                            following={followingState[user.id]?.following}
-                            follower={followingState[user.id]?.follower}
-                        />
-                    )
-                }
-            </ScrollView>
+            {
+                list.length > 0 &&
+                <ScrollView style={styles.followingFollowersList}>
+                    {
+                        list.map((user, index) =>
+                            <UserItemComponent
+                                key={index}
+                                user={user}
+                                onFollowUpdate={toggleFollowing}
+                                following={followingState[user.id]?.following}
+                                follower={followingState[user.id]?.follower}
+                            />
+                        )
+                    }
+                </ScrollView>
+            }
+            {
+                list.length === 0 &&
+                <View style={styles.followingFollowersEmpty}>
+                    <Text style={styles.followingFollowersEmptyText}>
+                        {userType === 'following' ? 'You do not follow anyone' : 'You do not have followers yet'}
+                    </Text>
+                    <Image width={Dimensions.get('window').width * 0.75} style={styles.image}
+                           source={require('../../assets/images/undraw_empty_xct9.png')}/>
+                </View>
+            }
         </>
     )
 }

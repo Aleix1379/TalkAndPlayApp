@@ -59,7 +59,6 @@ export interface PostListState {
     upperAnimation: Animated.Value
     headerVisible: boolean
     lastIndex: number
-    lastAuthors: { [id: number]: string }
 }
 
 interface RouteItem {
@@ -115,7 +114,6 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
         upperAnimation: new Animated.Value(0),
         headerVisible: true,
         lastIndex: -1,
-        lastAuthors: []
     }
 
     readonly styles = StyleSheet.create({
@@ -326,12 +324,6 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     fetchData = (page: number = 0, filter?: Filter) => {
         this.postService.get(page, this.state.postType, filter)
             .then((response: PostsResponse) => {
-                this.postService.getAuthorLastComment(response.content.map(it => it.id))
-                    .then(values => this.setState({lastAuthors: values}))
-                    .catch(err => {
-                        console.log('error getAuthorLastComment')
-                        console.log(err)
-                    })
                 this.setState({
                     data: response,
                     isLast: response.last
