@@ -1,18 +1,18 @@
-import React from 'react';
-import {StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {UserState} from "../../store/user/types";
-import {connect, shallowEqual, useSelector} from "react-redux";
-import {ApplicationState} from "../../store";
-import AvatarComponent from "../../components/AvatarComponent";
-import UserUtils from "../../utils/UserUtils";
-import Info from "../../components/Info";
-import {withTheme} from "react-native-paper";
-import ButtonComponent from "../../components/ButtonComponent";
+import React from 'react'
+import {StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {shallowEqual, useSelector} from "react-redux"
+import {ApplicationState} from "../../store"
+import AvatarComponent from "../../components/AvatarComponent"
+import UserUtils from "../../utils/UserUtils"
+import Info from "../../components/Info"
+import {withTheme} from "react-native-paper"
+import ButtonComponent from "../../components/ButtonComponent"
+import {User} from "../../types/PostsTypes"
 
 interface UserProperties {
-    navigation: any,
-    theme: Theme;
+    navigation: any
+    theme: Theme
 }
 
 const UserScreen: React.FC<UserProperties> = ({navigation, theme}) => {
@@ -43,9 +43,9 @@ const UserScreen: React.FC<UserProperties> = ({navigation, theme}) => {
             flex: 1,
             marginHorizontal: 8
         }
-    });
+    })
 
-    const user: UserState = useSelector((state: ApplicationState) => {
+    const user: User = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
 

@@ -1,1 +1,1 @@
-export {default} from './CommentComponent';
+export {default} from './CommentComponent'

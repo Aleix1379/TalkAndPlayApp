@@ -1,10 +1,10 @@
-import React, {useState} from 'react';
-import {GestureResponderEvent, StyleProp, StyleSheet, View, ViewStyle} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {Text, withTheme} from "react-native-paper";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import AccountUtil from "../../utils/Account";
-import {Account} from "../../types/PostsTypes";
+import React, {useState} from 'react'
+import {GestureResponderEvent, StyleProp, StyleSheet, View, ViewStyle} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {Text, withTheme} from "react-native-paper"
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
+import AccountUtil from "../../utils/Account"
+import {Account} from "../../types/PostsTypes"
 
 interface ChannelProperties {
     theme: Theme
@@ -49,7 +49,7 @@ const ChannelComponent: React.FC<ChannelProperties> = ({
             flex: 1,
             marginRight: 8
         }
-    });
+    })
 
     return (
         <View

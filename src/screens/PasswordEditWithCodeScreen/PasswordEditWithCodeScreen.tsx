@@ -1,21 +1,13 @@
-import React, {useState} from 'react';
-import {StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {withTheme} from "react-native-paper";
-import HeaderComponent from "../../components/HeaderComponent";
-import TextInputComponent from "../../components/TextInputComponent";
-import {Option} from "../../types/PostsTypes";
-import {
-    EMAIL,
-    ErrorType,
-    MIN_LENGTH,
-    PASSWORD_COMPLEXITY,
-    PASSWORD_REPEAT,
-    REQUIRED
-} from "../../utils/Validator/types";
-import Validator from "../../utils/Validator/Validator";
-import ButtonComponent from "../../components/ButtonComponent";
-import UserService from "../../services/User";
+import React, {useState} from 'react'
+import {StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {withTheme} from "react-native-paper"
+import HeaderComponent from "../../components/HeaderComponent"
+import TextInputComponent from "../../components/TextInputComponent"
+import {ErrorType, MIN_LENGTH, PASSWORD_COMPLEXITY, PASSWORD_REPEAT} from "../../utils/Validator/types"
+import Validator from "../../utils/Validator/Validator"
+import ButtonComponent from "../../components/ButtonComponent"
+import UserService from "../../services/User"
 
 interface PasswordEditWithCodeProperties {
     navigation: any,

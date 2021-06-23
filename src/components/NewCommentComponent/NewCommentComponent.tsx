@@ -3,7 +3,6 @@ import {Animated, Easing, StyleSheet, TextInput, View} from "react-native"
 import TextInputComponent from "../TextInputComponent"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import AvatarComponent from "../AvatarComponent"
-import {UserState} from "../../store/user/types"
 import {connect, shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
 import UserUtils from "../../utils/UserUtils"
@@ -11,10 +10,11 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import Validator from "../../utils/Validator/Validator"
 import {ErrorType} from "../../utils/Validator/types"
 import {withTheme} from "react-native-paper"
-import {ImagePickerResponse, launchImageLibrary} from "react-native-image-picker";
-import {closeDialog, openDialog} from "../../store/dialog/actions";
-import {DialogOption} from "../../store/dialog/types";
-import ImagePicker from 'react-native-image-crop-picker';
+import {ImagePickerResponse} from "react-native-image-picker"
+import {closeDialog, openDialog} from "../../store/dialog/actions"
+import {DialogOption} from "../../store/dialog/types"
+import ImagePicker from 'react-native-image-crop-picker'
+import {User} from "../../types/PostsTypes"
 
 interface Errors {
     message: ErrorType
@@ -43,8 +43,6 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
                                                                  onImageChange,
                                                                  minLength = 1,
                                                                  label = "Write a comment...",
-                                                                 openDialog,
-                                                                 closeDialog,
                                                                  uploadPicture
                                                              }) => {
     const [rotationAnimation] = useState(new Animated.Value(0))
@@ -63,7 +61,7 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
             useNativeDriver: false,
             toValue: isMessageValid() ? 1 : 0,
             duration: 1000
-        }).start();
+        }).start()
 
     }
 
@@ -83,7 +81,7 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
     const color = colorAnimation.interpolate({
         inputRange: [0, 1],
         outputRange: [theme.colors.text, theme.colors.accent]
-    });
+    })
 
     const [errors, setFormErrors] = useState<Errors>({
         message: {
@@ -101,7 +99,7 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
 
     const validator = new Validator(errors, setFormErrors)
 
-    const user: UserState = useSelector((state: ApplicationState) => {
+    const user: User = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
 

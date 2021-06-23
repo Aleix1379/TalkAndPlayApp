@@ -1,1 +1,1 @@
-export {default} from './PostsServices';
+export {default} from './PostsServices'

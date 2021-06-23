@@ -1,5 +1,5 @@
-import Api from "../Api";
-import {Report} from "../../types/ReportTypes";
+import Api from "../Api"
+import {Report} from "../../types/ReportTypes"
 
 class ReportService extends Api {
     constructor() {

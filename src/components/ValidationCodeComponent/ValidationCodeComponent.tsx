@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
-import {StyleSheet, View} from "react-native";
-import {withTheme} from 'react-native-paper';
-import {Theme} from "react-native-paper/lib/typescript/types";
-import InputCodeComponent from "../InputCodeComponent";
+import React from 'react'
+import {StyleSheet, View} from "react-native"
+import {withTheme} from 'react-native-paper'
+import {Theme} from "react-native-paper/lib/typescript/types"
+import InputCodeComponent from "../InputCodeComponent"
 
 interface ValidationCodeProperties {
     theme: Theme,
@@ -20,7 +20,7 @@ const ValidationCodeComponent: React.FC<ValidationCodeProperties> = ({theme, len
             justifyContent: "space-around",
             marginBottom: 24
         }
-    });
+    })
 
     return (
         <View style={styles.validationCode}>

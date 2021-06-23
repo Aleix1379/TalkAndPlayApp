@@ -1,6 +1,6 @@
 import Api from "../Api"
-import {ImagePickerResponse} from "react-native-image-picker/src/types";
-import {Platform} from "react-native";
+import {ImagePickerResponse} from "react-native-image-picker/src/types"
+import {Platform} from "react-native"
 
 class PictureService extends Api {
     constructor() {

@@ -1,18 +1,18 @@
-import React, {useEffect, useState} from 'react';
-import {BackHandler, Dimensions, GestureResponderEvent, ScrollView, StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {Snackbar, Text, withTheme} from "react-native-paper";
-import HeaderComponent from "../../components/HeaderComponent";
-import AvatarComponent from "../../components/AvatarComponent/AvatarComponent";
-import UserUtils from "../../utils/UserUtils";
-import Info from "../../components/Info/Info";
-import {UserState} from "../../store/user/types";
-import UserService from "../../services/User";
-import ChannelComponent from "../../components/ChannelComponent/ChannelComponent";
-import Clipboard from "@react-native-clipboard/clipboard";
-import FollowButtonComponent from "../../components/FollowButtonComponent";
-import {shallowEqual, useSelector} from "react-redux";
-import {ApplicationState} from "../../store";
+import React, {useEffect, useState} from 'react'
+import {BackHandler, Dimensions, GestureResponderEvent, ScrollView, StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {Snackbar, Text, withTheme} from "react-native-paper"
+import HeaderComponent from "../../components/HeaderComponent"
+import AvatarComponent from "../../components/AvatarComponent/AvatarComponent"
+import UserUtils from "../../utils/UserUtils"
+import Info from "../../components/Info/Info"
+import UserService from "../../services/User"
+import ChannelComponent from "../../components/ChannelComponent/ChannelComponent"
+import Clipboard from "@react-native-clipboard/clipboard"
+import FollowButtonComponent from "../../components/FollowButtonComponent"
+import {shallowEqual, useSelector} from "react-redux"
+import {ApplicationState} from "../../store"
+import {User} from "../../types/PostsTypes"
 
 interface ProfileViewerProperties {
     navigation: any,
@@ -66,18 +66,19 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
         follow: {
             marginBottom: 8
         }
-    });
+    })
     const [following, setFollowing] = useState(false)
+    const [follower, setFollower] = useState(false)
     const [snackbar, setSnackbar] = useState<SnackBar>({
         visible: false,
         content: '',
         color: theme.colors.primary
     })
     const {email, origin} = navigation.state.params
-    const [userVisited, setUserVisited] = useState<UserState>()
+    const [userVisited, setUserVisited] = useState<User>()
     const userService = new UserService()
 
-    const currentUser: UserState = useSelector((state: ApplicationState) => {
+    const currentUser: User = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
 
@@ -149,6 +150,19 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
                     console.log('error getFollowing')
                     console.log(err)
                 })
+
+            console.log('currentUser.id => ' + currentUser.id)
+            console.log('userVisited.id => ' + userVisited.id)
+
+            userService.isFollower(currentUser.id, userVisited.id)
+                .then(isFollower => {
+                    console.log('IS FOLLOWER => ' + isFollower)
+                    setFollower(isFollower)
+                })
+                .catch(err => {
+                    console.log('error getFollower')
+                    console.log(err)
+                })
         }
     }, [userVisited])
 
@@ -177,7 +191,7 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
                             style={styles.follow}
                             onPress={follow}
                             following={following}
-                            follower={false}
+                            follower={follower}
                         />
                     </View>
 

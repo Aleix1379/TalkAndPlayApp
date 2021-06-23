@@ -1,7 +1,7 @@
-import React from 'react';
-import {StyleSheet, View} from "react-native";
-import {Text, withTheme} from 'react-native-paper';
-import {Theme} from "react-native-paper/lib/typescript/types";
+import React from 'react'
+import {StyleSheet, View} from "react-native"
+import {Text, withTheme} from 'react-native-paper'
+import {Theme} from "react-native-paper/lib/typescript/types"
 
 interface KeyProperties {
     theme: Theme,
@@ -31,7 +31,7 @@ const KeyComponent: React.FC<KeyProperties> = ({theme, value, onPress}) => {
             fontSize: 18,
             color: theme.colors.text
         }
-    });
+    })
 
     return (
         <View style={styles.key} onTouchEnd={() => onPress(value)}>

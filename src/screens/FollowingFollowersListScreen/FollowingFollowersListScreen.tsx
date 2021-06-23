@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import {Dimensions, ScrollView, StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {Text, withTheme} from "react-native-paper";
-import {UserState} from "../../store/user/types";
-import UserService from "../../services/User";
-import {shallowEqual, useSelector} from "react-redux";
-import {ApplicationState} from "../../store";
-import HeaderComponent from "../../components/HeaderComponent";
-import UserItemComponent from "../../components/UserItemComponent";
-import Image from "react-native-scalable-image";
+import React, {useEffect, useState} from 'react'
+import {Dimensions, ScrollView, StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {Text, withTheme} from "react-native-paper"
+import UserService from "../../services/User"
+import {shallowEqual, useSelector} from "react-redux"
+import {ApplicationState} from "../../store"
+import HeaderComponent from "../../components/HeaderComponent"
+import UserItemComponent from "../../components/UserItemComponent"
+import Image from "react-native-scalable-image"
+import {User} from "../../types/PostsTypes"
 
 interface FollowingFollowersListProperties {
     theme: Theme
@@ -22,6 +22,10 @@ interface FollowState {
 
 const FollowingFollowersListScreen: React.FC<FollowingFollowersListProperties> = ({theme, navigation}) => {
     const styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            backgroundColor: theme.colors.background
+        },
         followingFollowersList: {
             backgroundColor: theme.colors.background,
             flex: 1
@@ -39,13 +43,13 @@ const FollowingFollowersListScreen: React.FC<FollowingFollowersListProperties> =
             marginTop: 'auto',
             fontSize: 22
         }
-    });
+    })
 
     const {userType} = navigation.state.params
-    const [list, setList] = useState<UserState[]>([])
+    const [list, setList] = useState<User[] | null>(null)
     const userService = new UserService()
     const [followingState, setFollowingState] = useState<{ [id: number]: FollowState }>({})
-    const currentUser: UserState = useSelector((state: ApplicationState) => {
+    const currentUser: User = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
 
@@ -57,8 +61,8 @@ const FollowingFollowersListScreen: React.FC<FollowingFollowersListProperties> =
     }, [])
 
     const loadData = async () => {
-        let followingData: UserState[]
-        let followersData: UserState[]
+        let followingData: User[]
+        let followersData: User[]
 
         followingData = await userService.getFollowing(currentUser.id)
         followersData = await userService.getFollowers(currentUser.id)
@@ -90,7 +94,7 @@ const FollowingFollowersListScreen: React.FC<FollowingFollowersListProperties> =
         setFollowingState(data)
     }
 
-    const toggleFollowing = (followingUser: UserState, isFollowing: boolean) => {
+    const toggleFollowing = (followingUser: User, isFollowing: boolean) => {
         if (isFollowing) {
             userService.deleteFollowing(currentUser.id, followingUser.id)
                 .then(result => updateFollow(followingUser.id, result))
@@ -109,7 +113,7 @@ const FollowingFollowersListScreen: React.FC<FollowingFollowersListProperties> =
     }
 
     return (
-        <>
+        <View style={styles.container}>
             <HeaderComponent
                 title={capitalize(userType)}
                 leftAction={{
@@ -118,7 +122,7 @@ const FollowingFollowersListScreen: React.FC<FollowingFollowersListProperties> =
                 }}
             />
             {
-                list.length > 0 &&
+                list && list.length > 0 &&
                 <ScrollView style={styles.followingFollowersList}>
                     {
                         list.map((user, index) =>
@@ -134,16 +138,16 @@ const FollowingFollowersListScreen: React.FC<FollowingFollowersListProperties> =
                 </ScrollView>
             }
             {
-                list.length === 0 &&
+                list && list.length === 0 &&
                 <View style={styles.followingFollowersEmpty}>
                     <Text style={styles.followingFollowersEmptyText}>
-                        {userType === 'following' ? 'You do not follow anyone' : 'You do not have followers yet'}
+                        {userType === 'following' ? 'You do not follow anyone' : 'You have no followers yet'}
                     </Text>
                     <Image width={Dimensions.get('window').width * 0.75} style={styles.image}
                            source={require('../../assets/images/undraw_empty_xct9.png')}/>
                 </View>
             }
-        </>
+        </View>
     )
 }
 

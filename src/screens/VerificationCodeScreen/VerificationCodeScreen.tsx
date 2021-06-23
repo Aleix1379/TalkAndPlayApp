@@ -1,12 +1,12 @@
-import React, {useState} from 'react';
-import {Dimensions, ScrollView, StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {Text, withTheme} from "react-native-paper";
-import HeaderComponent from "../../components/HeaderComponent";
-import Image from "react-native-scalable-image";
-import ValidationCodeComponent from "../../components/ValidationCodeComponent";
-import KeyboardComponent from "../../components/KeyboardComponent/KeyboardComponent";
-import UserService from "../../services/User";
+import React, {useState} from 'react'
+import {Dimensions, ScrollView, StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {Text, withTheme} from "react-native-paper"
+import HeaderComponent from "../../components/HeaderComponent"
+import Image from "react-native-scalable-image"
+import ValidationCodeComponent from "../../components/ValidationCodeComponent"
+import KeyboardComponent from "../../components/KeyboardComponent/KeyboardComponent"
+import UserService from "../../services/User"
 
 interface VerificationCodeProperties {
     navigation: any,
@@ -39,7 +39,7 @@ const VerificationCodeScreen: React.FC<VerificationCodeProperties> = ({navigatio
         error: {
             color: '#ff2222',
         }
-    });
+    })
 
     const pressKey = (value: number | string) => {
         let data: any[] = [...values]

@@ -1,1 +1,1 @@
-export {default} from './AdButton';
+export {default} from './AdButton'

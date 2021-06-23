@@ -1,8 +1,8 @@
-import React from 'react';
-import {NativeModules, Platform, StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {Text, withTheme} from "react-native-paper";
-import {FollowCounter} from "../../types/FollowCounter";
+import React from 'react'
+import {NativeModules, Platform, StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {Text, withTheme} from "react-native-paper"
+import {FollowCounter} from "../../types/FollowCounter"
 
 interface FollowersCounterProperties {
     theme: Theme
@@ -23,8 +23,8 @@ const FollowersCounterComponent: React.FC<FollowersCounterProperties> = ({
     console.log('locale -> ' + locale)
 
     if (Platform.OS === 'android') { // only android needs polyfill
-        require('intl'); // import intl object
-        require('intl/locale-data/jsonp/ca-ES'); // load the required locale details
+        require('intl') // import intl object
+        require('intl/locale-data/jsonp/ca-ES') // load the required locale details
     }
 
     const styles = StyleSheet.create({
@@ -42,7 +42,7 @@ const FollowersCounterComponent: React.FC<FollowersCounterProperties> = ({
         label: {
             color: '#c4c4c4'
         }
-    });
+    })
 
     return (
         <View style={styles.followersCounter}>

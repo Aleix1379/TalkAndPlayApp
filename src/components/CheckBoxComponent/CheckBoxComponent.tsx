@@ -3,8 +3,8 @@ import {Image, StyleSheet, View} from "react-native"
 import {Text, withTheme} from 'react-native-paper'
 import {Theme} from "react-native-paper/lib/typescript/types"
 import CheckBox from "@react-native-community/checkbox"
-import AccountUtil from "../../utils/Account";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import AccountUtil from "../../utils/Account"
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 
 
 interface CheckBoxProperties {

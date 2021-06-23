@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
-import {Animated, StyleProp, StyleSheet, Text, View, ViewStyle} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {withTheme} from "react-native-paper";
+import React, {useEffect, useState} from 'react'
+import {Animated, StyleProp, StyleSheet, Text, View, ViewStyle} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {withTheme} from "react-native-paper"
 
 interface FollowButtonProperties {
     theme: Theme
@@ -42,8 +42,8 @@ const FollowButtonComponent: React.FC<FollowButtonProperties> = ({
             height: 33,
             borderRadius: 40
         }
-    });
-
+    })
+    console.log('follower => ' + follower)
     const [upperAnimation] = useState(new Animated.Value(following ? 1 : 0))
 
     const startAnimation = () => {

@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
-import {StyleProp, StyleSheet, View, ViewStyle} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {Text, withTheme} from "react-native-paper";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import TextInputComponent from "../TextInputComponent/TextInputComponent";
-import {Account} from "../../types/PostsTypes";
-import AccountUtil from "../../utils/Account";
+import React, {useState} from 'react'
+import {StyleProp, StyleSheet, View, ViewStyle} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {withTheme} from "react-native-paper"
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
+import TextInputComponent from "../TextInputComponent/TextInputComponent"
+import {Account} from "../../types/PostsTypes"
+import AccountUtil from "../../utils/Account"
 
 interface AccountEditProperties {
     theme: Theme
@@ -34,7 +34,7 @@ const AccountEditComponent: React.FC<AccountEditProperties> = ({theme, account, 
             marginBottom: 4,
             marginRight: 6,
         }
-    });
+    })
 
     const onFocusChange = (focused: boolean) => {
         if (focused || value.length > 0) {

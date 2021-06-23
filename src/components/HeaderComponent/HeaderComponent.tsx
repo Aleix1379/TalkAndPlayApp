@@ -1,7 +1,7 @@
 import React from 'react'
 import {StyleSheet} from "react-native"
 import {Appbar} from "react-native-paper"
-import RoundButtonComponent from "../RoundButtonComponent";
+import RoundButtonComponent from "../RoundButtonComponent"
 
 interface HeaderAction {
     image: string

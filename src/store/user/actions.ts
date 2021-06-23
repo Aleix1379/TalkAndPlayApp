@@ -1,11 +1,12 @@
 import * as actionTypes from './actionsTypes'
-import {DispatchType, UserAction, UserState} from './types'
+import {DispatchType, UserAction} from './types'
 import UserService from '../../services/User'
-import LocalStorage from "../../utils/LocalStorage/LocalStorage";
+import LocalStorage from "../../utils/LocalStorage/LocalStorage"
+import {User} from "../../types/PostsTypes"
 
 const userService = new UserService()
 
-export const login = (user: UserState, token?: string) => {
+export const login = (user: User, token?: string) => {
     LocalStorage.setUser(user).catch(error => console.log(error))
     if (token) {
         LocalStorage.setAuthToken(token).catch(error => console.log(error))
@@ -33,9 +34,10 @@ export const logout = () => {
             id: -1,
             name: '',
             email: '',
-            imageVersion: 0,
+            imageName: 0,
             languages: [],
             platforms: [],
+            seenMessages: {},
             profiles: []
         },
     }

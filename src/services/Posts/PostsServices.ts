@@ -1,5 +1,5 @@
-import {Comment, CommentResponse, Filter, PostInfo, PostsResponse, PostType} from "../../types/PostsTypes";
-import Api from "../Api";
+import {Comment, CommentResponse, Filter, PostInfo, PostsResponse, PostType} from "../../types/PostsTypes"
+import Api from "../Api"
 
 class PostsService extends Api {
     constructor() {
@@ -13,18 +13,18 @@ class PostsService extends Api {
     }
 
     get(page: number = 0, postType: PostType, filter?: Filter): Promise<PostsResponse> {
-        let title = '';
-        let game = '';
-        let platforms: number[] = [];
-        let language: number[] = [];
+        let title = ''
+        let game = ''
+        let platforms: number[] = []
+        let language: number[] = []
         let userName = ''
         let channels: number[] = []
 
         if (filter) {
-            title = filter.title;
-            game = filter.game;
-            platforms = filter.platforms.map((platform) => platform.id);
-            language = filter.languages.map((language) => language.id);
+            title = filter.title
+            game = filter.game
+            platforms = filter.platforms.map((platform) => platform.id)
+            language = filter.languages.map((language) => language.id)
             userName = filter.user
             channels = filter.channels.map((channel) => channel.id)
         }
@@ -34,7 +34,7 @@ class PostsService extends Api {
                 `${this.getUrl()}?page=${page}&title=${title}&game=${game}&platforms=${platforms}&languages=${language}&postType=${postType}&userName=${userName}&channels=${channels}`
             )
             .then((res) => {
-                return res.data;
+                return res.data
             })
     }
 
@@ -47,7 +47,6 @@ class PostsService extends Api {
         page: number = 0,
         size: number = 10
     ): Promise<CommentResponse> {
-        console.log('get comments by post page => ' + page)
         return this.http
             .get(`${this.getUrl(postId)}/comments?page=${page}&size=${size}`)
             .then((res) => res.data)
@@ -86,4 +85,4 @@ class PostsService extends Api {
     }
 }
 
-export default PostsService;
+export default PostsService

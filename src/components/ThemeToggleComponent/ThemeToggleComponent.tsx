@@ -1,7 +1,7 @@
-import React from 'react';
-import {StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {Switch, Text, withTheme} from "react-native-paper";
+import React from 'react'
+import {StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {Switch, Text, withTheme} from "react-native-paper"
 
 interface ThemeToggleProperties {
     theme: Theme
@@ -26,7 +26,7 @@ const ThemeToggleComponent: React.FC<ThemeToggleProperties> = ({theme, value, on
         text: {
             color: theme.colors.text
         }
-    });
+    })
 
     return (
         <View style={styles.themeToggle} onTouchEnd={() => onPress()}>

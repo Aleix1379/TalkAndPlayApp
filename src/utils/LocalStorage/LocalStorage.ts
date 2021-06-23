@@ -1,7 +1,6 @@
-import AsyncStorage from '@react-native-community/async-storage';
-import {UserState} from "../../store/user/types";
-import {Filter} from "../../types/PostsTypes";
-import {NewCommentSeen} from "../../types/NewCommentSeen";
+import AsyncStorage from '@react-native-community/async-storage'
+import {Filter, User} from "../../types/PostsTypes"
+import {NewCommentSeen} from "../../types/NewCommentSeen"
 
 export default class LocalStorage {
     private static keys = {
@@ -14,85 +13,85 @@ export default class LocalStorage {
         THEME: 'theme',
         POST_TAB_INDEX: 'post-tab-index',
         NEW_MAP: 'new-map'
-    };
+    }
 
     public static setAuthToken = async (token: string) => {
         try {
-            await AsyncStorage.setItem(LocalStorage.keys.AUTH_TOKEN, token);
+            await AsyncStorage.setItem(LocalStorage.keys.AUTH_TOKEN, token)
         } catch (error) {
             // Error retrieving data
-            console.log(error.message);
+            console.log(error.message)
         }
-    };
+    }
 
     public static removeAuthToken = async () => {
         try {
-            await AsyncStorage.removeItem(LocalStorage.keys.AUTH_TOKEN);
+            await AsyncStorage.removeItem(LocalStorage.keys.AUTH_TOKEN)
         } catch (error) {
-            console.log(error.message);
+            console.log(error.message)
         }
-    };
+    }
 
     public static getAuthToken = async (): Promise<string | null> => {
         try {
-            return await AsyncStorage.getItem(LocalStorage.keys.AUTH_TOKEN);
+            return await AsyncStorage.getItem(LocalStorage.keys.AUTH_TOKEN)
         } catch (error) {
-            console.log('Error get auth token');
-            console.log(error.message);
-            return null;
+            console.log('Error get auth token')
+            console.log(error.message)
+            return null
         }
-    };
+    }
 
     public static setCommentsPerPage = async (commentPerPage: number) => {
         try {
-            await AsyncStorage.setItem(LocalStorage.keys.AUTH_TOKEN, `${commentPerPage}`);
+            await AsyncStorage.setItem(LocalStorage.keys.AUTH_TOKEN, `${commentPerPage}`)
         } catch (error) {
             // Error retrieving data
-            console.log(error.message);
+            console.log(error.message)
         }
-    };
+    }
 
     public static getCommentsPerPage = async (): Promise<number> => {
         try {
-            let value = await AsyncStorage.getItem(LocalStorage.keys.COMMENTS_PER_PAGE);
+            let value = await AsyncStorage.getItem(LocalStorage.keys.COMMENTS_PER_PAGE)
             if (!value) {
                 return 10
             }
             return Number(value)
         } catch (error) {
-            console.log('Error get auth token');
-            console.log(error.message);
+            console.log('Error get auth token')
+            console.log(error.message)
             return -1
         }
     }
 
-    public static setUser = async (user: UserState) => {
+    public static setUser = async (user: User) => {
         try {
-            await AsyncStorage.setItem(LocalStorage.keys.USER, JSON.stringify(user));
+            await AsyncStorage.setItem(LocalStorage.keys.USER, JSON.stringify(user))
         } catch (error) {
             // Error retrieving data
-            console.log(error.message);
+            console.log(error.message)
         }
     }
 
-    public static getUser = async (): Promise<UserState | null> => {
+    public static getUser = async (): Promise<User | null> => {
         try {
-            let value = await AsyncStorage.getItem(LocalStorage.keys.USER);
-            return JSON.parse(value!);
+            let value = await AsyncStorage.getItem(LocalStorage.keys.USER)
+            return JSON.parse(value!)
         } catch (error) {
-            console.log('Error get auth token');
-            console.log(error.message);
-            return null;
+            console.log('Error get auth token')
+            console.log(error.message)
+            return null
         }
-    };
+    }
 
     public static removeUser = async () => {
         try {
-            await AsyncStorage.removeItem(LocalStorage.keys.USER);
+            await AsyncStorage.removeItem(LocalStorage.keys.USER)
         } catch (error) {
-            console.log(error.message);
+            console.log(error.message)
         }
-    };
+    }
 
     /*
   {
@@ -107,9 +106,9 @@ export default class LocalStorage {
             let value = await AsyncStorage.getItem(LocalStorage.keys.COMMENT_SEEN)
             return JSON.parse(value!)
         } catch (error) {
-            console.log('Error get comments seen');
+            console.log('Error get comments seen')
             console.log(error.message)
-            return null;
+            return null
         }
     }
 
@@ -132,33 +131,33 @@ export default class LocalStorage {
 
     public static removeCommentsSeen = async () => {
         try {
-            await AsyncStorage.removeItem(LocalStorage.keys.COMMENT_SEEN);
+            await AsyncStorage.removeItem(LocalStorage.keys.COMMENT_SEEN)
         } catch (error) {
-            console.log(error.message);
+            console.log(error.message)
         }
     }
 
     public static saveFilter = async (filter: Filter) => {
         try {
-            await AsyncStorage.setItem(LocalStorage.keys.FILTER, JSON.stringify(filter));
+            await AsyncStorage.setItem(LocalStorage.keys.FILTER, JSON.stringify(filter))
         } catch (error) {
-            console.log(error.message);
+            console.log(error.message)
         }
     }
 
     public static getFilter = async (): Promise<Filter | null> => {
         let value = await AsyncStorage.getItem(LocalStorage.keys.FILTER)
         if (value) {
-            return JSON.parse(value);
+            return JSON.parse(value)
         }
         return null
     }
 
     public static removeFilter = async () => {
         try {
-            await AsyncStorage.removeItem(LocalStorage.keys.FILTER);
+            await AsyncStorage.removeItem(LocalStorage.keys.FILTER)
         } catch (error) {
-            console.log(error.message);
+            console.log(error.message)
         }
     }
 
@@ -170,7 +169,7 @@ export default class LocalStorage {
         try {
             await AsyncStorage.setItem(LocalStorage.keys.FCM_TOKEN, token)
         } catch (error) {
-            console.log(error.message);
+            console.log(error.message)
         }
     }
 
@@ -178,7 +177,7 @@ export default class LocalStorage {
         try {
             await AsyncStorage.setItem(LocalStorage.keys.THEME, theme)
         } catch (error) {
-            console.log(error.message);
+            console.log(error.message)
         }
     }
 

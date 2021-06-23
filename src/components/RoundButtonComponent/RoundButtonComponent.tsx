@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
-import {StyleProp, StyleSheet, View, ViewStyle} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import {withTheme} from "react-native-paper";
+import React, {useState} from 'react'
+import {StyleProp, StyleSheet, View, ViewStyle} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
+import {withTheme} from "react-native-paper"
 
 interface RoundButtonProperties {
     theme: Theme
@@ -33,7 +33,7 @@ const RoundButtonComponent: React.FC<RoundButtonProperties> = ({
             alignItems: "center",
             justifyContent: "center"
         }
-    });
+    })
 
     const startTouch = () => {
         setActive(true)

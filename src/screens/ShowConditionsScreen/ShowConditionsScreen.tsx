@@ -1,10 +1,10 @@
-import React from 'react';
-import {ScrollView, StyleSheet} from "react-native";
-import {Text, withTheme} from 'react-native-paper';
-import {Theme} from "react-native-paper/lib/typescript/types";
+import React from 'react'
+import {ScrollView, StyleSheet} from "react-native"
+import {withTheme} from 'react-native-paper'
+import {Theme} from "react-native-paper/lib/typescript/types"
 // @ts-ignore
 import Markdown from 'react-native-simple-markdown'
-import HeaderComponent from "../../components/HeaderComponent";
+import HeaderComponent from "../../components/HeaderComponent"
 
 interface ShowConditionsProperties {
     navigation: any
@@ -18,7 +18,7 @@ const ShowConditionsScreen: React.FC<ShowConditionsProperties> = ({theme, naviga
             padding: 16,
             marginBottom: 8
         }
-    });
+    })
 
     const {id} = navigation.state.params
 

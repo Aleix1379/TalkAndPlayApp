@@ -1,7 +1,7 @@
-import React from 'react';
-import {StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {Button, Checkbox, Text, withTheme} from "react-native-paper";
+import React from 'react'
+import {StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {Button, Checkbox, Text, withTheme} from "react-native-paper"
 
 interface SelectProperties {
     theme: Theme
@@ -25,7 +25,7 @@ const ConditionComponent: React.FC<SelectProperties> = ({theme, id, value, onCha
         button: {
             marginLeft: 'auto',
         }
-    });
+    })
 
     return (
         <View style={styles.select}>

@@ -3,8 +3,8 @@ import {Text, withTheme} from 'react-native-paper'
 import {Animated, Easing, StyleProp, StyleSheet, TextInput, TextStyle, View, ViewStyle} from "react-native"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {ErrorType} from "../../utils/Validator/types"
-import ErrorHelperComponent from "../ErrorHelperComponent";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import ErrorHelperComponent from "../ErrorHelperComponent"
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 
 interface TextInputProperties {
     id: string

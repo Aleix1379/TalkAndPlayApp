@@ -1,9 +1,9 @@
-import React from 'react';
-import {Image, NativeModules, StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {Text, withTheme} from "react-native-paper";
-import HeaderComponent from "../../components/HeaderComponent";
-import ButtonComponent from "../../components/ButtonComponent";
+import React from 'react'
+import {Image, NativeModules, StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {Text, withTheme} from "react-native-paper"
+import HeaderComponent from "../../components/HeaderComponent"
+import ButtonComponent from "../../components/ButtonComponent"
 
 interface ErrorProperties {
     navigation: any
@@ -39,11 +39,11 @@ const ErrorScreen: React.FC<ErrorProperties> = ({theme, navigation}) => {
             color: theme.colors.background,
             marginBottom: 'auto'
         }
-    });
+    })
 
     const retry = () => {
         console.log('retry...')
-        NativeModules.DevSettings.reload();
+        NativeModules.DevSettings.reload()
     }
 
     return (

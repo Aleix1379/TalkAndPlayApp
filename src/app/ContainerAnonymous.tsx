@@ -1,18 +1,18 @@
-import React from 'react';
-import {createStackNavigator} from "react-navigation-stack";
-import PostDetailScreen from "../screens/PostDetail";
-import {createAppContainer, createSwitchNavigator} from "react-navigation";
-import {createMaterialBottomTabNavigator} from "react-navigation-material-bottom-tabs";
+import React from 'react'
+import {createStackNavigator} from "react-navigation-stack"
+import PostDetailScreen from "../screens/PostDetail"
+import {createAppContainer, createSwitchNavigator} from "react-navigation"
+import {createMaterialBottomTabNavigator} from "react-navigation-material-bottom-tabs"
 // @ts-ignore
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import LoginScreen from "../screens/Login";
-import RegisterScreen from "../screens/RegisterScreen";
-import RecoveryPasswordScreen from "../screens/RecoveryPasswordScreen";
-import VerificationCodeScreen from "../screens/VerificationCodeScreen";
-import PasswordEditWithCodeScreen from "../screens/PasswordEditWithCodeScreen/PasswordEditWithCodeScreen";
-import ShowConditionsScreen from "../screens/ShowConditionsScreen";
-import ErrorScreen from "../screens/ErrorScreen";
-import PostsScreen from "../screens/PostsScreen/PostsScreen";
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import LoginScreen from "../screens/Login"
+import RegisterScreen from "../screens/RegisterScreen"
+import RecoveryPasswordScreen from "../screens/RecoveryPasswordScreen"
+import VerificationCodeScreen from "../screens/VerificationCodeScreen"
+import PasswordEditWithCodeScreen from "../screens/PasswordEditWithCodeScreen/PasswordEditWithCodeScreen"
+import ShowConditionsScreen from "../screens/ShowConditionsScreen"
+import ErrorScreen from "../screens/ErrorScreen"
+import PostsScreen from "../screens/PostsScreen/PostsScreen"
 
 const PostsStack = createStackNavigator({
     Home: {
@@ -21,7 +21,7 @@ const PostsStack = createStackNavigator({
             headerShown: false
         },
     },
-});
+})
 
 
 const BottomTabNavigator = createMaterialBottomTabNavigator(
@@ -30,7 +30,7 @@ const BottomTabNavigator = createMaterialBottomTabNavigator(
             screen: PostsStack,
             navigationOptions: {
                 tabBarIcon: ({tintColor}) => {
-                    return <MaterialCommunityIcons name="comment-text-multiple" color={tintColor} size={25}/>;
+                    return <MaterialCommunityIcons name="comment-text-multiple" color={tintColor} size={25}/>
                 }
             }
         },
@@ -39,7 +39,7 @@ const BottomTabNavigator = createMaterialBottomTabNavigator(
             navigationOptions: {
                 title: 'Log in',
                 tabBarIcon: ({tintColor}) => {
-                    return <MaterialCommunityIcons name="login" color={tintColor} size={24}/>;
+                    return <MaterialCommunityIcons name="login" color={tintColor} size={24}/>
                 }
             }
         }
@@ -98,7 +98,7 @@ const HomeDetailStack = createStackNavigator({
             headerShown: false
         }
     }
-});
+})
 
 export default createAppContainer(
     createSwitchNavigator(
@@ -110,4 +110,4 @@ export default createAppContainer(
             initialRouteName: 'App',
         },
     ),
-);
+)

@@ -13,19 +13,19 @@ import {SceneMap, TabBar, TabView} from "react-native-tab-view"
 import {connect, shallowEqual, useSelector} from 'react-redux'
 import {Snackbar, Text, withTheme} from "react-native-paper"
 import HeaderComponent from "../../components/HeaderComponent"
-import {UserState} from "../../store/user/types"
 import {ApplicationState} from "../../store"
 import AvatarComponent from "../../components/AvatarComponent/AvatarComponent"
 import UserUtils from "../../utils/UserUtils"
 import Info from "../../components/Info/Info"
 import FollowersCounterComponent from "../../components/FollowersCounterComponent"
-import ChannelComponent from "../../components/ChannelComponent";
-import Image from "react-native-scalable-image";
-import Clipboard from '@react-native-clipboard/clipboard';
-import RBSheet from "react-native-raw-bottom-sheet";
-import BottomSheetComponent from "../../components/BottomSheetContentComponent/BottomSheetComponent";
-import {FollowCounter} from "../../types/FollowCounter";
-import UserService from "../../services/User";
+import ChannelComponent from "../../components/ChannelComponent"
+import Image from "react-native-scalable-image"
+import Clipboard from '@react-native-clipboard/clipboard'
+import RBSheet from "react-native-raw-bottom-sheet"
+import BottomSheetComponent from "../../components/BottomSheetContentComponent/BottomSheetComponent"
+import {FollowCounter} from "../../types/FollowCounter"
+import UserService from "../../services/User"
+import {User} from "../../types/PostsTypes"
 
 interface ProfileProperties {
     navigation: any,
@@ -109,7 +109,7 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
     })
     const userService = new UserService()
     const [modalOptions, setModalOptions] = useState<ModalOption[]>([])
-    const user: UserState = useSelector((state: ApplicationState) => {
+    const user: User = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
 

@@ -1,18 +1,19 @@
 import * as actionTypes from './actionsTypes'
-import {UserAction, UserState} from './types'
+import {UserAction} from './types'
+import {User} from "../../types/PostsTypes"
 
-const initialState: UserState = {
+const initialState: User = {
     id: -1,
     name: '',
     email: '',
-    imageVersion: 0,
+    imageName: 0,
     languages: [],
     platforms: [],
     profiles: [],
     seenMessages: []
 }
 
-const reducer = (state: UserState = initialState, action: UserAction) => {
+const reducer = (state: User = initialState, action: UserAction) => {
     if (action.type === actionTypes.LOG_IN || action.type === actionTypes.LOG_OUT) {
         return {
             ...action.user,

@@ -1,16 +1,16 @@
-import React, {useState} from 'react';
-import {Dimensions, ScrollView, StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {Text, withTheme} from "react-native-paper";
-import HeaderComponent from "../../components/HeaderComponent";
-import Image from "react-native-scalable-image";
-import TextInputComponent from "../../components/TextInputComponent";
-import ButtonComponent from "../../components/ButtonComponent";
-import UserService from "../../services/User";
-import {EMAIL, ErrorType, REQUIRED} from "../../utils/Validator/types";
-import Validator from "../../utils/Validator/Validator";
-import {connect} from "react-redux";
-import {setLoading} from "../../store/loading/actions";
+import React, {useState} from 'react'
+import {Dimensions, ScrollView, StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {Text, withTheme} from "react-native-paper"
+import HeaderComponent from "../../components/HeaderComponent"
+import Image from "react-native-scalable-image"
+import TextInputComponent from "../../components/TextInputComponent"
+import ButtonComponent from "../../components/ButtonComponent"
+import UserService from "../../services/User"
+import {EMAIL, ErrorType, REQUIRED} from "../../utils/Validator/types"
+import Validator from "../../utils/Validator/Validator"
+import {connect} from "react-redux"
+import {setLoading} from "../../store/loading/actions"
 
 interface RecoveryPasswordProperties {
     navigation: any,
@@ -80,7 +80,7 @@ const RecoveryPasswordScreen: React.FC<RecoveryPasswordProperties> = ({navigatio
             marginBottom: 24,
             width: Dimensions.get('window').width - 48
         }
-    });
+    })
 
     const getRecoveryCode = () => {
         setLoading(true)

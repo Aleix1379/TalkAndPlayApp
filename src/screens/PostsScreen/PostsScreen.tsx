@@ -1,9 +1,9 @@
-import React from 'react';
-import {Animated, Dimensions, ScrollView, StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {TabBar, TabView} from "react-native-tab-view";
-import {FAB, Modal, Text, withTheme} from "react-native-paper";
-import {NavigationState} from "react-native-tab-view/lib/typescript/src/types";
+import React from 'react'
+import {Animated, Dimensions, RefreshControl, ScrollView, StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {TabBar, TabView} from "react-native-tab-view"
+import {FAB, Modal, Text, withTheme} from "react-native-paper"
+import {NavigationState} from "react-native-tab-view/lib/typescript/src/types"
 import {
     availableChannels,
     availablePlatforms,
@@ -14,21 +14,21 @@ import {
     PostType,
     SelectItem,
     User
-} from "../../types/PostsTypes";
-import HeaderComponent from "../../components/HeaderComponent";
-import PostComponent from "../../components/PostComponent/PostComponent";
-import {BannerAd, BannerAdSize, TestIds} from "@react-native-firebase/admob";
-import TextInputComponent from "../../components/TextInputComponent/TextInputComponent";
-import CheckBoxListComponent from "../../components/CheckBoxListComponent/CheckBoxListComponent";
-import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
-import LocalStorage from "../../utils/LocalStorage/LocalStorage";
-import PostsService from "../../services/Posts";
-import languages from "../../store/languages.json";
-import {connect} from "react-redux";
-import {ApplicationState} from "../../store";
-import Image from "react-native-scalable-image";
-import UserService from "../../services/User";
-import SeenMessageUtils from "../../utils/SeenMessage";
+} from "../../types/PostsTypes"
+import HeaderComponent from "../../components/HeaderComponent"
+import PostComponent from "../../components/PostComponent/PostComponent"
+import {BannerAd, BannerAdSize, TestIds} from "@react-native-firebase/admob"
+import TextInputComponent from "../../components/TextInputComponent/TextInputComponent"
+import CheckBoxListComponent from "../../components/CheckBoxListComponent/CheckBoxListComponent"
+import ButtonComponent from "../../components/ButtonComponent/ButtonComponent"
+import LocalStorage from "../../utils/LocalStorage/LocalStorage"
+import PostsService from "../../services/Posts"
+import languages from "../../store/languages.json"
+import {connect} from "react-redux"
+import {ApplicationState} from "../../store"
+import Image from "react-native-scalable-image"
+import UserService from "../../services/User"
+import SeenMessageUtils from "../../utils/SeenMessage"
 
 export interface PostsProperties {
     navigation: any,
@@ -59,6 +59,7 @@ export interface PostListState {
     upperAnimation: Animated.Value
     headerVisible: boolean
     lastIndex: number
+    refreshing: boolean
 }
 
 interface RouteItem {
@@ -114,6 +115,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
         upperAnimation: new Animated.Value(0),
         headerVisible: true,
         lastIndex: -1,
+        refreshing: false
     }
 
     readonly styles = StyleSheet.create({
@@ -228,7 +230,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
         } else {
             typeof this.unsubscribe === "function" && this.unsubscribe()
         }
-    });
+    })
 
     componentWillUnmount() {
         this.mounted = false
@@ -240,7 +242,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     }
 
     onScroll = (event: any) => {
-        const currentOffset = event.nativeEvent.contentOffset.y;
+        const currentOffset = event.nativeEvent.contentOffset.y
         const dif = currentOffset - (this.offset || 0)
 
         if (Math.abs(dif) >= 5) {
@@ -254,8 +256,15 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
             }
         }
 
-        this.offset = currentOffset;
-    };
+        this.offset = currentOffset
+    }
+
+    onRefresh = () => {
+        this.setState({refreshing: true})
+        this.loadData()
+
+        // setTimeout(() => this.setState({refreshing: false}), 2000)
+    }
 
     loadData = () => {
         LocalStorage.getMessagesSeen()
@@ -328,6 +337,9 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                     data: response,
                     isLast: response.last
                 })
+                if (this.state.refreshing) {
+                    this.setState({refreshing: false})
+                }
             })
             .catch(err => {
                 console.log('Error getting posts')
@@ -440,7 +452,15 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                 </View>
             }
 
-            <ScrollView onScroll={this.onScroll}>
+            <ScrollView
+                onScroll={this.onScroll}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={this.state.refreshing}
+                        onRefresh={this.onRefresh}
+                    />
+                }
+            >
                 {this.state.data?.content.map((post, index) =>
                     <View key={post.id}
                           style={{
@@ -462,10 +482,10 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                                     unitId={TestIds.BANNER}
                                     size={BannerAdSize.ADAPTIVE_BANNER}
                                     onAdLoaded={() => {
-                                        console.log('Advert loaded');
+                                        console.log('Advert loaded')
                                     }}
                                     onAdFailedToLoad={(error) => {
-                                        console.error('Advert failed to load: ', error);
+                                        console.error('Advert failed to load: ', error)
                                     }}
                                     onAdClosed={() => console.log('onAdClosed')}
                                     onAdLeftApplication={() => console.log('onAdLeftApplication')}

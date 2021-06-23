@@ -1,20 +1,20 @@
-import React, {useState} from 'react';
-import {withTheme} from 'react-native-paper';
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {StyleSheet, View} from "react-native";
-import ButtonComponent from "../../components/ButtonComponent";
-import {connect, shallowEqual, useSelector} from "react-redux";
-import {logout} from "../../store/user/actions";
-import HeaderComponent from "../../components/HeaderComponent";
-import DialogComponent from "../../components/DialogComponent/DialogComponent";
-import UserService from "../../services/User";
-import {UserState} from "../../store/user/types";
-import {ApplicationState} from "../../store";
-import {setTheme} from "../../store/theme/actions";
+import React, {useState} from 'react'
+import {withTheme} from 'react-native-paper'
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {StyleSheet, View} from "react-native"
+import ButtonComponent from "../../components/ButtonComponent"
+import {connect, shallowEqual, useSelector} from "react-redux"
+import {logout} from "../../store/user/actions"
+import HeaderComponent from "../../components/HeaderComponent"
+import DialogComponent from "../../components/DialogComponent/DialogComponent"
+import UserService from "../../services/User"
+import {ApplicationState} from "../../store"
+import {setTheme} from "../../store/theme/actions"
+import {User} from "../../types/PostsTypes"
 
 interface SettingsProperties {
-    navigation: any,
-    theme: Theme;
+    navigation: any
+    theme: Theme
     logout: Function
     setTheme: (theme: 'dark' | 'light') => void
 }
@@ -22,7 +22,7 @@ interface SettingsProperties {
 const SettingsScreen: React.FC<SettingsProperties> = ({navigation, theme, logout,}) => {
     const userService = new UserService()
     const [showDialog, setShowDialog] = useState(false)
-    const user: UserState = useSelector((state: ApplicationState) => {
+    const user: User = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
 

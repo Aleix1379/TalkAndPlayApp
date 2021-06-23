@@ -143,7 +143,7 @@ const CheckBoxListComponent: React.FC<CheckBoxListProperties> = ({
                 useNativeDriver: true,
                 duration: 500
             }
-        ).start();
+        ).start()
 
         Animated.timing(rotationAnimation, {
             useNativeDriver: true,

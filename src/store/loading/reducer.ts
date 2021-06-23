@@ -1,5 +1,5 @@
 import * as actionTypes from './actionsTypes'
-import {LoadingAction, LoadingState} from "./types";
+import {LoadingAction, LoadingState} from "./types"
 
 const initialState: LoadingState = {
     visible: false

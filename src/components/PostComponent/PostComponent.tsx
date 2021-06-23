@@ -4,12 +4,11 @@ import {Text, withTheme} from 'react-native-paper'
 import UserUtils from "../../utils/UserUtils"
 import Time from "../../utils/Time"
 import {Theme} from "react-native-paper/lib/typescript/types"
-import {Channel, Option, PostInfo} from "../../types/PostsTypes"
-import MessageCounterComponent from "../MessageCounterComponent/MessageCounterComponent";
-import AvatarComponent from "../AvatarComponent/AvatarComponent";
-import {UserState} from "../../store/user/types";
-import {shallowEqual, useSelector} from "react-redux";
-import {ApplicationState} from "../../store";
+import {Channel, Option, PostInfo, User} from "../../types/PostsTypes"
+import MessageCounterComponent from "../MessageCounterComponent/MessageCounterComponent"
+import AvatarComponent from "../AvatarComponent/AvatarComponent"
+import {shallowEqual, useSelector} from "react-redux"
+import {ApplicationState} from "../../store"
 
 interface PostProperties {
     post: PostInfo,
@@ -31,7 +30,7 @@ const PostComponent: React.FC<PostProperties> = ({
     const {id, title, game, platforms, channels, user, language, lastUpdate} = post
     let startX = 0
 
-    const userConnected: UserState = useSelector((state: ApplicationState) => {
+    const userConnected: User = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
 

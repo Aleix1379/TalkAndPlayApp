@@ -1,26 +1,10 @@
-import {UserState} from "../store/user/types";
-
-export interface CommentsSeen {
-
-}
-
 export type User = {
-    id: number;
-    name: string;
-    email: string;
-    imageVersion: number;
-    languages: Option[];
-    platforms: Option[];
-    seenMessages: { [id: number]: number }
-};
-
-export interface PostUser {
-    id: number;
-    name: string;
-    email: string;
-    imageVersion: number;
-    languages: Option[];
-    platforms: Option[];
+    id: number
+    name: string
+    email: string
+    imageName: number
+    languages: Option[]
+    platforms: Option[]
     profiles: Account[]
     seenMessages: { [id: number]: number }
 }
@@ -34,46 +18,46 @@ export enum PostType {
 }
 
 export interface PostInfo {
-    id: number;
-    title: string;
-    game: string;
-    language: Option;
-    platforms: Option[];
-    user: PostUser | null;
-    lastUpdate: any;
+    id: number
+    title: string
+    game: string
+    language: Option
+    platforms: Option[]
+    user: User | null
+    lastUpdate: any
     postType: PostType
     channels: Channel[]
-    lastAuthor: UserState
+    lastAuthor: User | null
 }
 
 export interface Comment {
-    id: number | null;
-    text: string;
-    lastUpdate?: any;
-    author: User;
+    id: number | null
+    text: string
+    lastUpdate?: any
+    author: User
     reply?: Comment
 }
 
 export interface SelectItem {
-    id: number;
-    name: string;
-    value: boolean;
-    image?: string;
+    id: number
+    name: string
+    value: boolean
+    image?: string
 }
 
 export interface Filter {
-    title: string;
-    game: string;
-    languages: Option[];
-    platforms: Option[];
+    title: string
+    game: string
+    languages: Option[]
+    platforms: Option[]
     channels: Channel[]
     user: string
 }
 
 export interface Option {
-    id: number;
-    name: string;
-    image?: string;
+    id: number
+    name: string
+    image?: string
 }
 
 export interface Account {
@@ -100,7 +84,7 @@ export const availablePlatforms = [
     {id: 9, name: 'PS 3', image: 'ps4'},
     {id: 10, name: 'Xbox 360', image: 'xbox'},
     {id: 11, name: 'Other', image: 'gamepad'},
-];
+]
 
 export const availableChannels: Channel[] = [
     {id: 1, name: 'Twitch', image: 'twitch'},
@@ -109,51 +93,51 @@ export const availableChannels: Channel[] = [
 ]
 
 export interface LoginResponse {
-    token: string;
-    user: User;
+    token: string
+    user: User
 }
 
 export interface Sort {
-    sorted: boolean;
-    unsorted: boolean;
-    empty: boolean;
+    sorted: boolean
+    unsorted: boolean
+    empty: boolean
 }
 
 export interface Pageable {
-    sort: Sort;
-    offset: number;
-    pageNumber: number;
-    pageSize: number;
-    paged: boolean;
-    unpaged: boolean;
+    sort: Sort
+    offset: number
+    pageNumber: number
+    pageSize: number
+    paged: boolean
+    unpaged: boolean
 }
 
 export interface PostsResponse {
-    content: PostInfo[];
-    pageable: Pageable;
-    totalPages: number;
-    totalElements: number;
-    last: boolean;
-    size: number;
-    number: number;
-    sort: Sort;
-    numberOfElements: number;
-    first: boolean;
-    empty: boolean;
-    unreadComments?: number;
-    totalComments?: number;
+    content: PostInfo[]
+    pageable: Pageable
+    totalPages: number
+    totalElements: number
+    last: boolean
+    size: number
+    number: number
+    sort: Sort
+    numberOfElements: number
+    first: boolean
+    empty: boolean
+    unreadComments?: number
+    totalComments?: number
 }
 
 export interface CommentResponse {
-    content: Comment[];
-    pageable: Pageable;
-    totalPages: number;
-    totalElements: number;
-    last: boolean;
-    size: number;
-    number: number;
-    sort: Sort;
-    numberOfElements: number;
-    first: boolean;
-    empty: boolean;
+    content: Comment[]
+    pageable: Pageable
+    totalPages: number
+    totalElements: number
+    last: boolean
+    size: number
+    number: number
+    sort: Sort
+    numberOfElements: number
+    first: boolean
+    empty: boolean
 }

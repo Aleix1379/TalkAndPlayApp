@@ -3,13 +3,13 @@ import {Dimensions, StyleSheet, View} from "react-native"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import HeaderComponent from "../../components/HeaderComponent"
 import {withTheme} from "react-native-paper"
-import PictureService from "../../services/PictureService";
-import {UserState} from "../../store/user/types";
-import {shallowEqual, useSelector} from "react-redux";
-import {ApplicationState} from "../../store";
+import PictureService from "../../services/PictureService"
+import {shallowEqual, useSelector} from "react-redux"
+import {ApplicationState} from "../../store"
 import {REACT_APP_IMAGES_URL} from "@env"
 import Image from "react-native-scalable-image"
-import NewCommentComponent from "../../components/NewCommentComponent/NewCommentComponent";
+import NewCommentComponent from "../../components/NewCommentComponent/NewCommentComponent"
+import {User} from "../../types/PostsTypes"
 
 interface PictureUploadProperties {
     navigation: any
@@ -26,9 +26,9 @@ const PictureUploadScreen: React.FC<PictureUploadProperties> = ({theme, navigati
             flex: 1,
             backgroundColor: theme.colors.background
         }
-    });
+    })
 
-    const user: UserState = useSelector((state: ApplicationState) => {
+    const user: User = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
 

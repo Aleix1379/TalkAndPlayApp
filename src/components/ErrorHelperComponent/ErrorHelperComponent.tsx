@@ -1,7 +1,7 @@
-import React from 'react';
-import {StyleProp, StyleSheet, TextStyle, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {Text, withTheme} from "react-native-paper";
+import React from 'react'
+import {StyleProp, StyleSheet, TextStyle, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {Text, withTheme} from "react-native-paper"
 
 interface ErrorHelperProperties {
     theme: Theme
@@ -23,7 +23,7 @@ const ErrorHelperComponent: React.FC<ErrorHelperProperties> = ({theme, visible, 
             backgroundColor: 'rgba(0,0,0, 0.22)',
             fontSize: 12,
         }
-    });
+    })
 
     return (
         <View style={styles.errorHelper}>

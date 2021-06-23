@@ -2,7 +2,7 @@ import React from 'react'
 import {Image, ImageStyle, StyleProp, StyleSheet, View} from "react-native"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {Text, withTheme} from "react-native-paper"
-import ErrorHelperComponent from "../ErrorHelperComponent";
+import ErrorHelperComponent from "../ErrorHelperComponent"
 
 interface AvatarProperties {
     theme: Theme

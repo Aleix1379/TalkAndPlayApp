@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
-import {StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {Text, withTheme} from "react-native-paper";
-import KeyComponent from "../KeyComponent";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import React from 'react'
+import {StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {withTheme} from "react-native-paper"
+import KeyComponent from "../KeyComponent"
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 
 interface KeyboardProperties {
     theme: Theme,
@@ -25,7 +25,7 @@ const KeyboardComponent: React.FC<KeyboardProperties> = ({theme, onPress}) => {
             marginVertical: 12,
             justifyContent: "space-around"
         }
-    });
+    })
 
     return (
         <View style={styles.keyboard}>

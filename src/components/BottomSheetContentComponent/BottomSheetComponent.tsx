@@ -1,9 +1,9 @@
-import React from 'react';
-import {StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import {Text, withTheme} from "react-native-paper";
-import {ModalOption} from "../../screens/PostDetail/PostDetail";
+import React from 'react'
+import {StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
+import {Text, withTheme} from "react-native-paper"
+import {ModalOption} from "../../screens/PostDetail/PostDetail"
 
 interface BottomSheetProperties {
     theme: Theme

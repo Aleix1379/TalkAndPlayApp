@@ -1,5 +1,5 @@
 import * as actionTypes from './actionsTypes'
-import {TopSheetAction, TopSheetState} from "./types";
+import {TopSheetAction, TopSheetState} from "./types"
 
 const initialState: TopSheetState = {
     visible: false,

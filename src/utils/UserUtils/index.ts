@@ -1,1 +1,1 @@
-export {default} from './UserUtils';
+export {default} from './UserUtils'

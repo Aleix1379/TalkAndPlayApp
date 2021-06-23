@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {Comment} from "../../types/PostsTypes"
+import {Comment, User} from "../../types/PostsTypes"
 import {Dimensions, StyleSheet, View} from "react-native"
 import {Text, withTheme} from 'react-native-paper'
 import UserUtils from "../../utils/UserUtils"
@@ -11,7 +11,6 @@ import RoundButtonComponent from "../RoundButtonComponent"
 // @ts-ignore
 import InView from "react-native-component-inview"
 import AvatarComponent from "../AvatarComponent"
-import {UserState} from "../../store/user/types"
 import {connect, shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
 import {ModalOption} from "../../screens/PostDetail/PostDetail"
@@ -21,9 +20,9 @@ import {DialogOption} from "../../store/dialog/types"
 import Markdown from 'react-native-simple-markdown'
 import Image from 'react-native-scalable-image'
 import YoutubePlayer from "react-native-youtube-iframe"
-import CommentUtils from "../../utils/Comment";
+import CommentUtils from "../../utils/Comment"
 import RBSheet from "react-native-raw-bottom-sheet"
-import BottomSheetComponent from "../BottomSheetContentComponent";
+import BottomSheetComponent from "../BottomSheetContentComponent"
 
 interface CommentProperties {
     comment: Comment
@@ -55,7 +54,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
     const imageSize = 40
     let replies: any[] = []
     const [resultReplies, setResultReplies] = useState<any>([])
-    const user: UserState = useSelector((state: ApplicationState) => {
+    const user: User = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
     const styles = StyleSheet.create({
@@ -237,11 +236,11 @@ const CommentComponent: React.FC<CommentProperties> = ({
             react: (node: any, output: any, state: any) => {
                 if (node.target.includes("youtube.com") || node.target.includes("youtu.be")) {
                     return (
-                        <View key={node.target} style={{left: diff === 16 ? -2 : 0, right: 8}}>
+                        <View key={node.target} style={{right: diff === 16 ? 0 : 8}}>
                             <YoutubePlayer
                                 key={node.target}
                                 height={0.56 * width}
-                                width={width}
+                                width={width - diff}
                                 videoId={CommentUtils.getIdByUrl(node.target)}
                                 webViewStyle={{opacity: 0.99}}
                             />

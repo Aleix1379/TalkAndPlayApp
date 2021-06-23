@@ -2,7 +2,7 @@ import React from 'react'
 import {Dimensions, StyleSheet, View} from "react-native"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import FastImage from "react-native-fast-image"
-import {withTheme} from "react-native-paper";
+import {withTheme} from "react-native-paper"
 
 interface LoadingProperties {
     theme: Theme

@@ -1,17 +1,17 @@
-import React, {useState} from 'react';
-import {StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import TextInputComponent from "../../components/TextInputComponent/TextInputComponent";
-import {Snackbar, Text, withTheme} from "react-native-paper";
-import HeaderComponent from "../../components/HeaderComponent";
-import {connect, shallowEqual, useSelector} from "react-redux";
-import ButtonComponent from "../../components/ButtonComponent";
-import {ErrorType, MIN_LENGTH, PASSWORD_COMPLEXITY, PASSWORD_REPEAT} from "../../utils/Validator/types";
-import Validator from "../../utils/Validator/Validator";
-import {UserState} from "../../store/user/types";
-import {ApplicationState} from "../../store";
-import UserService from "../../services/User";
-import {setLoading} from "../../store/loading/actions";
+import React, {useState} from 'react'
+import {StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import TextInputComponent from "../../components/TextInputComponent/TextInputComponent"
+import {Snackbar, Text, withTheme} from "react-native-paper"
+import HeaderComponent from "../../components/HeaderComponent"
+import {connect, shallowEqual, useSelector} from "react-redux"
+import ButtonComponent from "../../components/ButtonComponent"
+import {ErrorType, MIN_LENGTH, PASSWORD_COMPLEXITY, PASSWORD_REPEAT} from "../../utils/Validator/types"
+import Validator from "../../utils/Validator/Validator"
+import {ApplicationState} from "../../store"
+import UserService from "../../services/User"
+import {setLoading} from "../../store/loading/actions"
+import {User} from "../../types/PostsTypes"
 
 interface PasswordEditProperties {
     navigation: any,
@@ -48,7 +48,7 @@ const PasswordEditScreen: React.FC<PasswordEditProperties> = ({navigation, theme
         password: '',
         repeatPassword: ''
     })
-    const user: UserState = useSelector((state: ApplicationState) => {
+    const user: User = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
 
@@ -68,7 +68,7 @@ const PasswordEditScreen: React.FC<PasswordEditProperties> = ({navigation, theme
             marginBottom: 16,
             marginHorizontal: 8
         }
-    });
+    })
 
     const [errors, setErrors] = useState<Errors>({
         currentPassword: {
@@ -244,5 +244,5 @@ const PasswordEditScreen: React.FC<PasswordEditProperties> = ({navigation, theme
 }
 
 export default connect(null, {
-setLoading: setLoading
+    setLoading: setLoading
 })(withTheme(PasswordEditScreen))

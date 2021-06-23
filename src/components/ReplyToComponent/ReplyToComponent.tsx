@@ -1,15 +1,16 @@
-import React from 'react';
-import {StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-//import Markdown, {MarkdownIt} from "react-native-markdown-display";
-import {Text, withTheme} from "react-native-paper";
-import {Comment} from "../../types/PostsTypes";
-import RoundButtonComponent from "../RoundButtonComponent/RoundButtonComponent";
+import React from 'react'
+import {StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+//import Markdown, {MarkdownIt} from "react-native-markdown-display"
+import {Text, withTheme} from "react-native-paper"
+import {Comment} from "../../types/PostsTypes"
+import RoundButtonComponent from "../RoundButtonComponent/RoundButtonComponent"
 // @ts-ignore
 import Markdown from 'react-native-simple-markdown'
+
 interface ReplyToProperties {
     theme: Theme
-    comment: Comment
+    comment: Comment | null
     close: () => void
 }
 
@@ -40,34 +41,40 @@ const ReplyToComponent: React.FC<ReplyToProperties> = ({theme, comment, close}) 
         author: {
             color: theme.colors.accent,
         }
-    });
+    })
 
     return (
-        <View style={styles.replyTo}>
-            <View style={styles.header}>
-                <Text style={styles.title}>Reply to <Text style={styles.author}>@{comment.author.name}</Text></Text>
-                <RoundButtonComponent
-                    icon={'close'}
-                    onPress={() => close()}
-                />
-            </View>
-            <View style={styles.content}>
-                <Markdown
-                    styles={{
-                        text: {
-                            color: theme.colors.text
-                        },
-                        blockquote: {
-                            backgroundColor: theme.colors.background,
-                            marginTop: 12,
-                            paddingTop: 0
-                        }
-                    }}
-                >
-                    {comment.text}
-                </Markdown>
-            </View>
-        </View>
+        <>
+            {
+                !!comment &&
+                <View style={styles.replyTo}>
+                    <View style={styles.header}>
+                        <Text style={styles.title}>Reply to <Text
+                            style={styles.author}>@{comment.author.name}</Text></Text>
+                        <RoundButtonComponent
+                            icon={'close'}
+                            onPress={() => close()}
+                        />
+                    </View>
+                    <View style={styles.content}>
+                        <Markdown
+                            styles={{
+                                text: {
+                                    color: theme.colors.text
+                                },
+                                blockquote: {
+                                    backgroundColor: theme.colors.background,
+                                    marginTop: 12,
+                                    paddingTop: 0
+                                }
+                            }}
+                        >
+                            {comment.text}
+                        </Markdown>
+                    </View>
+                </View>
+            }
+        </>
     )
 }
 

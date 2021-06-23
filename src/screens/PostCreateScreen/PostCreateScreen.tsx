@@ -5,15 +5,15 @@ import {Theme} from "react-native-paper/lib/typescript/types"
 import TextInputComponent from "../../components/TextInputComponent"
 import {ErrorType} from "../../utils/Validator/types"
 import {
-    availablePlatforms,
     availableChannels,
+    availablePlatforms,
     Comment,
     Option,
     PostInfo,
     PostType,
-    SelectItem
+    SelectItem,
+    User
 } from "../../types/PostsTypes"
-import {UserState} from "../../store/user/types"
 import {connect, shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
 import CheckBoxListComponent from "../../components/CheckBoxListComponent"
@@ -46,7 +46,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
     const {postType} = navigation.state.params
     const [untouched, setUntouched] = useState(true)
     const postService = new PostsService()
-    const user: UserState = useSelector((state: ApplicationState) => {
+    const user: User = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
 
@@ -91,7 +91,8 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
         language: {id: 0, name: ''},
         user: null,
         lastUpdate: '',
-        postType
+        postType,
+        lastAuthor: null
     })
 
     const [comment, setComment] = useState<Comment>({
@@ -102,7 +103,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
             id: 0,
             name: '',
             email: '',
-            imageVersion: 0,
+            imageName: 0,
             languages: [],
             platforms: [],
             seenMessages: {}
@@ -237,6 +238,57 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                         ]
                     }
                 }
+            case PostType.ONLINE:
+                return {
+                    title: {
+                        message: '',
+                        touched: false,
+                        label: 'Title',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 40,
+                            },
+                        ],
+                    },
+                    text: {
+                        message: '',
+                        touched: false,
+                        label: 'Message',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 5000,
+                            },
+                        ],
+                    },
+                    platforms: {
+                        message: '',
+                        touched: false,
+                        label: 'Platforms',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                        ],
+                    },
+                    language: {
+                        message: '',
+                        touched: false,
+                        label: 'Language',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                        ],
+                    },
+                }
             default:
                 return {
                     title: {
@@ -361,7 +413,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                     navigation.navigate('Detail', {title: postCreated.title, id: postCreated.id})
                 )
                 .catch(error => {
-                    console.log('create post');
+                    console.log('create post')
                     console.log(JSON.stringify(error))
                     console.log('----------------------------------------------------------------')
                     console.log('|' + error.message + '|')
@@ -370,12 +422,14 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                     }
                 })
                 .finally(() => setLoading(false))
+        } else {
+            console.log('Form is not valid!')
         }
 
     }
 
     const getLanguages = () => {
-        let values = user.languages.map(lang => ({
+        let values = user.languages.map((lang: Option) => ({
             ...lang,
             image: 'language'
         }))
@@ -409,7 +463,6 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
             case PostType.ONLINE:
                 return untouched ||
                     !!errors.title.message ||
-                    !!errors.game?.message ||
                     !!errors.text.message ||
                     !!errors.language.message ||
                     !post.language.name ||
@@ -432,6 +485,15 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
         }
     }
 
+    const getLabel = (label: string, id: string): string => {
+        const key = id.toLowerCase()
+        // @ts-ignore
+        if (!errors[key]) {
+            return label
+        }
+        return `${label} *`
+    }
+
     return (
         <>
             <HeaderComponent
@@ -442,10 +504,11 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                 }}
             />
 
+
             <View style={styles.postCreate}>
                 <ScrollView>
                     <TextInputComponent id="title"
-                                        label="Title"
+                                        label={getLabel("Title", "title")}
                                         value={post.title}
                                         style={styles.input}
                                         onChange={update}
@@ -454,7 +517,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                     {
                         postType !== PostType.SETUP &&
                         < TextInputComponent id="game"
-                                             label="Game"
+                                             label={getLabel("Game", "game")}
                                              value={post.game}
                                              style={styles.input}
                                              onChange={update}
@@ -463,7 +526,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                     }
 
                     <TextInputComponent id="text"
-                                        label="Message"
+                                        label={getLabel("Message", "text")}
                                         value={comment.text}
                                         style={styles.input}
                                         multiLine={true}
@@ -473,7 +536,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
 
                     <CheckBoxListComponent
                         id="languages"
-                        label="Language"
+                        label={getLabel("Language", "languages")}
                         values={getLanguages()}
                         initialValues={[post.language]}
                         singleMode={true}
@@ -484,7 +547,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
 
                     <CheckBoxListComponent
                         id="platforms"
-                        label="Platforms"
+                        label={getLabel("Platforms", "platforms")}
                         values={availablePlatforms}
                         initialValues={post.platforms}
                         error={errors.platforms}
@@ -496,7 +559,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                         postType === PostType.STREAMERS &&
                         <CheckBoxListComponent
                             id="channels"
-                            label="Channels"
+                            label={getLabel("Channels", "channels")}
                             values={availableChannels}
                             error={errors.channels}
                             onChange={(items) => handleChange(items, 'channels')}

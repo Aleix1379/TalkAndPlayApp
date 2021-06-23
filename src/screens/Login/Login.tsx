@@ -1,15 +1,15 @@
-import React, {useState} from 'react';
-import {Image, StyleSheet, View} from 'react-native';
-import {Text, withTheme} from 'react-native-paper';
-import {Theme} from "react-native-paper/lib/typescript/types";
-import TextInputComponent from "../../components/TextInputComponent";
-import ButtonComponent from "../../components/ButtonComponent";
-import UserService from "../../services/User";
-import {EMAIL, ErrorType, MAX_LENGTH, MIN_LENGTH, REQUIRED} from "../../utils/Validator/types";
-import Validator from "../../utils/Validator/Validator";
-import {connect} from 'react-redux';
-import {login} from "../../store/user/actions";
-import {setLoading} from "../../store/loading/actions";
+import React, {useState} from 'react'
+import {Image, StyleSheet, View} from 'react-native'
+import {Text, withTheme} from 'react-native-paper'
+import {Theme} from "react-native-paper/lib/typescript/types"
+import TextInputComponent from "../../components/TextInputComponent"
+import ButtonComponent from "../../components/ButtonComponent"
+import UserService from "../../services/User"
+import {EMAIL, ErrorType, MAX_LENGTH, MIN_LENGTH, REQUIRED} from "../../utils/Validator/types"
+import Validator from "../../utils/Validator/Validator"
+import {connect} from 'react-redux'
+import {login} from "../../store/user/actions"
+import {setLoading} from "../../store/loading/actions"
 
 interface LoginProperties {
     theme: Theme
@@ -139,7 +139,7 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading, navig
             marginTop: 16,
             marginBottom: 20
         }
-    });
+    })
 
     const validator = new Validator(errors, setErrors)
 
@@ -235,8 +235,8 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading, navig
                 </View>
             </View>
         </>
-    );
-};
+    )
+}
 
 export default connect(null, {
     login: login,

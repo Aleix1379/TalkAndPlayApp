@@ -1,32 +1,32 @@
-import React, {useEffect} from 'react';
-import {View} from "react-native";
-import Container from "./Container";
-import ContainerAnonymous from "./ContainerAnonymous";
-import {connect, shallowEqual, useSelector} from "react-redux";
-import {DefaultTheme, withTheme} from "react-native-paper";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {ApplicationState} from "../store";
-import {UserState} from "../store/user/types";
-import LocalStorage from "../utils/LocalStorage/LocalStorage";
-import {login} from "../store/user/actions";
-import LoadingComponent from "../components/LoadingComponent";
-import TopSheetComponent from "../components/TopSheetComponent/TopSheetComponent";
-import {TopSheetState} from "../store/topSheet/types";
-import DialogComponent from "../components/DialogComponent/DialogComponent";
-import {DialogState} from "../store/dialog/types";
-import {closeDialog} from "../store/dialog/actions";
-import {setTheme} from "../store/theme/actions";
-import UserService from "../services/User";
+import React, {useEffect} from 'react'
+import {View} from "react-native"
+import Container from "./Container"
+import ContainerAnonymous from "./ContainerAnonymous"
+import {connect, shallowEqual, useSelector} from "react-redux"
+import {DefaultTheme, withTheme} from "react-native-paper"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {ApplicationState} from "../store"
+import LocalStorage from "../utils/LocalStorage/LocalStorage"
+import {login} from "../store/user/actions"
+import LoadingComponent from "../components/LoadingComponent"
+import TopSheetComponent from "../components/TopSheetComponent/TopSheetComponent"
+import {TopSheetState} from "../store/topSheet/types"
+import DialogComponent from "../components/DialogComponent/DialogComponent"
+import {DialogState} from "../store/dialog/types"
+import {closeDialog} from "../store/dialog/actions"
+import {setTheme} from "../store/theme/actions"
+import UserService from "../services/User"
+import {User} from "../types/PostsTypes"
 
 interface ContentProperties {
-    theme: Theme;
+    theme: Theme
     login: Function
     closeDialog: Function
     setTheme: (theme: 'dark' | 'light') => void
 }
 
 const Content: React.FC<ContentProperties> = ({theme, login, closeDialog, setTheme}) => {
-    const user: UserState = useSelector((state: ApplicationState) => {
+    const user: User = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
 
@@ -62,7 +62,7 @@ const Content: React.FC<ContentProperties> = ({theme, login, closeDialog, setThe
                     surface: '#0f0f0f',
                     error: '#b71c1c'
                 },
-            };
+            }
         } else {
             return {
                 ...DefaultTheme,
@@ -74,7 +74,7 @@ const Content: React.FC<ContentProperties> = ({theme, login, closeDialog, setThe
                     surface: '#e9e9e9',
                     error: '#b71c1c'
                 },
-            };
+            }
         }
     }
 

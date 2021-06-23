@@ -1,7 +1,7 @@
-import React from 'react';
-import {ColorValue, StyleProp, StyleSheet, View, ViewStyle} from "react-native";
-import {Text} from 'react-native-paper';
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import React from 'react'
+import {ColorValue, StyleProp, StyleSheet, View, ViewStyle} from "react-native"
+import {Text} from 'react-native-paper'
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 
 interface MessageCounterProperties {
     style?: StyleProp<ViewStyle>
@@ -19,7 +19,7 @@ const MessageCounterComponent: React.FC<MessageCounterProperties> = ({style, ico
             height: 20,
             marginLeft: 8
         }
-    });
+    })
 
     return (
         <View style={[styles.messageCounter, style]}>

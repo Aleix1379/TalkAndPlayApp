@@ -1,36 +1,27 @@
-import React, {useState} from 'react';
-import {Image, ScrollView, StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {Checkbox, Text, withTheme} from "react-native-paper";
-import {UserState} from "../../store/user/types";
-import AvatarComponent from "../../components/AvatarComponent/AvatarComponent";
-import TextInputComponent from "../../components/TextInputComponent/TextInputComponent";
-import {LoginResponse, Option} from "../../types/PostsTypes";
-import {
-    EMAIL,
-    ErrorType,
-    MIN_LENGTH,
-    PASSWORD_COMPLEXITY,
-    PASSWORD_REPEAT,
-    REQUIRED
-} from "../../utils/Validator/types";
-import Validator from "../../utils/Validator/Validator";
-import UserService from "../../services/User";
-import {launchImageLibrary} from "react-native-image-picker";
-import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
-import {connect} from "react-redux";
-import {login} from "../../store/user/actions";
-import {setLoading} from "../../store/loading/actions";
-import LocalStorage from "../../utils/LocalStorage/LocalStorage";
-import {ImagePickerResponse} from "react-native-image-picker/src/types";
-import {Conditions} from "../../types/Conditions";
-import SelectComponent from "../../components/SelectComponent";
-import ConditionComponent from "../../components/SelectComponent";
+import React, {useState} from 'react'
+import {Image, ScrollView, StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {Text, withTheme} from "react-native-paper"
+import AvatarComponent from "../../components/AvatarComponent/AvatarComponent"
+import TextInputComponent from "../../components/TextInputComponent/TextInputComponent"
+import {LoginResponse, Option, User} from "../../types/PostsTypes"
+import {EMAIL, ErrorType, MIN_LENGTH, PASSWORD_COMPLEXITY, PASSWORD_REPEAT, REQUIRED} from "../../utils/Validator/types"
+import Validator from "../../utils/Validator/Validator"
+import UserService from "../../services/User"
+import {launchImageLibrary} from "react-native-image-picker"
+import ButtonComponent from "../../components/ButtonComponent/ButtonComponent"
+import {connect} from "react-redux"
+import {login} from "../../store/user/actions"
+import {setLoading} from "../../store/loading/actions"
+import LocalStorage from "../../utils/LocalStorage/LocalStorage"
+import {ImagePickerResponse} from "react-native-image-picker/src/types"
+import {Conditions} from "../../types/Conditions"
+import ConditionComponent from "../../components/SelectComponent"
 
 interface RegisterProperties {
     theme: Theme
     setLoading: (visible: boolean) => void
-    login: (user: UserState, token?: string) => void
+    login: (user: User, token?: string) => void
     navigation: any
 }
 

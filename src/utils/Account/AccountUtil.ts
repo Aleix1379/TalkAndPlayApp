@@ -1,4 +1,4 @@
-import {Channel} from "../../types/Channel";
+import {Channel} from "../../types/Channel"
 
 class AccountUtil {
 

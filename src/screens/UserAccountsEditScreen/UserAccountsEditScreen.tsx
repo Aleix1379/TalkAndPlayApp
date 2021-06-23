@@ -1,20 +1,20 @@
-import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {withTheme} from "react-native-paper";
-import HeaderComponent from "../../components/HeaderComponent";
-import AccountEditComponent from "../../components/AccountEditComponent";
-import ButtonComponent from "../../components/ButtonComponent";
-import {UserState} from "../../store/user/types";
-import {connect, shallowEqual, useSelector} from "react-redux";
-import {ApplicationState} from "../../store";
-import UserService from "../../services/User";
-import {login} from "../../store/user/actions";
+import React, {useEffect, useState} from 'react'
+import {ScrollView, StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {withTheme} from "react-native-paper"
+import HeaderComponent from "../../components/HeaderComponent"
+import AccountEditComponent from "../../components/AccountEditComponent"
+import ButtonComponent from "../../components/ButtonComponent"
+import {connect, shallowEqual, useSelector} from "react-redux"
+import {ApplicationState} from "../../store"
+import UserService from "../../services/User"
+import {login} from "../../store/user/actions"
+import {User} from "../../types/PostsTypes"
 
 interface UserAccountsEditProperties {
     theme: Theme
     navigation: any
-    login: (user: UserState, token?: string) => void
+    login: (user: User, token?: string) => void
 }
 
 const UserAccountsEditScreen: React.FC<UserAccountsEditProperties> = ({theme, navigation}) => {
@@ -32,9 +32,9 @@ const UserAccountsEditScreen: React.FC<UserAccountsEditProperties> = ({theme, na
             marginTop: 'auto',
             marginBottom: 24
         }
-    });
+    })
 
-    const user: UserState = useSelector((state: ApplicationState) => {
+    const user: User = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
 

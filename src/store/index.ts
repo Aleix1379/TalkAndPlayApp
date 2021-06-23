@@ -1,19 +1,19 @@
 import {combineReducers, Reducer} from 'redux'
 // Import your state types and reducers here.
-import {UserState} from './user/types'
 import userReducer from './user/reducer'
 import loadingReducer from './loading/reducer'
 import topSheetReducer from './topSheet/reducer'
 import dialogReducer from './dialog/reducer'
 import themeReducer from './theme/reducer'
-import {LoadingState} from "./loading/types";
-import {TopSheetState} from "./topSheet/types";
-import {DialogState} from "./dialog/types";
-import {ThemeState} from "./theme/types";
+import {LoadingState} from "./loading/types"
+import {TopSheetState} from "./topSheet/types"
+import {DialogState} from "./dialog/types"
+import {ThemeState} from "./theme/types"
+import {User} from "../types/PostsTypes"
 
 // The top-level state object
 export interface ApplicationState {
-    user: UserState
+    user: User
     loading: LoadingState
     topSheet: TopSheetState
     dialog: DialogState

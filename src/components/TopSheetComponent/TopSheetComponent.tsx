@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react';
-import {Animated, StyleProp, StyleSheet, View, ViewStyle} from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import {Text, withTheme} from "react-native-paper";
-import {ModalOption} from "../../screens/PostDetail/PostDetail";
-import {Theme} from "react-native-paper/lib/typescript/types";
+import React, {useEffect, useState} from 'react'
+import {Animated, StyleProp, StyleSheet, View, ViewStyle} from "react-native"
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
+import {Text, withTheme} from "react-native-paper"
+import {ModalOption} from "../../screens/PostDetail/PostDetail"
+import {Theme} from "react-native-paper/lib/typescript/types"
 
 interface TopSheetProperties {
     theme: Theme
@@ -81,7 +81,7 @@ const TopSheetComponent: React.FC<TopSheetProperties> = ({
             fontSize: 18,
             marginLeft: 32
         }
-    });
+    })
 
     useEffect(() => {
         startAnimation()

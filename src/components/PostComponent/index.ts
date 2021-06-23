@@ -1,1 +1,1 @@
-export {default} from './PostComponent';
+export {default} from './PostComponent'

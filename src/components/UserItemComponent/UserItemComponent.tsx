@@ -1,17 +1,17 @@
-import React from 'react';
-import {StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {Text, withTheme} from "react-native-paper";
-import {UserState} from "../../store/user/types";
-import AvatarComponent from "../AvatarComponent";
-import UserUtils from "../../utils/UserUtils";
-import FollowButtonComponent from "../FollowButtonComponent";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import React from 'react'
+import {StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {Text, withTheme} from "react-native-paper"
+import AvatarComponent from "../AvatarComponent"
+import UserUtils from "../../utils/UserUtils"
+import FollowButtonComponent from "../FollowButtonComponent"
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
+import {User} from "../../types/PostsTypes"
 
 interface UserItemProperties {
     theme: Theme
-    user: UserState
-    onFollowUpdate: (follow: UserState, following: boolean) => void
+    user: User
+    onFollowUpdate: (follow: User, following: boolean) => void
     following: boolean
     follower: boolean
 }
@@ -55,7 +55,7 @@ const UserItemComponent: React.FC<UserItemProperties> = ({
             marginLeft: 6,
             marginTop: 1
         }
-    });
+    })
 
     const onPress = (): void => {
         onFollowUpdate(user, following)

@@ -1,9 +1,9 @@
-import React from 'react';
-import {StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {Dialog, Paragraph, withTheme} from "react-native-paper";
-import ButtonComponent from "../ButtonComponent/ButtonComponent";
-import {DialogOption} from "../../store/dialog/types";
+import React from 'react'
+import {StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {Dialog, Paragraph, withTheme} from "react-native-paper"
+import ButtonComponent from "../ButtonComponent/ButtonComponent"
+import {DialogOption} from "../../store/dialog/types"
 
 interface DialogProperties {
     theme: Theme
@@ -48,7 +48,7 @@ const DialogComponent: React.FC<DialogProperties> = ({
             marginHorizontal: 24,
             elevation: 0
         }
-    });
+    })
 
     return (
         <>

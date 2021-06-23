@@ -1,19 +1,26 @@
-import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {withTheme} from "react-native-paper";
-import HeaderComponent from "../../components/HeaderComponent";
-import TextInputComponent from "../../components/TextInputComponent/TextInputComponent";
-import CheckBoxListComponent from "../../components/CheckBoxListComponent/CheckBoxListComponent";
-import {availableChannels, availablePlatforms, Option, PostInfo, PostType, SelectItem} from "../../types/PostsTypes";
-import ButtonComponent from "../../components/ButtonComponent/ButtonComponent";
-import {ErrorType} from "../../utils/Validator/types";
-import PostsService from "../../services/Posts";
-import Validator from "../../utils/Validator/Validator";
-import {UserState} from "../../store/user/types";
-import {connect, shallowEqual, useSelector} from "react-redux";
-import {ApplicationState} from "../../store";
-import {setLoading} from "../../store/loading/actions";
+import React, {useEffect, useState} from 'react'
+import {ScrollView, StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {withTheme} from "react-native-paper"
+import HeaderComponent from "../../components/HeaderComponent"
+import TextInputComponent from "../../components/TextInputComponent/TextInputComponent"
+import CheckBoxListComponent from "../../components/CheckBoxListComponent/CheckBoxListComponent"
+import {
+    availableChannels,
+    availablePlatforms,
+    Option,
+    PostInfo,
+    PostType,
+    SelectItem,
+    User
+} from "../../types/PostsTypes"
+import ButtonComponent from "../../components/ButtonComponent/ButtonComponent"
+import {ErrorType} from "../../utils/Validator/types"
+import PostsService from "../../services/Posts"
+import Validator from "../../utils/Validator/Validator"
+import {connect, shallowEqual, useSelector} from "react-redux"
+import {ApplicationState} from "../../store"
+import {setLoading} from "../../store/loading/actions"
 
 interface PostEditProperties {
     theme: Theme
@@ -33,7 +40,7 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
     const {title, id, updatePost, postType} = navigation.state.params
     const [untouched, setUntouched] = useState(true)
     const postService = new PostsService()
-    const user: UserState = useSelector((state: ApplicationState) => {
+    const user: User = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
 
@@ -61,7 +68,7 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
             marginTop: 16,
             marginBottom: 8,
         }
-    });
+    })
 
     const [post, setPost] = useState<PostInfo>({
         id: 0,
@@ -72,7 +79,8 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
         language: {id: 0, name: ''},
         user: null,
         lastUpdate: '',
-        postType: PostType.ONLINE
+        postType: PostType.ONLINE,
+        lastAuthor: null
     })
 
     const initErrors = (): Errors => {

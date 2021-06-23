@@ -1,5 +1,5 @@
 import * as actionTypes from './actionsTypes'
-import {ThemeAction, ThemeState} from "./types";
+import {ThemeAction, ThemeState} from "./types"
 
 const initialState: ThemeState = {
     isDarkTheme: true

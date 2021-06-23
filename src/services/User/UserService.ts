@@ -1,26 +1,25 @@
-import Api from "../Api";
-import {LoginResponse} from "../../types/PostsTypes";
-import {UserState} from "../../store/user/types";
-import LocalStorage from "../../utils/LocalStorage/LocalStorage";
-import {Platform} from "react-native";
-import {ImagePickerResponse} from "react-native-image-picker/src/types";
-import {RecoveryPasswordResponse} from "../../types/EmailTypes";
-import {VerificationResponse} from "../../types/VerificationTypes";
-import {FollowCounter} from "../../types/FollowCounter";
+import Api from "../Api"
+import {LoginResponse, User} from "../../types/PostsTypes"
+import LocalStorage from "../../utils/LocalStorage/LocalStorage"
+import {Platform} from "react-native"
+import {ImagePickerResponse} from "react-native-image-picker/src/types"
+import {RecoveryPasswordResponse} from "../../types/EmailTypes"
+import {VerificationResponse} from "../../types/VerificationTypes"
+import {FollowCounter} from "../../types/FollowCounter"
 
 class UserService extends Api {
     constructor() {
         super('/users')
     }
 
-    add<UserState>(user: UserState): Promise<LoginResponse> {
+    add<User>(user: User): Promise<LoginResponse> {
         return this.http.post(this.getUrl(), user).then((res) => {
             return res.data
         })
     }
 
-    async getProfile(): Promise<UserState> {
-        const user: UserState | null = await LocalStorage.getUser()
+    async getProfile(): Promise<User> {
+        const user: User | null = await LocalStorage.getUser()
         if (user) {
             return this.http.get(`${this.getUrl()}/${user.id}`).then((res) => {
                 return res.data
@@ -41,12 +40,12 @@ class UserService extends Api {
         return this.http.post(`${this.getUrl()}/check-password`, {email, password}).then((res) => res.data)
     }
 
-    updateProfile(id: number, data: UserState): Promise<UserState> {
+    updateProfile(id: number, data: User): Promise<User> {
         return this.http.put(`${this.getUrl()}/${id}`, data).then((res) => res.data)
     }
 
     async fileUpload(image: ImagePickerResponse, name: string): Promise<number> {
-        const user: UserState | null = await LocalStorage.getUser()
+        const user: User | null = await LocalStorage.getUser()
         const formData = new FormData()
         formData.append('file', {
             ...image,
@@ -76,7 +75,7 @@ class UserService extends Api {
     }
 
     updatePassword(userId: number, currentPassword: string, newPassword: string): Promise<boolean> {
-        let url = `${this.getUrl(userId)}/password`;
+        let url = `${this.getUrl(userId)}/password`
         console.log('url: ' + url)
         console.log('currentPassword: ' + currentPassword)
         console.log('newPassword: ' + newPassword)
@@ -110,7 +109,7 @@ class UserService extends Api {
             .then((res) => res.data)
     }
 
-    findUserByEmail(email: string): Promise<UserState[]> {
+    findUserByEmail(email: string): Promise<User[]> {
         return this.http.get(`${this.getUrl()}?email=${email}`).then((res) => res.data)
     }
 
@@ -122,7 +121,7 @@ class UserService extends Api {
         }).then((res) => res.data)
     }
 
-    updateCommentsUnseen(userId: number, data: any): Promise<UserState> {
+    updateCommentsUnseen(userId: number, data: any): Promise<User> {
         return this.http.put(`${this.getUrl(userId)}/comments/unseen`, data)
             .then((res) => res.data)
     }
@@ -142,18 +141,23 @@ class UserService extends Api {
             .then((res) => res.data)
     }
 
-    getFollowing(userId: number): Promise<UserState[]> {
+    getFollowing(userId: number): Promise<User[]> {
         return this.http.get(`${this.getUrl(userId)}/following`)
             .then((res) => res.data)
     }
 
-    getFollowers(userId: number): Promise<UserState[]> {
+    getFollowers(userId: number): Promise<User[]> {
         return this.http.get(`${this.getUrl(userId)}/followers`)
             .then((res) => res.data)
     }
 
     isFollowing(userId: number, followingId: number): Promise<boolean> {
         return this.http.get(`${this.getUrl(userId)}/following/${followingId}`)
+            .then((res) => res.data)
+    }
+
+    isFollower(userId: number, followerId: number): Promise<boolean> {
+        return this.http.get(`${this.getUrl(userId)}/followers/${followerId}`)
             .then((res) => res.data)
     }
 

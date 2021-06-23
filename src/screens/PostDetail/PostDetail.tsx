@@ -2,34 +2,34 @@ import React, {MutableRefObject, useEffect, useRef, useState} from 'react'
 import {withTheme} from 'react-native-paper'
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {AppState, AppStateStatus, BackHandler, ScrollView, StyleSheet, View} from "react-native"
-import {Channel, Comment, CommentResponse, Option, PostInfo, PostType} from "../../types/PostsTypes"
+import {Channel, Comment, CommentResponse, Option, PostInfo, PostType, User} from "../../types/PostsTypes"
 import PostsService from "../../services/Posts"
 import Info from "../../components/Info"
 import CommentComponent from "../../components/Comment"
 import PaginationComponent from "../../components/PaginationComponent"
 import LocalStorage from "../../utils/LocalStorage/LocalStorage"
 import NewCommentComponent from "../../components/NewCommentComponent"
-import {UserState} from "../../store/user/types"
 import {connect, shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
-import HeaderComponent from "../../components/HeaderComponent";
-import {setLoading} from "../../store/loading/actions";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import ReplyToComponent from "../../components/ReplyToComponent";
-import {closeDialog, openDialog} from "../../store/dialog/actions";
-import {DialogOption} from "../../store/dialog/types";
-import {ImagePickerResponse} from "react-native-image-picker";
-import {BannerAd, BannerAdSize, TestIds} from "@react-native-firebase/admob";
-import RBSheet from "react-native-raw-bottom-sheet";
-import BottomSheetComponent from "../../components/BottomSheetContentComponent/BottomSheetComponent";
-import UserService from "../../services/User";
-import SeenMessageUtils from "../../utils/SeenMessage";
+import HeaderComponent from "../../components/HeaderComponent"
+import {setLoading} from "../../store/loading/actions"
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
+import ReplyToComponent from "../../components/ReplyToComponent"
+import {closeDialog, openDialog} from "../../store/dialog/actions"
+import {DialogOption} from "../../store/dialog/types"
+import {ImagePickerResponse} from "react-native-image-picker"
+import {BannerAd, BannerAdSize, TestIds} from "@react-native-firebase/admob"
+import RBSheet from "react-native-raw-bottom-sheet"
+import BottomSheetComponent from "../../components/BottomSheetContentComponent/BottomSheetComponent"
+import UserService from "../../services/User"
+import SeenMessageUtils from "../../utils/SeenMessage"
+import EditModeComponent from "../../components/EditModeComponent"
 
 interface PostDetailProperties {
     navigation: any
     theme: Theme
     setLoading: (visible: boolean) => void
-    login: (user: UserState, token?: string) => void
+    login: (user: User, token?: string) => void
     openDialog: (title: string, content: string[], actions: DialogOption[]) => void
     closeDialog: () => void
 }
@@ -76,10 +76,10 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     const [commentToReply, setCommentToReply] = useState<Comment | null>(null)
     const [editModeEnabled, setEditModeEnabled] = useState(false)
     const [commentId, setCommentId] = useState<number | null>(null)
-    const appState = useRef(AppState.currentState);
-    const [appStateVisible, setAppStateVisible] = useState(appState.current);
+    const appState = useRef(AppState.currentState)
+    const [appStateVisible, setAppStateVisible] = useState(appState.current)
     let inputRef: any = null
-    const user: UserState = useSelector((state: ApplicationState) => {
+    const user: User = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
 
@@ -153,7 +153,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     }
 
     useEffect(() => {
-            AppState.addEventListener("change", handleAppStateChange);
+            AppState.addEventListener("change", handleAppStateChange)
             BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick)
 
             LocalStorage.getMessagesSeen()
@@ -219,7 +219,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
             return () => {
                 BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick)
                 AppState.removeEventListener("change", handleAppStateChange)
-                console.log(' *** *** *** *** *** WILL UNMOUNT *** *** *** *** *** ')
                 updateMessagesSeen()
             }
 
@@ -247,7 +246,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
             })
     }
 
-    const isOwner = (usr: UserState | null): boolean => {
+    const isOwner = (usr: User | null): boolean => {
         return usr?.id === user.id
     }
 
@@ -547,7 +546,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     }
 
     const goBack = () => {
-        console.log('go back.....')
         navigation.navigate('Posts', {lastIndex})
     }
 
@@ -630,11 +628,11 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                       marginBottom: index === comments.length - 1 ? 10 : 2
                                   }}
                                   onLayout={(event) => {
-                                      const layout = event.nativeEvent.layout;
+                                      const layout = event.nativeEvent.layout
                                       let data = {...dataSourceCords}
                                       // @ts-ignore
-                                      data[comment.id] = layout.y;
-                                      setDataSourceCords(data);
+                                      data[comment.id] = layout.y
+                                      setDataSourceCords(data)
                                   }}
                             >
                                 <CommentComponent
@@ -667,7 +665,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                             onAdLoaded={() => {
                                             }}
                                             onAdFailedToLoad={(error) => {
-                                                console.error('Advert failed to load: ', error);
+                                                console.error('Advert failed to load: ', error)
                                             }}
                                             onAdClosed={() => console.log('onAdClosed')}
                                             onAdLeftApplication={() => console.log('onAdLeftApplication')}
@@ -691,12 +689,21 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                 }
             </ScrollView>
 
+            <ReplyToComponent
+                comment={commentToReply}
+                close={() => {
+                    setCommentToReply(null)
+                    inputRef.blur()
+                }}
+            />
+
             {
-                commentToReply &&
-                <ReplyToComponent
-                    comment={commentToReply}
+                editModeEnabled &&
+                <EditModeComponent
                     close={() => {
-                        setCommentToReply(null)
+                        setEditModeEnabled(false)
+                        setMessage('')
+                        setCommentId(null)
                         inputRef.blur()
                     }}
                 />

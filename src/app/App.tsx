@@ -8,18 +8,18 @@
  * @format
  */
 
-import React, {useEffect} from 'react';
-import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
-import {NavigationContainer} from '@react-navigation/native';
-import {Provider} from "react-redux";
-import {applyMiddleware, createStore, Store} from "redux";
-import reducers, {ApplicationState} from "../store";
-import {DispatchType} from "../store/user/types";
+import React, {useEffect} from 'react'
+import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper'
+import {NavigationContainer} from '@react-navigation/native'
+import {Provider} from "react-redux"
+import {applyMiddleware, createStore, Store} from "redux"
+import reducers, {ApplicationState} from "../store"
+import {DispatchType} from "../store/user/types"
 import thunk from 'redux-thunk'
-import Content from "./Content";
-import {Alert, StatusBar} from "react-native";
-import firebase from "react-native-firebase";
-import LocalStorage from "../utils/LocalStorage/LocalStorage";
+import Content from "./Content"
+import {Alert, StatusBar} from "react-native"
+import firebase from "react-native-firebase"
+import LocalStorage from "../utils/LocalStorage/LocalStorage"
 
 const App = () => {
     let notificationListener = null
@@ -28,7 +28,7 @@ const App = () => {
         dispatch: DispatchType
     } = createStore(reducers, applyMiddleware(thunk))
 
-    let darkTheme = true;
+    let darkTheme = true
     const getTheme = () => {
         if (darkTheme) {
             return {
@@ -43,7 +43,7 @@ const App = () => {
                     surface: '#0f0f0f',
                     error: '#b71c1c'
                 },
-            };
+            }
         } else {
             return {
                 ...DefaultTheme,
@@ -55,9 +55,9 @@ const App = () => {
                     surface: '#e9e9e9',
                     error: '#b71c1c'
                 },
-            };
+            }
         }
-    };
+    }
 
     useEffect(() => {
         //we check if user has granted permission to receive push notifications.
@@ -75,7 +75,7 @@ const App = () => {
     }, [])
 
     const checkPermission = async () => {
-        const enabled = await firebase.messaging().hasPermission();
+        const enabled = await firebase.messaging().hasPermission()
         // If Permission granted proceed towards token fetch
         if (enabled) {
             getToken().catch(err => {
@@ -94,7 +94,7 @@ const App = () => {
     const getToken = async () => {
         let fcmToken = await LocalStorage.getFcmToken()
         if (!fcmToken) {
-            fcmToken = await firebase.messaging().getToken();
+            fcmToken = await firebase.messaging().getToken()
             if (fcmToken) {
                 // user has a device token
                 LocalStorage.setFcmToken(fcmToken).catch(error => {
@@ -115,7 +115,7 @@ const App = () => {
             })
         } catch (error) {
             // User has rejected permissions
-            console.log('permission rejected');
+            console.log('permission rejected')
         }
     }
 
@@ -125,16 +125,16 @@ const App = () => {
         notificationListener = firebase.notifications().onNotification((notification) => {
             const {title, body} = notification
             displayNotification(title, body)
-        });
+        })
 
         // This listener triggered when app is in background and we click, tapped and opened notification
         notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
             const {title, body} = notificationOpen.notification
             displayNotification(title, body)
-        });
+        })
 
         // This listener triggered when app is closed and we click,tapped and opened notification
-        const notificationOpen = await firebase.notifications().getInitialNotification();
+        const notificationOpen = await firebase.notifications().getInitialNotification()
         // console.log('notificationOpen')
         // console.log(notificationOpen)
         if (notificationOpen) {
@@ -154,7 +154,7 @@ const App = () => {
                 {text: 'Ok', onPress: () => console.log('ok pressed')},
             ],
             {cancelable: false},
-        );
+        )
     }
 
     return (
@@ -169,7 +169,7 @@ const App = () => {
                 </PaperProvider>
             </NavigationContainer>
         </Provider>
-    );
-};
+    )
+}
 
-export default App;
+export default App

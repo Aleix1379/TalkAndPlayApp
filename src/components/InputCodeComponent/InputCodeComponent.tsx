@@ -1,7 +1,7 @@
-import React from 'react';
-import {StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {Text, withTheme} from "react-native-paper";
+import React from 'react'
+import {StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {Text, withTheme} from "react-native-paper"
 
 interface InputCodeProperties {
     theme: Theme,
@@ -22,7 +22,7 @@ const InputCodeComponent: React.FC<InputCodeProperties> = ({theme, value}) => {
         value: {
             fontSize: 25
         }
-    });
+    })
 
     return (
         <View key={value} style={styles.inputCode}>

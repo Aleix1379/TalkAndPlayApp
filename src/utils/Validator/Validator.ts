@@ -1,5 +1,5 @@
-import React from "react";
-import UserService from "../../services/User";
+import React from "react"
+import UserService from "../../services/User"
 import {
     EMAIL,
     MAX_LENGTH,

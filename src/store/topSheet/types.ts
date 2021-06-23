@@ -1,4 +1,4 @@
-import {ModalOption} from "../../screens/PostDetail/PostDetail";
+import {ModalOption} from "../../screens/PostDetail/PostDetail"
 
 export type TopSheetState = {
     visible: boolean

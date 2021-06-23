@@ -1,31 +1,30 @@
-import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import HeaderComponent from "../../components/HeaderComponent";
-import {connect, shallowEqual, useSelector} from "react-redux";
-import {withTheme} from "react-native-paper";
-import {UserState} from "../../store/user/types";
-import {ApplicationState} from "../../store";
-import AvatarComponent from "../../components/AvatarComponent/AvatarComponent";
-import UserUtils from "../../utils/UserUtils";
-import TextInputComponent from "../../components/TextInputComponent";
-import {availablePlatforms, Option, SelectItem} from "../../types/PostsTypes";
-import Validator from "../../utils/Validator/Validator";
-import {EMAIL, ErrorType, REQUIRED} from "../../utils/Validator/types";
-import CheckBoxListComponent from "../../components/CheckBoxListComponent/CheckBoxListComponent";
-import Languages from "../../utils/Languages";
-import ButtonComponent from "../../components/ButtonComponent";
-import {setLoading} from "../../store/loading/actions";
-import UserService from "../../services/User";
-import {login} from "../../store/user/actions";
-import {launchImageLibrary} from 'react-native-image-picker';
-import {ImagePickerResponse} from "react-native-image-picker/src/types";
+import React, {useEffect, useState} from 'react'
+import {ScrollView, StyleSheet, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import HeaderComponent from "../../components/HeaderComponent"
+import {connect, shallowEqual, useSelector} from "react-redux"
+import {withTheme} from "react-native-paper"
+import {ApplicationState} from "../../store"
+import AvatarComponent from "../../components/AvatarComponent/AvatarComponent"
+import UserUtils from "../../utils/UserUtils"
+import TextInputComponent from "../../components/TextInputComponent"
+import {availablePlatforms, Option, SelectItem, User} from "../../types/PostsTypes"
+import Validator from "../../utils/Validator/Validator"
+import {EMAIL, ErrorType, REQUIRED} from "../../utils/Validator/types"
+import CheckBoxListComponent from "../../components/CheckBoxListComponent/CheckBoxListComponent"
+import Languages from "../../utils/Languages"
+import ButtonComponent from "../../components/ButtonComponent"
+import {setLoading} from "../../store/loading/actions"
+import UserService from "../../services/User"
+import {login} from "../../store/user/actions"
+import {launchImageLibrary} from 'react-native-image-picker'
+import {ImagePickerResponse} from "react-native-image-picker/src/types"
 
 interface ProfileEditProperties {
     theme: Theme
     navigation: any
     setLoading: (visible: boolean) => void
-    login: (user: UserState, token?: string) => void
+    login: (user: User, token?: string) => void
 }
 
 interface Errors {
@@ -69,12 +68,12 @@ const ProfileEditScreen: React.FC<ProfileEditProperties> = ({theme, navigation, 
             marginTop: 16,
             marginBottom: 24,
         }
-    });
+    })
 
-    const [form, setForm] = useState<UserState>()
+    const [form, setForm] = useState<User>()
     const [image, setImage] = useState<ImagePickerResponse>()
 
-    const userConnected: UserState = useSelector((state: ApplicationState) => {
+    const userConnected: User = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
 
@@ -134,7 +133,7 @@ const ProfileEditScreen: React.FC<ProfileEditProperties> = ({theme, navigation, 
         }
 
         // @ts-ignore
-        const data: UserState = {...form}
+        const data: User = {...form}
         // @ts-ignore
         data[id] = value
         setForm(data)
@@ -179,9 +178,9 @@ const ProfileEditScreen: React.FC<ProfileEditProperties> = ({theme, navigation, 
                 setLoading(true)
                 await userService.updateProfile(form.id, form)
                 if (image) {
-                    const newVersion = await userService.fileUpload(image, `${userConnected.id}_${userConnected.imageVersion}.png`)
+                    const newVersion = await userService.fileUpload(image, `${userConnected.id}_${userConnected.imageName}.png`)
                     setImage(undefined)
-                    login({...userConnected, imageVersion: newVersion})
+                    login({...userConnected, imageName: newVersion})
                     finish()
                 } else {
                     login(form)
