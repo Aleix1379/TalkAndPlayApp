@@ -108,6 +108,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                 {key: 'games', title: 'Games', postType: PostType.GAMES},
                 {key: 'online', title: 'Online', postType: PostType.ONLINE},
                 {key: 'streamers', title: 'Streaming', postType: PostType.STREAMERS},
+                {key: 'hardware', title: 'Hardware', postType: PostType.HARDWARE},
                 {key: 'setup', title: 'Setup', postType: PostType.SETUP}
             ]
         },
@@ -316,7 +317,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
 
     componentDidUpdate(prevProps: Readonly<PostsProperties>, prevState: Readonly<PostListState>, snapshot?: any) {
         if (JSON.stringify(prevState.data) !== JSON.stringify(this.state.data)) {
-            const ids = this.state.data?.content.map(item => item.id)
+            const ids = this.state.data?.content.map(item => item.post.id)
             if (ids) {
                 this.postService.getNumberOfCommentsByPost(ids)
                     .then(numberOfCommentsByPost => {
@@ -438,6 +439,8 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
             return 'Talk about streamers'
         } else if (this.state.postType === PostType.SETUP) {
             return 'Talk about gaming setup'
+        } else if (this.state.postType === PostType.HARDWARE) {
+            return 'Hardware and accessories'
         }
     }
 
@@ -461,18 +464,19 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                     />
                 }
             >
-                {this.state.data?.content.map((post, index) =>
-                    <View key={post.id}
+                {this.state.data?.content.map((item, index) =>
+                    <View key={item.post.id}
                           style={{
                               marginTop: index === 0 ? 5 : 0,
                               marginBottom: 2
                           }}>
                         <PostComponent
-                            key={post.id}
-                            post={post}
-                            lastAuthor={post.lastAuthor?.name}
-                            unreadMessages={(this.state.commentsUnSeen && this.state.commentsUnSeen[post.id] >= 0) ? this.state.commentsUnSeen[post.id] : this.state.totalMessages[post.id]}
-                            totalMessages={this.state.totalMessages[post.id]}
+                            key={item.post.id}
+                            post={item.post}
+                            user={item.user}
+                            lastAuthor={item.lastAuthor}
+                            unreadMessages={(this.state.commentsUnSeen && this.state.commentsUnSeen[item.post.id] >= 0) ? this.state.commentsUnSeen[item.post.id] : this.state.totalMessages[item.post.id]}
+                            totalMessages={this.state.totalMessages[item.post.id]}
                             onClick={this.goToDetail}
                         />
                         {
@@ -613,21 +617,11 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
         </View>
     )
 
-    getPostType = (index: number): PostType => {
-        switch (index) {
-            case 0:
-                return PostType.GENERAL
-            case 1:
-                return PostType.GAMES
-            case 2:
-                return PostType.ONLINE
-            case 3:
-                return PostType.STREAMERS
-            case 4:
-                return PostType.SETUP
-            default:
-                return PostType.GENERAL
+    getPostType = (index: number): any => {
+        if (this.state.navigationState.routes[index]) {
+            return this.state.navigationState.routes[index].postType
         }
+        return PostType.GENERAL
     }
 
     updateIndex = (index: number) => {

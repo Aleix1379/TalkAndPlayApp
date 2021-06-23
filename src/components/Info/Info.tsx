@@ -18,9 +18,6 @@ const Info: React.FC<InfoProperties> = ({
                                             value,
                                             valueAlign = 'right'
                                         }) => {
-    console.log('label ->' + JSON.stringify(label) + '<- ' + label?.length)
-    console.log('value ->' + JSON.stringify(value) + '<-')
-
     const styles = StyleSheet.create({
         info: {
             display: "flex",

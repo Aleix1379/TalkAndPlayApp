@@ -31,6 +31,7 @@ interface PostEditProperties {
 interface Errors {
     title: ErrorType
     game?: ErrorType
+    text: ErrorType
     platforms?: ErrorType
     language: ErrorType
     channels?: ErrorType
@@ -86,7 +87,6 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
     const initErrors = (): Errors => {
         switch (postType) {
             case PostType.GENERAL:
-            case PostType.STREAMERS:
                 return {
                     title: {
                         message: '',
@@ -113,6 +113,20 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
                             },
                         ],
                     },
+                    text: {
+                        message: '',
+                        touched: false,
+                        label: 'Message',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 5000,
+                            },
+                        ],
+                    },
                     language: {
                         message: '',
                         touched: false,
@@ -136,6 +150,47 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
                         validations: []
                     }
                 }
+            case PostType.STREAMERS:
+                return {
+                    title: {
+                        message: '',
+                        touched: false,
+                        label: 'Title',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 40,
+                            },
+                        ],
+                    },
+                    text: {
+                        message: '',
+                        touched: false,
+                        label: 'Message',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 5000,
+                            },
+                        ],
+                    },
+                    language: {
+                        message: '',
+                        touched: false,
+                        label: 'Language',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                        ],
+                    }
+                }
             case PostType.SETUP:
                 return {
                     title: {
@@ -149,6 +204,20 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
                             {
                                 key: 'MAX_LENGTH',
                                 value: 40,
+                            },
+                        ],
+                    },
+                    text: {
+                        message: '',
+                        touched: false,
+                        label: 'Message',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 5000,
                             },
                         ],
                     },
@@ -172,6 +241,108 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
                             },
                         ]
                     }
+                }
+            case PostType.ONLINE:
+                return {
+                    title: {
+                        message: '',
+                        touched: false,
+                        label: 'Title',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 40,
+                            },
+                        ],
+                    },
+                    text: {
+                        message: '',
+                        touched: false,
+                        label: 'Message',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 5000,
+                            },
+                        ],
+                    },
+                    platforms: {
+                        message: '',
+                        touched: false,
+                        label: 'Platforms',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                        ],
+                    },
+                    language: {
+                        message: '',
+                        touched: false,
+                        label: 'Language',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                        ],
+                    },
+                }
+            case PostType.HARDWARE:
+                return {
+                    title: {
+                        message: '',
+                        touched: false,
+                        label: 'Title',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 40,
+                            },
+                        ],
+                    },
+                    text: {
+                        message: '',
+                        touched: false,
+                        label: 'Message',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 5000,
+                            },
+                        ],
+                    },
+                    platforms: {
+                        message: '',
+                        touched: false,
+                        label: 'Platforms',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                        ],
+                    },
+                    language: {
+                        message: '',
+                        touched: false,
+                        label: 'Language',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                        ],
+                    },
                 }
             default:
                 return {
@@ -200,6 +371,20 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
                             {
                                 key: 'MAX_LENGTH',
                                 value: 40,
+                            },
+                        ],
+                    },
+                    text: {
+                        message: '',
+                        touched: false,
+                        label: 'Message',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 5000,
                             },
                         ],
                     },
@@ -261,7 +446,7 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
 
     useEffect(() => {
         postService.getPostById(id)
-            .then(data => setPost(data))
+            .then(data => setPost(data.post))
             .catch(error => console.log(error))
     }, [])
 
@@ -284,32 +469,41 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
             case PostType.GENERAL:
                 return untouched ||
                     !!errors.title.message ||
+                    !!errors.text.message ||
                     !!errors.language.message ||
                     !post.language.name
             case PostType.GAMES:
                 return untouched ||
                     !!errors.title.message ||
                     !!errors.game?.message ||
+                    !!errors.text.message ||
                     !!errors.language.message ||
                     !post.language.name ||
                     !!errors.platforms?.message
             case PostType.ONLINE:
                 return untouched ||
                     !!errors.title.message ||
-                    !!errors.game?.message ||
+                    !!errors.text.message ||
                     !!errors.language.message ||
                     !post.language.name ||
                     !!errors.platforms?.message
             case PostType.STREAMERS:
                 return untouched ||
-                    !!errors.game?.message ||
                     !!errors.title.message ||
+                    !!errors.text.message ||
                     !!errors.language.message ||
-                    !post.language.name ||
-                    !!errors.channels?.message
+                    !post.language.name
             case PostType.SETUP:
                 return untouched ||
                     !!errors.title.message ||
+                    !!errors.text.message ||
+                    !!errors.language.message ||
+                    !post.language.name ||
+                    !!errors.platforms?.message
+            case PostType.HARDWARE:
+                return untouched ||
+                    !!errors.title.message ||
+                    !!errors.text.message ||
                     !!errors.language.message ||
                     !post.language.name ||
                     !!errors.platforms?.message
@@ -339,7 +533,8 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
                     />
 
                     {
-                        postType !== PostType.STREAMERS &&
+                        postType !== PostType.SETUP &&
+                        postType !== PostType.HARDWARE &&
                         <TextInputComponent id="game"
                                             label="Game"
                                             value={post.game}

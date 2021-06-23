@@ -4,7 +4,7 @@ import {Text, withTheme} from 'react-native-paper'
 import UserUtils from "../../utils/UserUtils"
 import Time from "../../utils/Time"
 import {Theme} from "react-native-paper/lib/typescript/types"
-import {Channel, Option, PostInfo, User} from "../../types/PostsTypes"
+import {Channel, Option, PostInfo, User, UserPost} from "../../types/PostsTypes"
 import MessageCounterComponent from "../MessageCounterComponent/MessageCounterComponent"
 import AvatarComponent from "../AvatarComponent/AvatarComponent"
 import {shallowEqual, useSelector} from "react-redux"
@@ -16,7 +16,8 @@ interface PostProperties {
     theme: Theme
     unreadMessages: number
     totalMessages: number
-    lastAuthor?: string
+    lastAuthor: string
+    user: UserPost
 }
 
 const PostComponent: React.FC<PostProperties> = ({
@@ -25,9 +26,10 @@ const PostComponent: React.FC<PostProperties> = ({
                                                      theme,
                                                      unreadMessages,
                                                      totalMessages,
-                                                     lastAuthor = ''
+                                                     lastAuthor = '',
+                                                     user
                                                  }) => {
-    const {id, title, game, platforms, channels, user, language, lastUpdate} = post
+    const {id, title, game, platforms, channels, language, lastUpdate} = post
     let startX = 0
 
     const userConnected: User = useSelector((state: ApplicationState) => {
@@ -114,14 +116,14 @@ const PostComponent: React.FC<PostProperties> = ({
                     borderWidth={0}
                     size={40}
                     style={styles.avatar}
-                    uri={UserUtils.getImageUrl(user)}
+                    uri={UserUtils.getImageUserByName(user.id, user.imageName)}
                 />
                 <View style={{
                     justifyContent: "center",
                     alignItems: "flex-start",
                     flex: 1
                 }}>
-                    <Text style={styles.userName}>{user?.name}</Text>
+                    <Text style={styles.userName}>{user.name}</Text>
                 </View>
 
                 <View style={{}}>
@@ -153,11 +155,11 @@ const PostComponent: React.FC<PostProperties> = ({
 
                 <View style={[styles.details, {marginTop: 2}]}>
                     <Text style={styles.label}>{title}</Text>
-                    <Text style={styles.text}>{language.name}</Text>
+                    <Text style={styles.text}>{language?.name}</Text>
                 </View>
 
                 {
-                    game.length > 0 && platforms.length > 0 &&
+                    game?.length > 0 && platforms.length > 0 &&
                     < View style={[styles.details, {marginTop: 2}]}>
                         <Text style={styles.label}>{game}</Text>
                         {

@@ -14,7 +14,8 @@ export enum PostType {
     GAMES = "GAMES",
     ONLINE = "ONLINE",
     STREAMERS = "STREAMERS",
-    SETUP = "SETUP"
+    SETUP = "SETUP",
+    HARDWARE = "HARDWARE"
 }
 
 export interface PostInfo {
@@ -30,6 +31,19 @@ export interface PostInfo {
     lastAuthor: User | null
 }
 
+export interface UserPost {
+    id: number
+    name: string
+    imageName: number
+}
+
+export interface PostRow {
+    post: PostInfo
+    user: UserPost
+    lastAuthor: string
+
+}
+
 export interface Comment {
     id: number | null
     text: string
@@ -43,6 +57,11 @@ export interface SelectItem {
     name: string
     value: boolean
     image?: string
+}
+
+export interface PostWithAuthor {
+    post: PostInfo
+    authorId: number
 }
 
 export interface Filter {
@@ -113,7 +132,7 @@ export interface Pageable {
 }
 
 export interface PostsResponse {
-    content: PostInfo[]
+    content: PostRow[]
     pageable: Pageable
     totalPages: number
     totalElements: number

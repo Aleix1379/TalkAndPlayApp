@@ -58,6 +58,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     const {title, id} = navigation.state.params
     const postType: PostType = navigation.state.params.postType
     const [post, setPost] = useState<PostInfo | null>(navigation.state.params.post)
+    const [authorId, setAuthorId] = useState(-1)
     const lastIndex = navigation.state.params.lastIndex
     const [comments, setComments] = useState<Comment[]>()
     const postService = new PostsService()
@@ -195,9 +196,11 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
             if (!post) {
                 postService.getPostById(id)
                     .then(response => {
-                        console.log('language => ' + JSON.stringify(response.language))
-                        console.log('platforms => ' + JSON.stringify(response.platforms))
-                        setPost(response)
+                        console.log('getPostById')
+                        console.log(response)
+                        setPost(response.post)
+                        console.log('get authorId ->' + response.authorId + '<-')
+                        setAuthorId(response.authorId)
                     })
                     .catch(err => {
                         console.log('postService.getPostById(')
@@ -235,7 +238,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 
     useEffect(() => {
         loadPostOptions()
-    }, [post])
+    }, [authorId])
 
     const updateMessagesSeen = () => {
         if (user.id >= 0)
@@ -248,8 +251,9 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
             })
     }
 
-    const isOwner = (usr: User | null): boolean => {
-        return usr?.id === user.id
+    const isOwner = (id: number): boolean => {
+        console.log('IS OWNER => ' + id)
+        return id === user.id
     }
 
     const editPost = () => navigation.navigate('PostEdit', {title, id, updatePost: setPost, postType})
@@ -258,7 +262,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 
     const loadPostOptions = () => {
         const options: ModalOption[] = []
-        if (post && isOwner(post.user)) {
+        if (post && isOwner(authorId)) {
             options.push({
                 id: 'edit',
                 icon: 'pencil-outline',

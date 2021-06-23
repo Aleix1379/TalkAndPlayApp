@@ -4,7 +4,7 @@ import {User} from "../../types/PostsTypes"
 class UserUtils {
 
     public static getImageUrl(user: User | null): string {
-        if (!user || user.id <= 0) {
+        if (!user || user.id < 0) {
             return ''
         }
 
@@ -12,6 +12,13 @@ class UserUtils {
             return `${REACT_APP_IMAGES_URL}/${user.id}_${user.imageName}.png`
         }
         return `${user.imageName}`
+    }
+
+    public static getImageUserByName(id: number, imageName: number): string {
+        if (imageName < 0) {
+            return ''
+        }
+        return `${REACT_APP_IMAGES_URL}/${id}_${imageName}.png`
     }
 
     public static getImageByName(name: string): string {

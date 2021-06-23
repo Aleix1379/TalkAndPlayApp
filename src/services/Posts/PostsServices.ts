@@ -1,4 +1,12 @@
-import {Comment, CommentResponse, Filter, PostInfo, PostsResponse, PostType} from "../../types/PostsTypes"
+import {
+    Comment,
+    CommentResponse,
+    Filter,
+    PostInfo,
+    PostsResponse,
+    PostType,
+    PostWithAuthor
+} from "../../types/PostsTypes"
 import Api from "../Api"
 
 class PostsService extends Api {
@@ -34,12 +42,28 @@ class PostsService extends Api {
                 `${this.getUrl()}?page=${page}&title=${title}&game=${game}&platforms=${platforms}&languages=${language}&postType=${postType}&userName=${userName}&channels=${channels}`
             )
             .then((res) => {
-                return res.data
+                let result = {...res.data}
+                result.content = res.data.content.map((item: any) => ({
+                    post: item[0],
+                    user: {
+                        id: item[1],
+                        name: item[2],
+                        imageName: item[3]
+                    },
+                    lastAuthor: item[4]
+                }))
+                return result
             })
     }
 
-    getPostById(id: number): Promise<PostInfo> {
-        return this.http.get(this.getUrl(id)).then((res) => res.data)
+    getPostById(id: number): Promise<PostWithAuthor> {
+        return this.http.get(this.getUrl(id)).then((res) => {
+            const result: PostWithAuthor = {
+                post: res.data[0],
+                authorId: res.data[1]
+            }
+            return result
+        })
     }
 
     getCommentsByPost(

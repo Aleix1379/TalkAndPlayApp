@@ -330,6 +330,57 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                         ],
                     },
                 }
+            case PostType.HARDWARE:
+                return {
+                    title: {
+                        message: '',
+                        touched: false,
+                        label: 'Title',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 40,
+                            },
+                        ],
+                    },
+                    text: {
+                        message: '',
+                        touched: false,
+                        label: 'Message',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 5000,
+                            },
+                        ],
+                    },
+                    platforms: {
+                        message: '',
+                        touched: false,
+                        label: 'Platforms',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                        ],
+                    },
+                    language: {
+                        message: '',
+                        touched: false,
+                        label: 'Language',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                        ],
+                    },
+                }
             default:
                 return {
                     title: {
@@ -524,6 +575,13 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                     !!errors.language.message ||
                     !post.language.name ||
                     !!errors.platforms?.message
+            case PostType.HARDWARE:
+                return untouched ||
+                    !!errors.title.message ||
+                    !!errors.text.message ||
+                    !!errors.language.message ||
+                    !post.language.name ||
+                    !!errors.platforms?.message
             default:
                 return true
         }
@@ -560,6 +618,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                     />
                     {
                         postType !== PostType.SETUP &&
+                        postType !== PostType.HARDWARE &&
                         < TextInputComponent id="game"
                                              label={getLabel("Game", "game")}
                                              value={post.game}
@@ -580,7 +639,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
 
                     <CheckBoxListComponent
                         id="languages"
-                        label={getLabel("Language", "languages")}
+                        label={getLabel("Language", "language")}
                         values={getLanguages()}
                         initialValues={[post.language]}
                         singleMode={true}
