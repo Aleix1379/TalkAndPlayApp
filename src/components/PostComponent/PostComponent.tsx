@@ -156,16 +156,23 @@ const PostComponent: React.FC<PostProperties> = ({
                     <Text style={styles.text}>{language.name}</Text>
                 </View>
 
-                <View style={[styles.details, {marginTop: 2}]}>
-                    <Text style={styles.label}>{game}</Text>
-                    <Text style={{
-                        ...styles.text,
-                        alignSelf: 'center'
-                    }}>{platforms.map((platform: Option) => platform.name).join(', ')}</Text>
-                </View>
+                {
+                    game.length > 0 && platforms.length > 0 &&
+                    < View style={[styles.details, {marginTop: 2}]}>
+                        <Text style={styles.label}>{game}</Text>
+                        {
+                            platforms && platforms.length > 0 && <Text style={{
+                                ...styles.text,
+                                alignSelf: 'center'
+                            }}>
+                                {platforms.map((platform: Option) => platform.name).join(', ')}
+                            </Text>
+                        }
+                    </View>
+                }
 
                 {
-                    channels.length > 0 &&
+                    channels && channels.length > 0 &&
                     <View style={styles.details}>
                         <Text style={{
                             ...styles.text,

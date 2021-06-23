@@ -195,6 +195,8 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
             if (!post) {
                 postService.getPostById(id)
                     .then(response => {
+                        console.log('language => ' + JSON.stringify(response.language))
+                        console.log('platforms => ' + JSON.stringify(response.platforms))
                         setPost(response)
                     })
                     .catch(err => {
@@ -573,12 +575,12 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 
                         <Info style={{...styles.postDetail, marginTop: 4}}
                               valueAlign={'right'}
-                              label={post.platforms.map((platform: Option) => platform.name).join(', ')}
+                              label={post.platforms.map((platform: Option) => platform.name).join(', ') || 'Language'}
                               value={post.language.name}
                         />
 
                         {
-                            post.channels.length > 0 &&
+                            post.channels && post.channels.length > 0 &&
                             <Info
                                 style={{...styles.postDetail, marginTop: 4}}
                                 label='Channels'

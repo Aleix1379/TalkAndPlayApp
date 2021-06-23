@@ -106,6 +106,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
             imageName: 0,
             languages: [],
             platforms: [],
+            profiles: [],
             seenMessages: {}
         },
     })
@@ -123,7 +124,6 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
     const initErrors = (): Errors => {
         switch (postType) {
             case PostType.GENERAL:
-            case PostType.STREAMERS:
                 return {
                     title: {
                         message: '',
@@ -185,6 +185,47 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
                         touched: false,
                         label: 'Channels',
                         validations: []
+                    }
+                }
+            case PostType.STREAMERS:
+                return {
+                    title: {
+                        message: '',
+                        touched: false,
+                        label: 'Title',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 40,
+                            },
+                        ],
+                    },
+                    text: {
+                        message: '',
+                        touched: false,
+                        label: 'Message',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                            {
+                                key: 'MAX_LENGTH',
+                                value: 5000,
+                            },
+                        ],
+                    },
+                    language: {
+                        message: '',
+                        touched: false,
+                        label: 'Language',
+                        validations: [
+                            {
+                                key: 'REQUIRED',
+                            },
+                        ],
                     }
                 }
             case PostType.SETUP:
@@ -384,7 +425,10 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
 
         const err: Errors = {...errors}
         // @ts-ignore
-        err[id].touched = true
+        if (err[id]) {
+            // @ts-ignore
+            err[id].touched = true
+        }
         setFormErrors({...errors, ...err})
     }
 

@@ -26,7 +26,7 @@ export interface PostInfo {
     user: User | null
     lastUpdate: any
     postType: PostType
-    channels: Channel[]
+    channels?: Channel[]
     lastAuthor: User | null
 }
 
