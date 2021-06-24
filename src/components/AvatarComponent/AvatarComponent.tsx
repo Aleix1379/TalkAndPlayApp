@@ -66,7 +66,7 @@ const AvatarComponent: React.FC<AvatarProperties> = ({
                 source={require('../../assets/images/spinner.png')}
             />}
 
-            {!error && onPress && <Text style={styles.label}>Choose a image</Text>}
+            {!error && onPress && <Text style={styles.label}>Choose an image</Text>}
             <ErrorHelperComponent style={{marginTop: 16,}} visible={!!error} message={error}/>
         </View>
     )
