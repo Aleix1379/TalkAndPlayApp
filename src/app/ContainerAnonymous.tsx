@@ -45,7 +45,9 @@ const BottomTabNavigator = createMaterialBottomTabNavigator(
         }
     },
     {
-        activeColor: '#1976d2'
+        activeColor: '#1976d2',
+        inactiveColor: '#888888',
+        barStyle: {borderTopColor: '#0f0f0f', borderTopWidth: 0.5},
     },
 )
 
