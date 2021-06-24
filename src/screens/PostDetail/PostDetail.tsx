@@ -78,7 +78,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     const [editModeEnabled, setEditModeEnabled] = useState(false)
     const [commentId, setCommentId] = useState<number | null>(null)
     const appState = useRef(AppState.currentState)
-    const [appStateVisible, setAppStateVisible] = useState(appState.current)
+    const [{}, setAppStateVisible] = useState(appState.current)
     let inputRef: any = null
     const user: User = useSelector((state: ApplicationState) => {
         return state.user
