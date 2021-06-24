@@ -109,9 +109,6 @@ const PostComponent: React.FC<PostProperties> = ({
                 }
             }}>
             <View style={styles.user}>
-                {/*<Image
-                    style={styles.avatar}
-                    source={{uri: UserUtils.getImageUrl(user)}}/>*/}
                 <AvatarComponent
                     borderWidth={0}
                     size={40}

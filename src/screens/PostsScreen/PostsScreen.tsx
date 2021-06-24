@@ -1,5 +1,5 @@
 import React from 'react'
-import {Animated, Dimensions, RefreshControl, ScrollView, StyleSheet, View} from "react-native"
+import {Animated, Dimensions, FlatList, RefreshControl, ScrollView, StyleSheet, View} from "react-native"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {TabBar, TabView} from "react-native-tab-view"
 import {FAB, Modal, Text, withTheme} from "react-native-paper"
@@ -9,7 +9,7 @@ import {
     availablePlatforms,
     Channel,
     Filter,
-    Option,
+    Option, PostRenderItem, PostRow,
     PostsResponse,
     PostType,
     SelectItem,
@@ -29,12 +29,14 @@ import {ApplicationState} from "../../store"
 import Image from "react-native-scalable-image"
 import UserService from "../../services/User"
 import SeenMessageUtils from "../../utils/SeenMessage"
+import {setLoading} from "../../store/loading/actions";
 
 export interface PostsProperties {
     navigation: any,
     theme: Theme,
     user: User
     postType: PostType
+    setLoading: (visible: boolean) => void
 }
 
 interface Form {
@@ -60,6 +62,7 @@ export interface PostListState {
     headerVisible: boolean
     lastIndex: number
     refreshing: boolean
+    isEmpty: boolean
 }
 
 interface RouteItem {
@@ -116,7 +119,8 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
         upperAnimation: new Animated.Value(0),
         headerVisible: true,
         lastIndex: -1,
-        refreshing: false
+        refreshing: false,
+        isEmpty: false
     }
 
     readonly styles = StyleSheet.create({
@@ -332,6 +336,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     }
 
     fetchData = (page: number = 0, filter?: Filter) => {
+        this.props.setLoading(true)
         this.postService.get(page, this.state.postType, filter)
             .then((response: PostsResponse) => {
                 this.setState({
@@ -347,6 +352,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                 console.log(err)
                 this.props.navigation.navigate('Error', {err: JSON.stringify(err, null, 2)})
             })
+            .finally(() => this.props.setLoading(false))
     }
 
     goToDetail = (id: number, title: string) => {
@@ -376,22 +382,27 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     }
 
     loadMore = () => {
-        if (this.state.data) {
-            this.postService.get(this.state.data.number + 1, this.state.postType, this.state.form)
-                .then((response: PostsResponse) => {
-                    let newValue: PostsResponse | null = {...response}
-                    if (this.state.data) {
-                        newValue.content = this.state.data.content.concat(response.content)
-                        this.setState({
-                            data: newValue,
-                            isLast: response.last
-                        })
-                    }
-                })
-                .catch(err => {
-                    console.log('error load more')
-                    console.log(err)
-                })
+        if (!this.state.headerVisible && !this.state.isLast) {
+            this.props.setLoading(true)
+            if (this.state.data) {
+                this.postService.get(this.state.data.number + 1, this.state.postType, this.state.form)
+                    .then((response: PostsResponse) => {
+                        let newValue: PostsResponse | null = {...response}
+                        if (this.state.data) {
+                            newValue.content = this.state.data.content.concat(response.content)
+                            this.setState({
+                                data: newValue,
+                                isLast: response.last,
+                                isEmpty: response.empty
+                            })
+                        }
+                    })
+                    .catch(err => {
+                        console.log('error load more')
+                        console.log(err)
+                    })
+                    .finally(() => this.props.setLoading(false))
+            }
         }
     }
 
@@ -444,6 +455,42 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
         }
     }
 
+    renderItem = (element: PostRenderItem) => (
+        <View key={element.item.post.id}
+              style={{
+                  marginTop: element.index === 0 ? 5 : 0,
+                  marginBottom: 2
+              }}>
+            <PostComponent
+                key={element.item.post.id}
+                post={element.item.post}
+                user={element.item.user}
+                lastAuthor={element.item.lastAuthor}
+                unreadMessages={(this.state.commentsUnSeen && this.state.commentsUnSeen[element.item.post.id] >= 0) ? this.state.commentsUnSeen[element.item.post.id] : this.state.totalMessages[element.item.post.id]}
+                totalMessages={this.state.totalMessages[element.item.post.id]}
+                onClick={this.goToDetail}
+            />
+            {
+                element.index === this.state.data?.content.length || 1 - 1 || element.index % 5 === 0 &&
+                <View style={{marginTop: 4, marginBottom: 2}}>
+                    <BannerAd
+                        unitId={TestIds.BANNER}
+                        size={BannerAdSize.ADAPTIVE_BANNER}
+                        onAdLoaded={() => {
+                            console.log('Advert loaded')
+                        }}
+                        onAdFailedToLoad={(error) => {
+                            console.error('Advert failed to load: ', error)
+                        }}
+                        onAdClosed={() => console.log('onAdClosed')}
+                        onAdLeftApplication={() => console.log('onAdLeftApplication')}
+                        onAdOpened={() => console.log('onAdOpened')}
+                    />
+                </View>
+            }
+        </View>
+    )
+
     getScene = () => (
         <View style={this.styles.posts}>
             {
@@ -454,57 +501,19 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                            source={require('../../assets/images/undraw_empty_xct9.png')}/>
                 </View>
             }
-
-            <ScrollView
+            <FlatList
+                data={this.state.data?.content}
+                renderItem={this.renderItem}
+                keyExtractor={(item: PostRow) => item.post.id.toString()}
                 onScroll={this.onScroll}
+                onScrollEndDrag={this.loadMore}
                 refreshControl={
                     <RefreshControl
                         refreshing={this.state.refreshing}
                         onRefresh={this.onRefresh}
                     />
                 }
-            >
-                {this.state.data?.content.map((item, index) =>
-                    <View key={item.post.id}
-                          style={{
-                              marginTop: index === 0 ? 5 : 0,
-                              marginBottom: 2
-                          }}>
-                        <PostComponent
-                            key={item.post.id}
-                            post={item.post}
-                            user={item.user}
-                            lastAuthor={item.lastAuthor}
-                            unreadMessages={(this.state.commentsUnSeen && this.state.commentsUnSeen[item.post.id] >= 0) ? this.state.commentsUnSeen[item.post.id] : this.state.totalMessages[item.post.id]}
-                            totalMessages={this.state.totalMessages[item.post.id]}
-                            onClick={this.goToDetail}
-                        />
-                        {
-                            index === this.state.data?.content.length || 1 - 1 || index % 5 === 0 &&
-                            <View style={{marginTop: 4, marginBottom: 2}}>
-                                <BannerAd
-                                    unitId={TestIds.BANNER}
-                                    size={BannerAdSize.ADAPTIVE_BANNER}
-                                    onAdLoaded={() => {
-                                        console.log('Advert loaded')
-                                    }}
-                                    onAdFailedToLoad={(error) => {
-                                        console.error('Advert failed to load: ', error)
-                                    }}
-                                    onAdClosed={() => console.log('onAdClosed')}
-                                    onAdLeftApplication={() => console.log('onAdLeftApplication')}
-                                    onAdOpened={() => console.log('onAdOpened')}
-                                />
-                            </View>
-                        }
-                    </View>)}
-
-                {!this.state.isLast && this.state.data?.content.length && this.state.data?.content.length > 0 &&
-                <View style={this.styles.loadMore} onTouchEnd={() => this.loadMore()}>
-                    <Text style={this.styles.loadMoreText}>Load more...</Text>
-                </View>}
-
-            </ScrollView>
+            />
 
             {
                 this.props.user.id >= 0 && !this.state.showModal &&
@@ -673,4 +682,6 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
 
 const mapStateToProps = (state: ApplicationState) => ({user: state.user})
 
-export default connect(mapStateToProps, {})(withTheme(PostsScreen))
+export default connect(mapStateToProps, {
+    setLoading: setLoading
+})(withTheme(PostsScreen))

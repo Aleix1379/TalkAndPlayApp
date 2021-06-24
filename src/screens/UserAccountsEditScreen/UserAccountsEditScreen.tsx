@@ -10,14 +10,16 @@ import {ApplicationState} from "../../store"
 import UserService from "../../services/User"
 import {login} from "../../store/user/actions"
 import {User} from "../../types/PostsTypes"
+import {setLoading} from "../../store/loading/actions";
 
 interface UserAccountsEditProperties {
     theme: Theme
     navigation: any
     login: (user: User, token?: string) => void
+    setLoading: (value: boolean) => void
 }
 
-const UserAccountsEditScreen: React.FC<UserAccountsEditProperties> = ({theme, navigation}) => {
+const UserAccountsEditScreen: React.FC<UserAccountsEditProperties> = ({theme, navigation, setLoading}) => {
     const styles = StyleSheet.create({
         userAccountsEdit: {
             flex: 1,
@@ -43,14 +45,14 @@ const UserAccountsEditScreen: React.FC<UserAccountsEditProperties> = ({theme, na
     const [untouched, setUntouched] = useState(true)
     const [accounts, setAccounts] = useState<any[]>(
         [
-            {id: 1, name: 'Xbox', value: ''},
-            {id: 2, name: 'Playstation', value: ''},
-            {id: 3, name: 'Nintendo', value: ''},
-            {id: 4, name: 'Steam', value: ''},
-            {id: 5, name: 'Discord', value: ''},
-            {id: 6, name: 'Twitch', value: ''},
-            {id: 7, name: 'Youtube', value: ''},
-            {id: 8, name: 'Facebook', value: ''},
+            {id: null, name: 'Xbox', value: ''},
+            {id: null, name: 'Playstation', value: ''},
+            {id: null, name: 'Nintendo', value: ''},
+            {id: null, name: 'Steam', value: ''},
+            {id: null, name: 'Discord', value: ''},
+            {id: null, name: 'Twitch', value: ''},
+            {id: null, name: 'Youtube', value: ''},
+            {id: null, name: 'Facebook', value: ''},
         ]
     )
 
@@ -87,23 +89,29 @@ const UserAccountsEditScreen: React.FC<UserAccountsEditProperties> = ({theme, na
     }
 
     const save = () => {
-        user.profiles = accounts.filter(ac => ac.value || inputsUpdated[ac.name])
-
-        console.log('user:')
-        console.log(user)
-
-
+        setLoading(true)
+        user.profiles = accounts
+            .filter(ac => ac.value || inputsUpdated[ac.name])
+            .map(({id, name, value}) => (
+                {
+                    id,
+                    name,
+                    value: value.trim()
+                }
+            ))
         userService.updateProfile(user.id, user)
             .then((userUpdated) => {
+                console.log('userUpdated')
+                console.log(userUpdated)
                 login(userUpdated)
-                setTimeout(() => {
-                    goBack()
-                }, 500)
+                goBack()
             })
             .catch(err => {
                 console.log('Error updating accounts')
                 console.log(err)
+                setLoading(false)
             })
+            .finally(() => setLoading(false))
     }
 
     return (
@@ -144,5 +152,6 @@ export default connect(
     null,
     {
         login: login,
+        setLoading: setLoading
     }
 )(withTheme(UserAccountsEditScreen))

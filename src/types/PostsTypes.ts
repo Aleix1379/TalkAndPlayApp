@@ -41,7 +41,11 @@ export interface PostRow {
     post: PostInfo
     user: UserPost
     lastAuthor: string
+}
 
+export interface PostRenderItem {
+    item: PostRow
+    index: number
 }
 
 export interface Comment {
