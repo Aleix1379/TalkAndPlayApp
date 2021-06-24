@@ -43,7 +43,6 @@ const FollowButtonComponent: React.FC<FollowButtonProperties> = ({
             borderRadius: 40
         }
     })
-    console.log('follower => ' + follower)
     const [upperAnimation] = useState(new Animated.Value(following ? 1 : 0))
 
     const startAnimation = () => {
@@ -63,7 +62,6 @@ const FollowButtonComponent: React.FC<FollowButtonProperties> = ({
             ]
         }
     }
-
 
     const [label, setLabel] = useState('')
 

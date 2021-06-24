@@ -112,6 +112,10 @@ const FollowingFollowersListScreen: React.FC<FollowingFollowersListProperties> =
         }
     }
 
+    const goToProfile = (userToVisit: User) => {
+        navigation.navigate('ProfileViewer', {email: userToVisit.email})
+    }
+
     return (
         <View style={styles.container}>
             <HeaderComponent
@@ -130,6 +134,7 @@ const FollowingFollowersListScreen: React.FC<FollowingFollowersListProperties> =
                                 key={index}
                                 user={user}
                                 onFollowUpdate={toggleFollowing}
+                                onUserSelected={goToProfile}
                                 following={followingState[user.id]?.following}
                                 follower={followingState[user.id]?.follower}
                             />

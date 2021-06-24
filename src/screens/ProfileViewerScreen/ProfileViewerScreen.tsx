@@ -13,6 +13,7 @@ import FollowButtonComponent from "../../components/FollowButtonComponent"
 import {shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
 import {User} from "../../types/PostsTypes"
+import FollowsYouComponent from "../../components/FollowsYouComponent";
 
 interface ProfileViewerProperties {
     navigation: any,
@@ -39,11 +40,10 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
             paddingTop: 8,
             display: "flex",
             flex: 1,
-            // alignItems: "center"
         },
         avatar: {
-            marginTop: 8,
-            marginBottom: 16,
+            marginTop: 16,
+            marginBottom: 20,
         },
         info: {
             marginVertical: 8,
@@ -64,7 +64,10 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
             width: Dimensions.get('window').width,
         },
         follow: {
-            marginBottom: 8
+            marginBottom: 12
+        },
+        followsYou: {
+             marginBottom: 12
         }
     })
     const [following, setFollowing] = useState(false)
@@ -105,14 +108,16 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
 
 
     useEffect(() => {
-        userService.findUserByEmail(email)
-            .then(response => {
-                setUserVisited(response[0])
-            })
-            .catch(err => {
-                console.log('error find user by email')
-                console.log(err)
-            })
+        if (email) {
+            userService.findUserByEmail(email)
+                .then(response => {
+                    setUserVisited(response)
+                })
+                .catch(err => {
+                    console.log('error find user by email')
+                    console.log(err)
+                })
+        }
     }, [email])
 
     const onTouchEnd = (event: GestureResponderEvent, value: string, color?: string) => {
@@ -151,16 +156,11 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
                     console.log(err)
                 })
 
-            console.log('currentUser.id => ' + currentUser.id)
-            console.log('userVisited.id => ' + userVisited.id)
-
             userService.isFollower(currentUser.id, userVisited.id)
                 .then(isFollower => {
-                    console.log('IS FOLLOWER => ' + isFollower)
                     setFollower(isFollower)
                 })
                 .catch(err => {
-                    console.log('error getFollower')
                     console.log(err)
                 })
         }
@@ -193,13 +193,17 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
                             following={following}
                             follower={follower}
                         />
+
+                        {
+                            follower && <FollowsYouComponent style={styles.followsYou}/>
+                        }
                     </View>
 
                     <Info label="Languages"
-                          value={userVisited.languages.map(language => language.name).join(', ')}
+                          value={userVisited.languages.map(language => language.name).join(', ') || null}
                           style={styles.info}/>
                     <Info label="Platforms"
-                          value={userVisited.platforms.map(platform => platform.name).join(', ')}
+                          value={userVisited.platforms.map(platform => platform.name).join(', ') || null}
                           style={styles.info}/>
 
                     {

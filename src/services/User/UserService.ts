@@ -109,8 +109,8 @@ class UserService extends Api {
             .then((res) => res.data)
     }
 
-    findUserByEmail(email: string): Promise<User[]> {
-        return this.http.get(`${this.getUrl()}?email=${email}`).then((res) => res.data)
+    findUserByEmail(email: string): Promise<User> {
+        return this.http.get(`${this.getUrl()}?email=${email}`).then((res) => res.data[0])
     }
 
     getCommentsUnseen(userId: number, values: any): Promise<any> {

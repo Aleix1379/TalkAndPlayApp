@@ -71,7 +71,7 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
             // alignItems: "center"
         },
         avatar: {
-            marginTop: 8,
+            marginTop: 16,
             marginBottom: 24,
         },
         info: {
