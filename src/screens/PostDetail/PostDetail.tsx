@@ -137,18 +137,9 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     }
 
     const handleAppStateChange = (nextAppState: AppStateStatus) => {
-        if (
-            appState.current.match(/inactive|background/) &&
-            nextAppState === "active"
-        ) {
-            console.log("App has come to the foreground!")
-        }
-
         appState.current = nextAppState
         setAppStateVisible(appState.current)
-        console.log("AppState", appState.current)
         if (appState.current === 'background') {
-            console.log('updateMessagesSeen()...............................')
             updateMessagesSeen()
         }
     }
@@ -175,7 +166,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                     console.log(err)
                                 })
                             if (values[id] > 0) {
-                                console.log('values => ' + JSON.stringify(values))
                                 setUnseenMessages(values[id])
                             }
                         }
@@ -196,10 +186,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
             if (!post) {
                 postService.getPostById(id)
                     .then(response => {
-                        console.log('getPostById')
-                        console.log(response)
                         setPost(response.post)
-                        console.log('get authorId ->' + response.authorId + '<-')
                         setAuthorId(response.authorId)
                     })
                     .catch(err => {
@@ -252,7 +239,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     }
 
     const isOwner = (id: number): boolean => {
-        console.log('IS OWNER => ' + id)
         return id === user.id
     }
 
@@ -318,11 +304,8 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 
     const scrollToElement = (commentId: number): void => {
         const index = comments?.findIndex(comment => comment.id === commentId)
-        console.log('INDEX: ' + index)
         // @ts-ignore
         const y = dataSourceCords[commentId]
-        console.log('Y')
-        console.log(y)
         if (index && index >= 0) {
             // @ts-ignore
             scrollRef.current?.scrollTo({
@@ -444,25 +427,21 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 
     const loadComment = (commentSeen: Comment) => {
         if (post && (commentSeen.id && commentSeen.id >= lastCommentId || !lastCommentId)) {
-            LocalStorage.addCommentSeen(post.id, commentSeen.id).catch(err => {
-                console.log('error addCommentSeen')
-                console.log(err)
-            })
+            LocalStorage.addCommentSeen(post.id, commentSeen.id)
+                .catch(err => {
+                    console.log('error addCommentSeen')
+                    console.log(err)
+                })
         }
     }
 
     const gotoFirstUnseenMessage = () => {
         setManualScrollEnabled(true)
         setUnseenMessages(0)
-        console.log('lastCommentId ===> ' + lastCommentId)
-        console.log('gotoFirstUnseenMessage: ' + pageFirstUnseenComment)
         fetchComments('top', pageFirstUnseenComment, lastCommentId)
     }
 
     const reply = (comment: Comment | null): void => {
-        console.log('author: ' + comment?.author.name)
-        console.log('TEXT: ' + comment?.text)
-
         if (comment) {
             setCommentToReply(comment)
             inputRef.focus()
@@ -510,18 +489,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 
     const uploadPicture = (image: ImagePickerResponse): void => {
         navigation.navigate('PictureUpload', {image, title, id, onSendPicture})
-        /*
-        if (image.fileName) {
-            pictureService.fileUpload(image, image.fileName)
-                .then(() => {
-                    sendComment('![gif](' + REACT_APP_IMAGES_URL + '/' + user.id + '_' + image.fileName + ')')
-                })
-                .catch(err => {
-                    console.log('error uploading image')
-                    console.log(err)
-                })
-        }
-        */
     }
 
     const editComment = (comment: Comment): void => {
@@ -536,8 +503,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                 setComments(values)
             }
         }
-
-        console.log('comment.text => ' + comment.text)
 
         setEditModeEnabled(true)
         setMessage(comment.text)

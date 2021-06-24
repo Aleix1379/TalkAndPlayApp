@@ -3,7 +3,6 @@ import {ScrollView, StyleSheet, View} from "react-native"
 import {withTheme} from 'react-native-paper'
 import {Theme} from "react-native-paper/lib/typescript/types"
 import TextInputComponent from "../../components/TextInputComponent"
-import {ErrorType} from "../../utils/Validator/types"
 import {
     availableChannels,
     availablePlatforms,
@@ -24,6 +23,7 @@ import PostsService from "../../services/Posts"
 import HeaderComponent from "../../components/HeaderComponent"
 import languages from '../../store/languages.json'
 import {logout} from "../../store/user/actions"
+import PostUtils, {Errors} from "../../utils/PostUtils/PostUtils";
 
 interface PostCreateProperties {
     navigation: any,
@@ -31,16 +31,6 @@ interface PostCreateProperties {
     setLoading: Function
     logout: Function
 }
-
-interface Errors {
-    title: ErrorType
-    game?: ErrorType
-    text: ErrorType
-    platforms?: ErrorType
-    language: ErrorType
-    channels?: ErrorType
-}
-
 
 const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoading, theme, logout}) => {
     const {postType} = navigation.state.params
@@ -121,337 +111,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
         setPost(data)
     }, [])
 
-    const initErrors = (): Errors => {
-        switch (postType) {
-            case PostType.GENERAL:
-                return {
-                    title: {
-                        message: '',
-                        touched: false,
-                        label: 'Title',
-                        validations: [
-                            {
-                                key: 'REQUIRED',
-                            },
-                            {
-                                key: 'MAX_LENGTH',
-                                value: 40,
-                            },
-                        ],
-                    },
-                    game: {
-                        message: '',
-                        touched: false,
-                        label: 'Game',
-                        validations: [
-                            {
-                                key: 'MAX_LENGTH',
-                                value: 40,
-                            },
-                        ],
-                    },
-                    text: {
-                        message: '',
-                        touched: false,
-                        label: 'Message',
-                        validations: [
-                            {
-                                key: 'REQUIRED',
-                            },
-                            {
-                                key: 'MAX_LENGTH',
-                                value: 5000,
-                            },
-                        ],
-                    },
-                    language: {
-                        message: '',
-                        touched: false,
-                        label: 'Language',
-                        validations: [
-                            {
-                                key: 'REQUIRED',
-                            },
-                        ],
-                    },
-                    platforms: {
-                        message: '',
-                        touched: false,
-                        label: 'Platforms',
-                        validations: [],
-                    },
-                    channels: {
-                        message: '',
-                        touched: false,
-                        label: 'Channels',
-                        validations: []
-                    }
-                }
-            case PostType.STREAMERS:
-                return {
-                    title: {
-                        message: '',
-                        touched: false,
-                        label: 'Title',
-                        validations: [
-                            {
-                                key: 'REQUIRED',
-                            },
-                            {
-                                key: 'MAX_LENGTH',
-                                value: 40,
-                            },
-                        ],
-                    },
-                    text: {
-                        message: '',
-                        touched: false,
-                        label: 'Message',
-                        validations: [
-                            {
-                                key: 'REQUIRED',
-                            },
-                            {
-                                key: 'MAX_LENGTH',
-                                value: 5000,
-                            },
-                        ],
-                    },
-                    language: {
-                        message: '',
-                        touched: false,
-                        label: 'Language',
-                        validations: [
-                            {
-                                key: 'REQUIRED',
-                            },
-                        ],
-                    }
-                }
-            case PostType.SETUP:
-                return {
-                    title: {
-                        message: '',
-                        touched: false,
-                        label: 'Title',
-                        validations: [
-                            {
-                                key: 'REQUIRED',
-                            },
-                            {
-                                key: 'MAX_LENGTH',
-                                value: 40,
-                            },
-                        ],
-                    },
-                    text: {
-                        message: '',
-                        touched: false,
-                        label: 'Message',
-                        validations: [
-                            {
-                                key: 'REQUIRED',
-                            },
-                            {
-                                key: 'MAX_LENGTH',
-                                value: 5000,
-                            },
-                        ],
-                    },
-                    language: {
-                        message: '',
-                        touched: false,
-                        label: 'Language',
-                        validations: [
-                            {
-                                key: 'REQUIRED',
-                            },
-                        ],
-                    },
-                    platforms: {
-                        message: '',
-                        touched: false,
-                        label: 'Platforms',
-                        validations: [
-                            {
-                                key: 'REQUIRED',
-                            },
-                        ]
-                    }
-                }
-            case PostType.ONLINE:
-                return {
-                    title: {
-                        message: '',
-                        touched: false,
-                        label: 'Title',
-                        validations: [
-                            {
-                                key: 'REQUIRED',
-                            },
-                            {
-                                key: 'MAX_LENGTH',
-                                value: 40,
-                            },
-                        ],
-                    },
-                    text: {
-                        message: '',
-                        touched: false,
-                        label: 'Message',
-                        validations: [
-                            {
-                                key: 'REQUIRED',
-                            },
-                            {
-                                key: 'MAX_LENGTH',
-                                value: 5000,
-                            },
-                        ],
-                    },
-                    platforms: {
-                        message: '',
-                        touched: false,
-                        label: 'Platforms',
-                        validations: [
-                            {
-                                key: 'REQUIRED',
-                            },
-                        ],
-                    },
-                    language: {
-                        message: '',
-                        touched: false,
-                        label: 'Language',
-                        validations: [
-                            {
-                                key: 'REQUIRED',
-                            },
-                        ],
-                    },
-                }
-            case PostType.HARDWARE:
-                return {
-                    title: {
-                        message: '',
-                        touched: false,
-                        label: 'Title',
-                        validations: [
-                            {
-                                key: 'REQUIRED',
-                            },
-                            {
-                                key: 'MAX_LENGTH',
-                                value: 40,
-                            },
-                        ],
-                    },
-                    text: {
-                        message: '',
-                        touched: false,
-                        label: 'Message',
-                        validations: [
-                            {
-                                key: 'REQUIRED',
-                            },
-                            {
-                                key: 'MAX_LENGTH',
-                                value: 5000,
-                            },
-                        ],
-                    },
-                    platforms: {
-                        message: '',
-                        touched: false,
-                        label: 'Platforms',
-                        validations: [
-                            {
-                                key: 'REQUIRED',
-                            },
-                        ],
-                    },
-                    language: {
-                        message: '',
-                        touched: false,
-                        label: 'Language',
-                        validations: [
-                            {
-                                key: 'REQUIRED',
-                            },
-                        ],
-                    },
-                }
-            default:
-                return {
-                    title: {
-                        message: '',
-                        touched: false,
-                        label: 'Title',
-                        validations: [
-                            {
-                                key: 'REQUIRED',
-                            },
-                            {
-                                key: 'MAX_LENGTH',
-                                value: 40,
-                            },
-                        ],
-                    },
-                    game: {
-                        message: '',
-                        touched: false,
-                        label: 'Game',
-                        validations: [
-                            {
-                                key: 'REQUIRED',
-                            },
-                            {
-                                key: 'MAX_LENGTH',
-                                value: 40,
-                            },
-                        ],
-                    },
-                    text: {
-                        message: '',
-                        touched: false,
-                        label: 'Message',
-                        validations: [
-                            {
-                                key: 'REQUIRED',
-                            },
-                            {
-                                key: 'MAX_LENGTH',
-                                value: 5000,
-                            },
-                        ],
-                    },
-                    platforms: {
-                        message: '',
-                        touched: false,
-                        label: 'Platforms',
-                        validations: [
-                            {
-                                key: 'REQUIRED',
-                            },
-                        ],
-                    },
-                    language: {
-                        message: '',
-                        touched: false,
-                        label: 'Language',
-                        validations: [
-                            {
-                                key: 'REQUIRED',
-                            },
-                        ],
-                    },
-                }
-        }
-
-    }
-
-    const [errors, setFormErrors] = useState<Errors>(initErrors())
-
+    const [errors, setFormErrors] = useState<Errors>(PostUtils.getErrors(postType))
 
     const validator = new Validator(errors, setFormErrors)
 
@@ -539,54 +199,6 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
         return values
     }
 
-    const isButtonEnabled = (): boolean => {
-        switch (postType) {
-            case PostType.GENERAL:
-                return untouched ||
-                    !!errors.title.message ||
-                    !!errors.text.message ||
-                    !!errors.language.message ||
-                    !post.language.name
-            case PostType.GAMES:
-                return untouched ||
-                    !!errors.title.message ||
-                    !!errors.game?.message ||
-                    !!errors.text.message ||
-                    !!errors.language.message ||
-                    !post.language.name ||
-                    !!errors.platforms?.message
-            case PostType.ONLINE:
-                return untouched ||
-                    !!errors.title.message ||
-                    !!errors.text.message ||
-                    !!errors.language.message ||
-                    !post.language.name ||
-                    !!errors.platforms?.message
-            case PostType.STREAMERS:
-                return untouched ||
-                    !!errors.title.message ||
-                    !!errors.text.message ||
-                    !!errors.language.message ||
-                    !post.language.name
-            case PostType.SETUP:
-                return untouched ||
-                    !!errors.title.message ||
-                    !!errors.text.message ||
-                    !!errors.language.message ||
-                    !post.language.name ||
-                    !!errors.platforms?.message
-            case PostType.HARDWARE:
-                return untouched ||
-                    !!errors.title.message ||
-                    !!errors.text.message ||
-                    !!errors.language.message ||
-                    !post.language.name ||
-                    !!errors.platforms?.message
-            default:
-                return true
-        }
-    }
-
     const getLabel = (label: string, id: string): string => {
         const key = id.toLowerCase()
         // @ts-ignore
@@ -672,11 +284,12 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
 
                 </ScrollView>
 
-                <ButtonComponent label="Save"
-                                 icon="content-save"
-                                 onPress={() => save()}
-                                 style={styles.button}
-                                 disabled={isButtonEnabled()}
+                <ButtonComponent
+                    label="Save"
+                    icon="content-save"
+                    onPress={() => save()}
+                    style={styles.button}
+                    disabled={PostUtils.isButtonEnabled(postType, post, errors, untouched)}
                 />
             </View>
         </>

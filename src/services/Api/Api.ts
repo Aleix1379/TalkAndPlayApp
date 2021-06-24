@@ -52,7 +52,6 @@ abstract class Api {
     }
 
     setToken(token: string) {
-        console.log('SET TOKEN: ' + token)
         this.http.defaults.headers.common['Authorization'] = token
     }
 

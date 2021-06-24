@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {Dimensions, ScrollView, StyleSheet, View} from "react-native"
+import {BackHandler, Dimensions, ScrollView, StyleSheet, View} from "react-native"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {Text, withTheme} from "react-native-paper"
 import UserService from "../../services/User"
@@ -53,11 +53,26 @@ const FollowingFollowersListScreen: React.FC<FollowingFollowersListProperties> =
         return state.user
     }, shallowEqual)
 
+    const goBack = () => {
+        navigation.navigate('Profile')
+    }
+
+    const handleBackButtonClick = (): boolean => {
+        goBack()
+        return true
+    }
+
     useEffect(() => {
+        BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick)
+
         loadData().catch(err => {
             console.log('error load data')
             console.log(err)
         })
+
+        return () => {
+            BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick)
+        }
     }, [])
 
     const loadData = async () => {
@@ -122,7 +137,7 @@ const FollowingFollowersListScreen: React.FC<FollowingFollowersListProperties> =
                 title={capitalize(userType)}
                 leftAction={{
                     image: "arrow-left",
-                    onPress: () => navigation.navigate('Profile')
+                    onPress: () => goBack()
                 }}
             />
             {
