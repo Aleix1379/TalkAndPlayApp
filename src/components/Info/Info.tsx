@@ -7,7 +7,7 @@ interface InfoProperties {
     label: string | null
     value: string | null
     theme: Theme
-    style: StyleProp<ViewStyle>
+    style?: StyleProp<ViewStyle>
     valueAlign?: 'left' | 'center' | 'right'
 }
 

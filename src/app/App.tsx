@@ -78,7 +78,7 @@ const App = () => {
         const enabled = await firebase.messaging().hasPermission()
         // If Permission granted proceed towards token fetch
         if (enabled) {
-            getToken().catch(err => {
+            loadToken().catch(err => {
                 console.log('Error get token')
                 console.log(err)
             })
@@ -91,7 +91,7 @@ const App = () => {
         }
     }
 
-    const getToken = async () => {
+    const loadToken = async () => {
         let fcmToken = await LocalStorage.getFcmToken()
         if (!fcmToken) {
             fcmToken = await firebase.messaging().getToken()
@@ -109,7 +109,7 @@ const App = () => {
         try {
             await firebase.messaging().requestPermission()
             // User has authorised
-            getToken().catch(error => {
+            loadToken().catch(error => {
                 console.log('Error get token')
                 console.log(error)
             })

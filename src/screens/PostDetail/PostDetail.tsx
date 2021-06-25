@@ -13,7 +13,6 @@ import {connect, shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
 import HeaderComponent from "../../components/HeaderComponent"
 import {setLoading} from "../../store/loading/actions"
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import ReplyToComponent from "../../components/ReplyToComponent"
 import {closeDialog, openDialog} from "../../store/dialog/actions"
 import {DialogOption} from "../../store/dialog/types"
@@ -24,6 +23,8 @@ import BottomSheetComponent from "../../components/BottomSheetContentComponent/B
 import UserService from "../../services/User"
 import SeenMessageUtils from "../../utils/SeenMessage"
 import EditModeComponent from "../../components/EditModeComponent"
+import PageGoButtonComponent from "../../components/PageGoButtonComponent"
+import PageInputModalComponent from "../../components/PageInputComponent/PageInputModalComponent";
 
 interface PostDetailProperties {
     navigation: any
@@ -80,6 +81,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     const appState = useRef(AppState.currentState)
     const [{}, setAppStateVisible] = useState(appState.current)
     let inputRef: any = null
+    const [showInputPage, setShowInputPage] = useState<boolean>(false)
     const user: User = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
@@ -110,25 +112,13 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
             marginBottom: 4
         },
         goToFirstUnSeen: {
-            backgroundColor: theme.colors.accent,
             marginLeft: 8,
             marginTop: 4,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            height: 28,
-            width: 28,
-            shadowColor: theme.colors.primary,
-            shadowOffset: {
-                width: 0,
-                height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5,
-            borderRadius: 4,
             marginHorizontal: 10,
         },
+        bottomPagination: {
+            flexDirection: "row"
+        }
     })
 
     const handleBackButtonClick = (): boolean => {
@@ -522,6 +512,16 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 
     return (
         <>
+            <PageInputModalComponent
+                visible={showInputPage}
+                initialValue={currentPage}
+                max={page?.totalPages}
+                onPageSelected={(newPage: number) => {
+                    fetchComments('top', newPage - 1)
+                    setShowInputPage(false)
+                }}
+            />
+
             <HeaderComponent
                 title={post?.title}
                 leftAction={{
@@ -568,17 +568,19 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                             page && page.totalPages > 1 &&
                             <View style={styles.pagination}>
 
+                                <PageGoButtonComponent
+                                    style={styles.goToFirstUnSeen}
+                                    icon='book-open-page-variant'
+                                    onPress={() => setShowInputPage(true)}
+                                />
+
                                 {
                                     unseenMessages > 0 &&
-                                    <View
+                                    <PageGoButtonComponent
                                         style={styles.goToFirstUnSeen}
-                                        onTouchEnd={() => gotoFirstUnseenMessage()}
-                                    >
-                                        <MaterialCommunityIcons name="email-mark-as-unread"
-                                                                color={theme.colors.text}
-                                                                size={15}
-                                        />
-                                    </View>
+                                        icon='email-mark-as-unread'
+                                        onPress={gotoFirstUnseenMessage}
+                                    />
                                 }
 
                                 <View style={{marginLeft: 'auto'}}>
@@ -649,12 +651,22 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 
                         {
                             page && page.totalPages > 1 &&
-                            <PaginationComponent
-                                number={currentPage}
-                                totalPages={page?.totalPages}
-                                marginBottom={10}
-                                onPageChange={(newPage: number) => fetchComments('top', newPage)}
-                            />
+                            <View style={styles.bottomPagination}>
+                                <PageGoButtonComponent
+                                    style={styles.goToFirstUnSeen}
+                                    icon='book-open-page-variant'
+                                    onPress={() => setShowInputPage(true)}
+                                />
+
+                                <View style={{marginLeft: 'auto'}}>
+                                    <PaginationComponent
+                                        number={currentPage}
+                                        totalPages={page?.totalPages}
+                                        marginBottom={10}
+                                        onPageChange={(newPage: number) => fetchComments('top', newPage)}
+                                    />
+                                </View>
+                            </View>
                         }
                     </View>
                 }
@@ -681,7 +693,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
             }
 
             {
-                user.id >= 0 &&
+                user.id >= 0 && !showInputPage &&
                 <NewCommentComponent
                     send={sendComment}
                     message={message}
