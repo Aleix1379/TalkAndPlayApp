@@ -424,10 +424,14 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     }
 
     getLanguages = () => {
-        let values = this.props.user.languages.map(lang => ({
-            ...lang,
-            image: 'language'
-        }))
+        let values: Option[] = []
+
+        if (this.props.user.languages) {
+            values = this.props.user.languages.map(lang => ({
+                ...lang,
+                image: 'language'
+            }))
+        }
 
         if (values.length === 0) {
             return languages.map(lang => ({

@@ -9,7 +9,7 @@
  */
 
 import React, {useEffect} from 'react'
-import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper'
+import {Provider as PaperProvider} from 'react-native-paper'
 import {NavigationContainer} from '@react-navigation/native'
 import {Provider} from "react-redux"
 import {applyMiddleware, createStore, Store} from "redux"
@@ -20,6 +20,7 @@ import Content from "./Content"
 import {Alert, StatusBar} from "react-native"
 import firebase from "react-native-firebase"
 import LocalStorage from "../utils/LocalStorage/LocalStorage"
+import UiUtils from "../utils/UiUtils";
 
 const App = () => {
     let notificationListener = null
@@ -29,6 +30,7 @@ const App = () => {
     } = createStore(reducers, applyMiddleware(thunk))
 
     let darkTheme = true
+    /*
     const getTheme = () => {
         if (darkTheme) {
             return {
@@ -58,6 +60,7 @@ const App = () => {
             }
         }
     }
+    */
 
     useEffect(() => {
         //we check if user has granted permission to receive push notifications.
@@ -158,17 +161,17 @@ const App = () => {
     }
 
     return (
-        <Provider store={store}>
-            <NavigationContainer>
-                <PaperProvider theme={getTheme()}>
+        <PaperProvider theme={UiUtils.getTheme(darkTheme)}>
+            <Provider store={store}>
+                <NavigationContainer>
                     <StatusBar
                         barStyle={darkTheme ? "light-content" : "dark-content"}
-                        backgroundColor={getTheme().colors.surface}
+                        backgroundColor={UiUtils.getTheme(darkTheme).colors.surface}
                     />
                     <Content/>
-                </PaperProvider>
-            </NavigationContainer>
-        </Provider>
+                </NavigationContainer>
+            </Provider>
+        </PaperProvider>
     )
 }
 

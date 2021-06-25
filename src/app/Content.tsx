@@ -3,7 +3,7 @@ import {View} from "react-native"
 import Container from "./Container"
 import ContainerAnonymous from "./ContainerAnonymous"
 import {connect, shallowEqual, useSelector} from "react-redux"
-import {DefaultTheme, withTheme} from "react-native-paper"
+import {withTheme} from "react-native-paper"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {ApplicationState} from "../store"
 import LocalStorage from "../utils/LocalStorage/LocalStorage"
@@ -17,6 +17,7 @@ import {closeDialog} from "../store/dialog/actions"
 import {setTheme} from "../store/theme/actions"
 import UserService from "../services/User"
 import {User} from "../types/PostsTypes"
+import UiUtils from "../utils/UiUtils";
 
 interface ContentProperties {
     theme: Theme
@@ -25,7 +26,7 @@ interface ContentProperties {
     setTheme: (theme: 'dark' | 'light') => void
 }
 
-const Content: React.FC<ContentProperties> = ({theme, login, closeDialog, setTheme}) => {
+const content: React.FC<ContentProperties> = ({theme, login, closeDialog, setTheme}) => {
     const user: User = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
@@ -48,74 +49,56 @@ const Content: React.FC<ContentProperties> = ({theme, login, closeDialog, setThe
 
     const userService = new UserService()
 
-    const getTheme = (): Theme => {
-        if (isDarkTheme) {
-            return {
-                ...DefaultTheme,
-                colors: {
-                    ...DefaultTheme.colors,
-                    primary: '#212121',
-                    text: '#fafafa',
-                    background: '#363636',
-                    accent: '#075aab',
-                    onSurface: '#1976d2',
-                    surface: '#0f0f0f',
-                    error: '#b71c1c'
-                },
-            }
-        } else {
-            return {
-                ...DefaultTheme,
-                colors: {
-                    ...DefaultTheme.colors,
-                    primary: '#C0C0C0',
-                    accent: '#075aab',
-                    onSurface: '#1976d2',
-                    surface: '#e9e9e9',
-                    error: '#b71c1c'
-                },
-            }
-        }
-    }
-
     const loadCustomTheme = () => {
-        theme.colors = {...getTheme().colors}
+        theme = {...UiUtils.getTheme(isDarkTheme)}
     }
 
     useEffect(() => {
-        setTimeout(() => {
-            LocalStorage.getTheme()
-                .then(newTheme => {
-                    if (!newTheme) {
-                        setTheme('dark')
-                    } else {
-                        setTheme(newTheme)
-                    }
-                })
-            LocalStorage.getAuthToken()
-                .then(tokenSaved => {
-                    if (tokenSaved) {
-                        userService.getProfile().then(userData => {
+        LocalStorage.getUser()
+            .then(userSaved => {
+                login(userSaved)
+            })
+            .catch(err => {
+                console.log('error getUser')
+                console.log(err)
+            })
+        LocalStorage.getTheme()
+            .then(newTheme => {
+                if (!newTheme) {
+                    setTheme('dark')
+                } else {
+                    setTheme(newTheme)
+                }
+            })
+            .finally(() => setTheme('dark'))
+        LocalStorage.getAuthToken()
+            .then(tokenSaved => {
+                if (tokenSaved) {
+                    userService.getProfile()
+                        .then(userData => {
                             login(userData)
                         })
-                            .catch(err => {
-                                console.log('error get Profile')
-                                console.log(err)
-                            })
-                    }
-                })
-        }, 100)
+                        .catch(err => {
+                            console.log('error get Profile')
+                            console.log(err)
+                        })
+                }
+            })
     }, [])
 
     useEffect(() => {
         loadCustomTheme()
     }, [isDarkTheme])
 
+    useEffect(() => {
+    }, [user])
+
     return (
         <View style={{flex: 1, backgroundColor: theme.colors.background}}>
             <LoadingComponent visible={isLoadingVisible}/>
             <DialogComponent
-                visible={dialog.visible} onDismiss={() => closeDialog()}
+                visible={dialog.visible}
+                onDismiss={() => closeDialog()}
                 title={dialog.title}
                 content={dialog.content}
                 actions={dialog.actions}
@@ -136,4 +119,4 @@ export default connect(null, {
     login: login,
     closeDialog: closeDialog,
     setTheme: setTheme
-})(withTheme(Content))
+})(withTheme(content))
