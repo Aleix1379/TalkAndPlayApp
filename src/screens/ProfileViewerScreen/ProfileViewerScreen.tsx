@@ -13,7 +13,7 @@ import FollowButtonComponent from "../../components/FollowButtonComponent"
 import {shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
 import {User} from "../../types/PostsTypes"
-import FollowsYouComponent from "../../components/FollowsYouComponent";
+import FollowsYouComponent from "../../components/FollowsYouComponent"
 
 interface ProfileViewerProperties {
     navigation: any,

@@ -10,7 +10,7 @@ import {ApplicationState} from "../../store"
 import UserService from "../../services/User"
 import {login} from "../../store/user/actions"
 import {User} from "../../types/PostsTypes"
-import {setLoading} from "../../store/loading/actions";
+import {setLoading} from "../../store/loading/actions"
 
 interface UserAccountsEditProperties {
     theme: Theme

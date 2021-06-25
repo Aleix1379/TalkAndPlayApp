@@ -23,7 +23,7 @@ import PostsService from "../../services/Posts"
 import HeaderComponent from "../../components/HeaderComponent"
 import languages from '../../store/languages.json'
 import {logout} from "../../store/user/actions"
-import PostUtils, {Errors} from "../../utils/PostUtils/PostUtils";
+import PostUtils, {Errors} from "../../utils/PostUtils/PostUtils"
 
 interface PostCreateProperties {
     navigation: any,

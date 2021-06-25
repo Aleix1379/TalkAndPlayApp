@@ -21,7 +21,7 @@ import Validator from "../../utils/Validator/Validator"
 import {connect, shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
 import {setLoading} from "../../store/loading/actions"
-import PostUtils from "../../utils/PostUtils";
+import PostUtils from "../../utils/PostUtils"
 
 interface PostEditProperties {
     theme: Theme

@@ -20,7 +20,7 @@ import Content from "./Content"
 import {Alert, StatusBar} from "react-native"
 import firebase from "react-native-firebase"
 import LocalStorage from "../utils/LocalStorage/LocalStorage"
-import UiUtils from "../utils/UiUtils";
+import UiUtils from "../utils/UiUtils"
 
 const App = () => {
     let notificationListener = null

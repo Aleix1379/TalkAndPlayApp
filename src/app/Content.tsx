@@ -17,7 +17,7 @@ import {closeDialog} from "../store/dialog/actions"
 import {setTheme} from "../store/theme/actions"
 import UserService from "../services/User"
 import {User} from "../types/PostsTypes"
-import UiUtils from "../utils/UiUtils";
+import UiUtils from "../utils/UiUtils"
 
 interface ContentProperties {
     theme: Theme

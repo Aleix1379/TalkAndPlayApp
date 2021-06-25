@@ -1,5 +1,5 @@
-import {ErrorType} from "../Validator/types";
-import {PostInfo, PostType} from "../../types/PostsTypes";
+import {ErrorType} from "../Validator/types"
+import {PostInfo, PostType} from "../../types/PostsTypes"
 
 export interface Errors {
     title: ErrorType

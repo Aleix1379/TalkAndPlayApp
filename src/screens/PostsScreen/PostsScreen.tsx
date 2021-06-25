@@ -29,7 +29,7 @@ import {ApplicationState} from "../../store"
 import Image from "react-native-scalable-image"
 import UserService from "../../services/User"
 import SeenMessageUtils from "../../utils/SeenMessage"
-import {setLoading} from "../../store/loading/actions";
+import {setLoading} from "../../store/loading/actions"
 
 export interface PostsProperties {
     navigation: any,

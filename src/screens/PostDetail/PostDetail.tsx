@@ -24,7 +24,7 @@ import UserService from "../../services/User"
 import SeenMessageUtils from "../../utils/SeenMessage"
 import EditModeComponent from "../../components/EditModeComponent"
 import PageGoButtonComponent from "../../components/PageGoButtonComponent"
-import PageInputModalComponent from "../../components/PageInputComponent/PageInputModalComponent";
+import PageInputModalComponent from "../../components/PageInputComponent/PageInputModalComponent"
 
 interface PostDetailProperties {
     navigation: any

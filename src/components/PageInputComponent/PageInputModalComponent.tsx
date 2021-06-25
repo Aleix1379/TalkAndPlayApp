@@ -1,6 +1,6 @@
-import React from 'react';
-import {Dimensions, StyleSheet, View} from "react-native";
-import PageInputComponent from "./PageInputComponent";
+import React from 'react'
+import {Dimensions, StyleSheet, View} from "react-native"
+import PageInputComponent from "./PageInputComponent"
 
 interface PageInputProperties {
     visible: boolean

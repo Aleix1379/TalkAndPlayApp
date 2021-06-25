@@ -6,7 +6,7 @@ import AvatarComponent from "../AvatarComponent"
 import UserUtils from "../../utils/UserUtils"
 import FollowButtonComponent from "../FollowButtonComponent"
 import {User} from "../../types/PostsTypes"
-import FollowsYouComponent from "../FollowsYouComponent";
+import FollowsYouComponent from "../FollowsYouComponent"
 
 interface UserItemProperties {
     theme: Theme

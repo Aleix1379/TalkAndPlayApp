@@ -1,8 +1,8 @@
-import React from 'react';
-import {StyleProp, StyleSheet, View, ViewStyle} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {withTheme} from "react-native-paper";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import React from 'react'
+import {StyleProp, StyleSheet, View, ViewStyle} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {withTheme} from "react-native-paper"
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 
 interface PageGoButtonProperties {
     theme: Theme
@@ -35,7 +35,7 @@ const PageGoButtonComponent: React.FC<PageGoButtonProperties> = ({
             elevation: 5,
             borderRadius: 4,
         }
-    });
+    })
 
     return (
         <View

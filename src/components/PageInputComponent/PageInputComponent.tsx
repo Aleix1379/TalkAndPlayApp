@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {Dimensions, StyleSheet, TextInput, View} from "react-native";
-import {Theme} from "react-native-paper/lib/typescript/types";
-import {Text, withTheme} from "react-native-paper";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import React, {useEffect, useState} from 'react'
+import {Dimensions, StyleSheet, TextInput, View} from "react-native"
+import {Theme} from "react-native-paper/lib/typescript/types"
+import {Text, withTheme} from "react-native-paper"
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 
 interface PageInputProperties {
     theme: Theme

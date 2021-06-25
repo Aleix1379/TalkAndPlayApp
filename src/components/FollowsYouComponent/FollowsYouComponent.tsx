@@ -1,7 +1,7 @@
-import React from 'react';
-import {StyleProp, StyleSheet, View, ViewStyle} from "react-native";
-import {Text} from "react-native-paper";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import React from 'react'
+import {StyleProp, StyleSheet, View, ViewStyle} from "react-native"
+import {Text} from "react-native-paper"
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 
 interface FollowsYouProperties {
     style?: StyleProp<ViewStyle>
@@ -22,7 +22,7 @@ const FollowsYouComponent: React.FC<FollowsYouProperties> = ({style = {}}) => {
             marginLeft: 6,
             marginTop: 1
         }
-    });
+    })
 
     return (
         <View style={[styles.followContainer, style]}>
