@@ -79,7 +79,7 @@ const AvatarComponent: React.FC<AvatarProperties> = ({
             }
 
             {
-                name && !image &&
+                name?.length! > 0 && !image &&
                 <Image
                     style={styles.image}
                     source={{uri: REACT_APP_IMAGES_URL + name}}

@@ -363,8 +363,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
             author: user,
             images
         }
-        console.log('SEND COMMENT ')
-        console.log(JSON.stringify(comment, null, 2))
         if (commentToReply) {
             comment.reply = commentToReply
         }
@@ -482,8 +480,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     }
 
     const uploadPicture = (images: any[]): void => {
-        console.log('uploadPicture')
-        console.log(JSON.stringify(images, null, 2))
         navigation.navigate('PictureUpload', {images, title, id, onSendPicture})
     }
 

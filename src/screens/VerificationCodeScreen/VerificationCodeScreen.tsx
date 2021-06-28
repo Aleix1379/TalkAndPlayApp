@@ -50,15 +50,13 @@ const VerificationCodeScreen: React.FC<VerificationCodeProperties> = ({navigatio
             data.push(value)
 
             if (values.length === length - 1) {
-                console.log('SEND CODE')
-                console.log(data)
                 userService.verifyPassword(email, data.join(''))
                     .then(result => {
                         if (result.code === 0) {
-                            console.log('Go to update password')
                             setErrorMessage('')
                             navigation.navigate('PasswordEditWithCode', {verificationCode: data.join(''), email})
                         } else {
+                            console.log('error verifyPassword')
                             console.log(result.message)
                             setErrorMessage(result.message)
                         }

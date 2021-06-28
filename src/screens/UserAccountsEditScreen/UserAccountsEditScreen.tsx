@@ -101,8 +101,6 @@ const UserAccountsEditScreen: React.FC<UserAccountsEditProperties> = ({theme, na
             ))
         userService.updateProfile(user.id, user)
             .then((userUpdated) => {
-                console.log('userUpdated')
-                console.log(userUpdated)
                 login(userUpdated)
                 goBack()
             })

@@ -153,7 +153,6 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
                 } else {
                     images = [response]
                 }
-                console.log(images)
                 uploadPicture && uploadPicture(images)
             })
             .catch(err => {

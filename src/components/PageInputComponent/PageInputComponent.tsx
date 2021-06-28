@@ -71,10 +71,8 @@ const PageInputComponent: React.FC<PageInputProperties> = ({
     }
 
     const onTouchStart = (type: 'add' | 'subtract') => {
-        console.log('onTouchStart')
         setPageInterval(
             setInterval(() => {
-                console.log('Update => ' + type === 'add' ? (value + 1) : (value - 1))
                 setValue(prevValue => getNextValue(prevValue, type))
             }, intervalTime)
         )
@@ -82,7 +80,6 @@ const PageInputComponent: React.FC<PageInputProperties> = ({
 
     const onTouchEnd = () => {
         if (pageInterval) {
-            console.log('onTouchEnd')
             setTimeout(() => {
                 clearInterval(pageInterval)
             }, intervalTime)

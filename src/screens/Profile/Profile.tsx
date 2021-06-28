@@ -123,6 +123,10 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
     }, [])
 
     useEffect(() => {
+        console.log('USER => ' + JSON.stringify(user, null, 2))
+    }, [user])
+
+    useEffect(() => {
         loadPostOptions()
     }, [index])
 

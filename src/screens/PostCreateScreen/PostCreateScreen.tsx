@@ -93,12 +93,13 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
             id: 0,
             name: '',
             email: '',
-            imageName: 0,
+            avatar: '',
             languages: [],
             platforms: [],
             profiles: [],
             seenMessages: {}
         },
+        images: []
     })
 
     useEffect(() => {
@@ -158,8 +159,6 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
         setPost(data)
 
         if (validator.validateForm(data)) {
-            console.log('Sending post: ')
-            console.log(JSON.stringify(data, null, 2))
             setLoading(true)
 
             postService

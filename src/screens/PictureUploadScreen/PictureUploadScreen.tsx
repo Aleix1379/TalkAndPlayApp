@@ -35,10 +35,7 @@ const PictureUploadScreen: React.FC<PictureUploadProperties> = ({theme, navigati
         return state.user
     }, shallowEqual)
 
-    const getImageName = (path: string): string => {
-        console.log('getImageName | path => ' + path)
-        return `${user.id}_${new Date().getTime()}_${path.split("/").pop() || ''}`
-    }
+    const getImageName = (path: string): string => `${user.id}_${new Date().getTime()}_${path.split("/").pop() || ''}`
 
     const uploadPicture = () => {
         pictureService.fileUpload(dataImages.map((it) => ({
