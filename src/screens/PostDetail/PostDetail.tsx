@@ -113,7 +113,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         },
         goToFirstUnSeen: {
             marginLeft: 8,
-            marginTop: 0,
+            marginTop: 3,
             marginHorizontal: 10,
         },
         bottomPagination: {
@@ -343,6 +343,8 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                     if (!commentId && scrollTo === 'bottom') {
                         setCurrentPage(data.totalPages - 1)
                         scrollToTop(scrollTo)
+                    } else if (commentId) {
+                        scrollToElement(commentId)
                     } else {
                         if (newPage! >= 0) {
                             setCurrentPage(newPage!)
@@ -571,13 +573,13 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                             <View style={styles.pagination}>
 
                                 <PageGoButtonComponent
-                                    style={[styles.goToFirstUnSeen, {marginTop: 3}]}
+                                    style={styles.goToFirstUnSeen}
                                     icon='book-open-page-variant'
                                     onPress={() => setShowInputPage(true)}
                                 />
 
                                 {
-                                    unseenMessages > 0 &&
+                                    unseenMessages > 0 && pageFirstUnseenComment > 0 &&
                                     <PageGoButtonComponent
                                         style={styles.goToFirstUnSeen}
                                         icon='email-mark-as-unread'
@@ -655,7 +657,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                             page && page.totalPages > 1 &&
                             <View style={styles.bottomPagination}>
                                 <PageGoButtonComponent
-                                    style={styles.goToFirstUnSeen}
+                                    style={[styles.goToFirstUnSeen, {marginTop: 0}]}
                                     icon='book-open-page-variant'
                                     onPress={() => setShowInputPage(true)}
                                 />

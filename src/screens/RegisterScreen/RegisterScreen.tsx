@@ -78,7 +78,7 @@ const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login,
             textAlign: 'center',
             fontFamily: 'Ranchers-Regular',
             letterSpacing: 4,
-            fontSize: 50,
+            fontSize: 35,
             marginTop: 20,
             zIndex: 10,
             color: theme.colors.text,
@@ -117,6 +117,7 @@ const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login,
         },
         singUp: {
             marginLeft: 8,
+            marginBottom: 16,
             color: theme.colors.accent
         },
     })

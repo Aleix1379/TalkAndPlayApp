@@ -45,7 +45,7 @@ const Info: React.FC<InfoProperties> = ({
 
     return (
         <View style={[styles.info, style]}>
-            {label && label.length > 0 && <Text>{label}</Text>}
+            {label && label.length > 0 && <Text style={{flex: 1}}>{label}</Text>}
             {value && value.length > 0 && <Text style={styles.text}>{value}</Text>}
         </View>
     )

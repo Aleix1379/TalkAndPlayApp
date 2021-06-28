@@ -365,6 +365,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     }
 
     search = (filter: Filter) => {
+        setLoading(true)
         this.postService.get(0, this.state.postType, {
             ...filter,
             channels: this.state.postType === PostType.STREAMERS ? filter.channels : []
@@ -378,6 +379,9 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
             .catch(err => {
                 console.log('Error searching')
                 console.log(err)
+            })
+            .finally(() => {
+                setLoading(false)
             })
     }
 
@@ -611,11 +615,9 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                                 user: this.state.form.user,
                                 channels: this.state.form.channels
                             }
+                            this.setState({showModal: false})
+                            this.search(filter)
                             LocalStorage.saveFilter(filter)
-                                .then(() => {
-                                    this.search(filter)
-                                    this.setState({showModal: false})
-                                })
                                 .catch(err => {
                                     console.log('Error saving filter')
                                     console.log(err)

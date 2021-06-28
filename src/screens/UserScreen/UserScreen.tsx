@@ -4,7 +4,6 @@ import {Theme} from "react-native-paper/lib/typescript/types"
 import {shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
 import AvatarComponent from "../../components/AvatarComponent"
-import UserUtils from "../../utils/UserUtils"
 import Info from "../../components/Info"
 import {withTheme} from "react-native-paper"
 import ButtonComponent from "../../components/ButtonComponent"
@@ -54,7 +53,7 @@ const UserScreen: React.FC<UserProperties> = ({navigation, theme}) => {
             {user &&
             <View style={styles.user}>
                 <AvatarComponent
-                    style={styles.avatar} uri={UserUtils.getImageUrl(user)}
+                    style={styles.avatar} name={user.avatar}
                 />
 
                 <ButtonComponent label={'go'} onPress={() => navigation.navigate('Error')}/>

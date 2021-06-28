@@ -4,7 +4,6 @@ import {Theme} from "react-native-paper/lib/typescript/types"
 import {Snackbar, Text, withTheme} from "react-native-paper"
 import HeaderComponent from "../../components/HeaderComponent"
 import AvatarComponent from "../../components/AvatarComponent/AvatarComponent"
-import UserUtils from "../../utils/UserUtils"
 import Info from "../../components/Info/Info"
 import UserService from "../../services/User"
 import ChannelComponent from "../../components/ChannelComponent/ChannelComponent"
@@ -183,7 +182,7 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
                 userVisited &&
                 <ScrollView style={styles.profileViewer}>
                     <AvatarComponent
-                        style={styles.avatar} uri={UserUtils.getImageUrl(userVisited)}
+                        style={styles.avatar} name={userVisited.avatar}
                     />
 
                     <View style={{alignItems: "center"}}>
@@ -206,6 +205,7 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
                           value={userVisited.platforms.map(platform => platform.name).join(', ') || null}
                           style={styles.info}/>
 
+                    <View style={{marginBottom: 16}}>
                     {
                         userVisited?.profiles?.filter(account => account.value).map(account => (
                             <ChannelComponent
@@ -216,6 +216,7 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
                             />
                         ))
                     }
+                    </View>
 
                 </ScrollView>
             }
