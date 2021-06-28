@@ -2,27 +2,27 @@ import React, {useEffect, useRef, useState} from 'react'
 import {Comment, User} from "../../types/PostsTypes"
 import {Dimensions, StyleSheet, View} from "react-native"
 import {Text, withTheme} from 'react-native-paper'
-import UserUtils from "../../utils/UserUtils"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import Time from "../../utils/Time"
 // @ts-ignore
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
-import RoundButtonComponent from "../RoundButtonComponent"
 // @ts-ignore
 import InView from "react-native-component-inview"
 import AvatarComponent from "../AvatarComponent"
 import {connect, shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
 import {ModalOption} from "../../screens/PostDetail/PostDetail"
-import {closeDialog, openDialog} from "../../store/dialog/actions"
 import {DialogOption} from "../../store/dialog/types"
 // @ts-ignore
 import Markdown from 'react-native-simple-markdown'
-import Image from 'react-native-scalable-image'
 import YoutubePlayer from "react-native-youtube-iframe"
 import CommentUtils from "../../utils/Comment"
-import RBSheet from "react-native-raw-bottom-sheet"
-import BottomSheetComponent from "../BottomSheetContentComponent"
+import Image from "react-native-scalable-image";
+import RoundButtonComponent from "../RoundButtonComponent";
+import ImageCarouselComponent from "../ImageCarouselComponent";
+import BottomSheetComponent from "../BottomSheetContentComponent";
+import {closeDialog, openDialog} from "../../store/dialog/actions";
+import RBSheet from "react-native-raw-bottom-sheet";
 
 interface CommentProperties {
     comment: Comment
@@ -54,6 +54,8 @@ const CommentComponent: React.FC<CommentProperties> = ({
     const imageSize = 40
     let replies: any[] = []
     const [resultReplies, setResultReplies] = useState<any>([])
+    const {height, width} = Dimensions.get('screen')
+
     const user: User = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
@@ -76,7 +78,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-            marginBottom: 8
+            marginBottom: 0
         },
         date: {
             marginLeft: "auto",
@@ -133,10 +135,11 @@ const CommentComponent: React.FC<CommentProperties> = ({
         }
     }
 
+    const showExtraOptions = (): boolean => (!!comment.text || comment.images.length > 0) && user.id >= 0
     useEffect(() => {
         const values: ModalOption[] = []
 
-        if (!!comment.text && user?.id !== comment.author.id && user.id >= 0) {
+        if (!!comment.text && user?.id !== comment.author?.id && user.id >= 0) {
             values.push({
                 id: 'reply',
                 action: () => reply(comment),
@@ -149,7 +152,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                 icon: 'alert',
                 title: 'Report'
             })
-        } else if (!!comment.text && user.id >= 0) {
+        } else if (showExtraOptions()) {
             values.push({
                 id: 'edit',
                 action: () => editComment(comment),
@@ -198,7 +201,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
 
     const buildReplies = (com: Comment) => {
         replies.push({
-            author: com.author.name + '  ❱  ' + Time.diff(com.lastUpdate),
+            author: !com.author ? 'user deleted' : com.author.name + '  ❱  ' + Time.diff(com.lastUpdate),
             text: com.text
         })
         if (com.reply) {
@@ -268,7 +271,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
     }
 
     const displayReplies = (com?: Comment) => {
-        if (com) {
+        if (com && com.author) {
             let result = buildReplies(com)
             if (result) {
                 let message = ''
@@ -293,7 +296,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                             image: getCustomImage(getImageSize(), 16)
                         }}
                     >
-                        {CommentUtils.processYoutubeUrl(message) || '💀 _Comment deleted_'}
+                        {getTextToShow(message)}
                     </Markdown>
                 )
             }
@@ -310,58 +313,88 @@ const CommentComponent: React.FC<CommentProperties> = ({
         return Dimensions.get('window').width
     }
 
-    // @ts-ignore
-    // @ts-ignore
+    const getTextToShow = (value: string) => {
+        if (comment.images.length > 0) {
+            return CommentUtils.processYoutubeUrl(value)
+        } else {
+            return CommentUtils.processYoutubeUrl(value) || '💀 _Comment deleted_'
+        }
+    }
+
     return (
         <View style={styles.comment} onLayout={(_) => checkVisible()}>
             <View style={styles.details}>
-                <View onTouchEnd={() => goToProfile(comment.author.email)}>
-                    <AvatarComponent
-                        borderWidth={0}
-                        size={imageSize}
-                        style={[styles.image, {marginLeft: 8}]}
-                        uri={UserUtils.getImageUrl(comment.author)}
-                    />
-                </View>
-                <Text
-                    style={{
-                        color: user.id >= 0 && user.id !== comment.author.id ? '#238cff' : '#959595'
-                    }}
-                    onPress={() => user.id >= 0 && goToProfile(comment.author.email)}>{comment.author.name}</Text>
-                <Text
-                    style={[styles.date, {color: '#959595', marginRight: !!comment.text && user.id >= 0 ? 0 : 6}]}>
-                    {Time.diff(comment.lastUpdate)}
-                </Text>
                 {
-                    !!comment.text && user.id >= 0 &&
-                    <RoundButtonComponent
-                        icon="dots-vertical"
-                        iconSize={20}
-                        containerSize={25}
-                        onPress={() => {
-                            // @ts-ignore
-                            refRBSheet?.current?.open()
-                        }}
-                    />
+                    !comment.author &&
+                    <Text style={{marginLeft: 8, color: '#747474'}}>💀 User deleted</Text>
+                }
+                {
+                    comment.author &&
+                    <>
+                        <View onTouchEnd={() => goToProfile(comment.author!.email)}>
+                            <AvatarComponent
+                                borderWidth={0}
+                                size={imageSize}
+                                style={[styles.image, {marginLeft: 8}]}
+                                name={comment.author.avatar}
+                            />
+                        </View>
+                        <Text
+                            style={{
+                                color: user.id >= 0 && user.id !== comment.author.id ? '#238cff' : '#959595'
+                            }}
+                            onPress={() => user.id >= 0 && goToProfile(comment.author!.email)}>{comment.author.name}</Text>
+                        <Text
+                            style={[styles.date, {color: '#959595', marginRight: showExtraOptions() ? 0 : 6}]}>
+                            {Time.diff(comment.lastUpdate)}
+                        </Text>
+                        {
+                            showExtraOptions() &&
+                            <RoundButtonComponent
+                                icon="dots-vertical"
+                                iconSize={20}
+                                containerSize={25}
+                                onPress={() => {
+                                    // @ts-ignore
+                                    refRBSheet?.current?.open()
+                                }}
+                            />
+                        }
+                    </>
                 }
             </View>
 
             {resultReplies}
 
-            <Markdown
-                styles={{
-                    text: {
-                        color: comment.text ? theme.colors.text : '#747474',
-                    },
-                    view: {
-                        marginBottom: 8,
-                        paddingLeft: 8,
-                    }
+            <ImageCarouselComponent
+                dataImages={comment.images}
+                height={height - 230}
+                width={width}
+                style={{
+                    position: 'relative',
+                    marginTop: 8,
+                    marginBottom: comment.text.length === 0 && comment.images.length > 0 ? 0 : 8
                 }}
-                rules={{image: getCustomImage(getImageSize())}}
-            >
-                {CommentUtils.processYoutubeUrl(comment.text) || '💀 _Comment deleted_'}
-            </Markdown>
+                bottomThumbList={10}
+            />
+
+            {
+                comment.author && (comment.text.length > 0 || comment.text.length === 0 && comment.images.length === 0) &&
+                <Markdown
+                    styles={{
+                        text: {
+                            color: comment.text ? theme.colors.text : '#747474',
+                        },
+                        view: {
+                            marginBottom: 8,
+                            paddingLeft: 8,
+                        }
+                    }}
+                    rules={{image: getCustomImage(getImageSize())}}
+                >
+                    {getTextToShow(comment.text)}
+                </Markdown>
+            }
 
             <RBSheet
                 // @ts-ignore

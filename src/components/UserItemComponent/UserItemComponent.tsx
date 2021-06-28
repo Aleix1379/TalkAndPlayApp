@@ -3,7 +3,6 @@ import {StyleSheet, View} from "react-native"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {Text, withTheme} from "react-native-paper"
 import AvatarComponent from "../AvatarComponent"
-import UserUtils from "../../utils/UserUtils"
 import FollowButtonComponent from "../FollowButtonComponent"
 import {User} from "../../types/PostsTypes"
 import FollowsYouComponent from "../FollowsYouComponent"
@@ -56,7 +55,7 @@ const UserItemComponent: React.FC<UserItemProperties> = ({
         <View style={styles.userItemContainer}>
             <View style={styles.userItemRow} onTouchEnd={() => onUserSelected(user)}>
                 <AvatarComponent
-                    uri={UserUtils.getImageUrl(user)}
+                    name={user.avatar}
                     borderWidth={1}
                     size={64}
                     style={styles.avatar}

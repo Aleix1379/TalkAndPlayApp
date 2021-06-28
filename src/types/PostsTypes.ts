@@ -1,8 +1,10 @@
+import {ImageResponse} from "./ImageRequest";
+
 export type User = {
     id: number
     name: string
     email: string
-    imageName: number
+    avatar: string
     languages: Option[]
     platforms: Option[]
     profiles: Account[]
@@ -34,7 +36,7 @@ export interface PostInfo {
 export interface UserPost {
     id: number
     name: string
-    imageName: number
+    imageName: string
 }
 
 export interface PostRow {
@@ -52,8 +54,9 @@ export interface Comment {
     id: number | null
     text: string
     lastUpdate?: any
-    author: User
+    author?: User
     reply?: Comment
+    images: ImageResponse[]
 }
 
 export interface SelectItem {

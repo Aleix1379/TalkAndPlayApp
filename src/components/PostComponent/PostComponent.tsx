@@ -1,7 +1,6 @@
 import React from 'react'
 import {StyleSheet, View} from "react-native"
 import {Text, withTheme} from 'react-native-paper'
-import UserUtils from "../../utils/UserUtils"
 import Time from "../../utils/Time"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {Channel, Option, PostInfo, User, UserPost} from "../../types/PostsTypes"
@@ -113,7 +112,7 @@ const PostComponent: React.FC<PostProperties> = ({
                     borderWidth={0}
                     size={40}
                     style={styles.avatar}
-                    uri={UserUtils.getImageUserByName(user.id, user.imageName)}
+                    name={user.imageName}
                 />
                 <View style={{
                     justifyContent: "center",
@@ -142,7 +141,8 @@ const PostComponent: React.FC<PostProperties> = ({
                             />
                         }
                     </View>
-                    <Text style={[styles.text, {fontSize: 10}]}>{lastAuthor + ' | ' + Time.diff(lastUpdate)}</Text>
+                    <Text
+                        style={[styles.text, {fontSize: 10}]}>{lastAuthor + (lastAuthor && ' | ') + Time.diff(lastUpdate)}</Text>
                 </View>
 
             </View>

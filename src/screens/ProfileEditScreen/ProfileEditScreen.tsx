@@ -6,7 +6,6 @@ import {connect, shallowEqual, useSelector} from "react-redux"
 import {withTheme} from "react-native-paper"
 import {ApplicationState} from "../../store"
 import AvatarComponent from "../../components/AvatarComponent/AvatarComponent"
-import UserUtils from "../../utils/UserUtils"
 import TextInputComponent from "../../components/TextInputComponent"
 import {availablePlatforms, Option, SelectItem, User} from "../../types/PostsTypes"
 import Validator from "../../utils/Validator/Validator"
@@ -17,8 +16,11 @@ import ButtonComponent from "../../components/ButtonComponent"
 import {setLoading} from "../../store/loading/actions"
 import UserService from "../../services/User"
 import {login} from "../../store/user/actions"
-import {launchImageLibrary} from 'react-native-image-picker'
-import {ImagePickerResponse} from "react-native-image-picker/src/types"
+import ImagePicker from 'react-native-image-crop-picker'
+// @ts-ignore
+import ImgToBase64 from 'react-native-image-base64'
+import AvatarService from "../../services/avatar";
+import {ImageSelected} from "../PictureUploadScreen/PictureUploadScreen";
 
 interface ProfileEditProperties {
     theme: Theme
@@ -38,7 +40,7 @@ const ProfileEditScreen: React.FC<ProfileEditProperties> = ({theme, navigation, 
     const [untouched, setUntouched] = useState(true)
     const userService = new UserService()
     const [errorImage, setErrorImage] = useState('')
-
+    const avatarService = new AvatarService()
     const styles = StyleSheet.create({
         profileEdit: {
             backgroundColor: theme.colors.background,
@@ -71,7 +73,7 @@ const ProfileEditScreen: React.FC<ProfileEditProperties> = ({theme, navigation, 
     })
 
     const [form, setForm] = useState<User>()
-    const [image, setImage] = useState<ImagePickerResponse>()
+    const [image, setImage] = useState<ImageSelected>()
 
     const userConnected: User = useSelector((state: ApplicationState) => {
         return state.user
@@ -172,20 +174,45 @@ const ProfileEditScreen: React.FC<ProfileEditProperties> = ({theme, navigation, 
         }
     }
 
+    // const getNamWithExtension = (name: string, path: string): string => `${name}.${path.split(".").pop()}`
+
+    const uploadPicture = async (value: any) => {
+        let base64 = await ImgToBase64.getBase64String(value.path)
+        let newImage: ImageSelected = {
+            name: userConnected.id + '_' + new Date().getTime() + '_' + 'avatar',
+            base64,
+            mime: value.mime
+        }
+        setImage(newImage)
+    }
+
     const updateUser = async () => {
         if (form && validator.validateForm(form)) {
             try {
                 setLoading(true)
-                await userService.updateProfile(form.id, form)
                 if (image) {
-                    const newVersion = await userService.fileUpload(image, `${userConnected.id}_${userConnected.imageName}.png`)
-                    setImage(undefined)
-                    login({...userConnected, imageName: newVersion})
-                    finish()
-                } else {
-                    login(form)
-                    finish()
+                    await avatarService.upload({
+                        name: image.name,
+                        base64: image.base64
+                    })
                 }
+                const userUpdated = await userService.updateProfile(form.id, {
+                    ...form,
+                    avatar: image?.name || form.avatar
+                })
+                // if (image) {
+                //     login(userUpdated)
+                //     setForm(userUpdated)
+                //     console.log('image to upload => ' + image.name)
+                //     // setImage(undefined)
+                //
+                //     // login({...userConnected, imageName: image.name})
+                //     finish()
+                // } else {
+                login(userUpdated)
+                setForm(userUpdated)
+                finish()
+                // }
             } catch (err) {
                 console.log('error updating user....')
                 console.error(err)
@@ -210,24 +237,29 @@ const ProfileEditScreen: React.FC<ProfileEditProperties> = ({theme, navigation, 
                     <View style={styles.profileEdit}>
                         <AvatarComponent
                             style={styles.avatar}
-                            uri={image?.uri || UserUtils.getImageUrl(form)}
+                            name={userConnected.avatar}
+                            image={image}
                             error={errorImage}
-                            onPress={() => launchImageLibrary(
-                                {
-                                    mediaType: "photo"
-                                },
-                                (result) => {
-                                    if (!result.didCancel) {
-                                        if (result.fileSize && result.fileSize >= 5242880) {
-                                            setErrorImage('Maximum upload file size: 5MB')
-                                        } else {
-                                            setErrorImage('')
-                                            setUntouched(false)
-                                            setImage(result)
-                                        }
+                            onPress={() => ImagePicker.openPicker({
+                                cropping: true,
+                            })
+                                .then(response => {
+                                    if (response.size >= 5242880) {
+                                        setErrorImage('Maximum upload file size: 5MB')
+                                    } else {
+                                        setErrorImage('')
+                                        setUntouched(false)
                                     }
-                                }
-                            )}
+
+                                    uploadPicture(response).catch(err => {
+                                        console.log('Error upload picture')
+                                        console.log(err)
+                                    })
+                                })
+                                .catch(err => {
+                                    console.log('Error image picker')
+                                    console.log(err)
+                                })}
                         />
 
                         <TextInputComponent

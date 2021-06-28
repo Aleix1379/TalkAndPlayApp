@@ -1,26 +1,14 @@
 import Api from "../Api"
-import {ImagePickerResponse} from "react-native-image-picker/src/types"
-import {Platform} from "react-native"
+import {ImageRequest, ImageResponse} from "../../types/ImageRequest";
 
 class PictureService extends Api {
     constructor() {
         super('/images')
     }
 
-    async fileUpload(image: ImagePickerResponse, name: string): Promise<number> {
-        const formData = new FormData()
-        formData.append('file', {
-            ...image,
-            name,
-            uri: Platform.OS === 'android' ? image.uri : image.uri?.replace('file://', '')
-        })
-        const config = {
-            headers: {
-                'content-type': 'multipart/form-data',
-            },
-        }
+    async fileUpload(items: ImageRequest[]): Promise<ImageResponse[]> {
         return this.http
-            .post(`${this.getUrl()}`, formData, config)
+            .post(`${this.getUrl()}`, items)
             .then((res) => res.data)
     }
 }

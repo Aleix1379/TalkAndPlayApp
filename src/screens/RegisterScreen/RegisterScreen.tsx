@@ -8,15 +8,18 @@ import {LoginResponse, Option, User} from "../../types/PostsTypes"
 import {EMAIL, ErrorType, MIN_LENGTH, PASSWORD_COMPLEXITY, PASSWORD_REPEAT, REQUIRED} from "../../utils/Validator/types"
 import Validator from "../../utils/Validator/Validator"
 import UserService from "../../services/User"
-import {launchImageLibrary} from "react-native-image-picker"
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent"
 import {connect} from "react-redux"
 import {login} from "../../store/user/actions"
 import {setLoading} from "../../store/loading/actions"
 import LocalStorage from "../../utils/LocalStorage/LocalStorage"
-import {ImagePickerResponse} from "react-native-image-picker/src/types"
 import {Conditions} from "../../types/Conditions"
 import ConditionComponent from "../../components/SelectComponent"
+import ImagePicker, {ImageOrVideo} from 'react-native-image-crop-picker'
+import AvatarService from "../../services/avatar"
+import {ImageRequest} from "../../types/ImageRequest"
+// @ts-ignore
+import ImgToBase64 from 'react-native-image-base64'
 
 interface RegisterProperties {
     theme: Theme
@@ -50,7 +53,9 @@ const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login,
             value: false
         }
     })
-    const [image, setImage] = useState<ImagePickerResponse>()
+    const [focused, setFocused] = useState(false)
+    const avatarService = new AvatarService()
+    const [image, setImage] = useState<ImageOrVideo>()
     const [timeoutId, setTimeoutId] = useState(-1)
     const [untouched, setUntouched] = useState(true)
     const [errorImage, setErrorImage] = useState('')
@@ -101,15 +106,14 @@ const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login,
         },
         button: {
             marginHorizontal: 12,
-            marginBottom: 8,
+            marginBottom: 16,
+            marginTop: 24,
         },
         noAccount: {
             display: "flex",
             flexDirection: "row",
             fontSize: 20,
-            marginHorizontal: 16,
-            marginBottom: 24,
-            marginTop: 16
+            marginHorizontal: 16
         },
         singUp: {
             marginLeft: 8,
@@ -215,14 +219,20 @@ const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login,
 
     const createAccount = () => {
         setLoading(true)
-        userService.add(user).then((response: LoginResponse) => {
+        userService.add(user).then(async (response: LoginResponse) => {
             LocalStorage.setUser(response.user).catch(error => console.log(error))
             LocalStorage.setAuthToken(response.token).catch(error => console.log(error))
             login(response.user)
             userService.setToken(response.token)
             if (image) {
-                userService
-                    .fileUpload(image, 'newUser')
+                let newImage: ImageRequest
+                let base64String = await ImgToBase64.getBase64String(image.path)
+                newImage = {
+                    name: `${response.user.id}_avatar`,
+                    base64: base64String
+                }
+                avatarService
+                    .upload(newImage)
                     .then(() => {
                         navigation.navigate('Profile')
                     })
@@ -231,6 +241,10 @@ const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login,
                 setLoading(false)
             }
         })
+            .catch(err => {
+                console.log('error create user')
+                console.log(err)
+            })
     }
 
     const toggleConditions = (id: string) => {
@@ -253,31 +267,27 @@ const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login,
             <View style={styles.register}>
                 <Image style={styles.image} source={require('../../assets/images/controller.png')}/>
 
-                <Text style={styles.title}>Talk & Play</Text>
+                {!focused && <Text style={styles.title}>Talk & Play</Text>}
 
 
                 <ScrollView style={styles.content}>
 
                     <AvatarComponent
                         style={styles.avatar}
-                        uri={image?.uri || ''}
+                        path={image?.path}
                         error={errorImage}
-                        onPress={() => launchImageLibrary(
-                            {
-                                mediaType: "photo"
-                            },
-                            (result) => {
-                                if (!result.didCancel) {
-                                    if (result.fileSize && result.fileSize >= 5242880) {
-                                        setErrorImage('Maximum upload file size: 5MB')
-                                    } else if (result.uri) {
-                                        setErrorImage('')
-                                        setUntouched(false)
-                                        setImage(result)
-                                    }
+                        onPress={() => ImagePicker.openPicker({cropping: true})
+                            .then((response: ImageOrVideo) => {
+                                if (response.size >= 5242880) {
+                                    setErrorImage('Maximum upload file size: 5MB')
+                                } else {
+                                    setImage(response)
                                 }
-                            }
-                        )}
+                            })
+                            .catch(err => {
+                                console.log('Error image picker')
+                                console.log(err)
+                            })}
                     />
 
                     <TextInputComponent
@@ -287,6 +297,8 @@ const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login,
                         onChange={update}
                         error={errors.name}
                         style={styles.info}
+                        onFocus={() => setFocused(true)}
+                        onBlur={() => setFocused(false)}
                     />
 
                     <TextInputComponent
@@ -296,6 +308,8 @@ const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login,
                         onChange={update}
                         error={errors.email}
                         style={styles.info}
+                        onFocus={() => setFocused(true)}
+                        onBlur={() => setFocused(false)}
                     />
 
                     <TextInputComponent
@@ -305,6 +319,8 @@ const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login,
                         onChange={update}
                         password={true}
                         error={errors.password}
+                        onFocus={() => setFocused(true)}
+                        onBlur={() => setFocused(false)}
                         style={styles.info}
                     />
 
@@ -315,50 +331,52 @@ const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login,
                         onChange={update}
                         password={true}
                         error={errors.repeatPassword}
+                        onFocus={() => setFocused(true)}
+                        onBlur={() => setFocused(false)}
                         style={styles.info}
                     />
 
+                    <ConditionComponent
+                        id='privacyPolicy'
+                        value={conditions.privacyPolicy.value}
+                        onChangeValue={() => toggleConditions('privacyPolicy')}
+                        text={conditions.privacyPolicy.text}
+                        show={(id) => showConditions(id)}
+                    />
+
+                    <ConditionComponent
+                        id={'termsOfUse'}
+                        value={conditions.termsOfUse.value}
+                        onChangeValue={() => toggleConditions('termsOfUse')}
+                        text={conditions.termsOfUse.text}
+                        show={(id) => showConditions(id)}
+                    />
+
+                    <ButtonComponent
+                        label="Create account"
+                        icon="account-plus"
+                        onPress={createAccount}
+                        style={styles.button}
+                        disabled={
+                            untouched ||
+                            !!errors.name.message ||
+                            !!errors.email.message ||
+                            !!errors.password.message ||
+                            !!errors.repeatPassword.message ||
+                            !conditions.privacyPolicy.value ||
+                            !conditions.termsOfUse.value
+                        }
+                    />
+
+                    <View style={styles.noAccount}>
+                        <Text>Already have an account?</Text>
+                        <Text
+                            style={styles.singUp}
+                            onPress={() => navigation.navigate('Login')}>Sign in 😎
+                        </Text>
+                    </View>
+
                 </ScrollView>
-
-                <ButtonComponent
-                    label="Create account"
-                    icon="account-plus"
-                    onPress={createAccount}
-                    style={styles.button}
-                    disabled={
-                        untouched ||
-                        !!errors.name.message ||
-                        !!errors.email.message ||
-                        !!errors.password.message ||
-                        !!errors.repeatPassword.message ||
-                        !conditions.privacyPolicy.value ||
-                        !conditions.termsOfUse.value
-                    }
-                />
-
-                <ConditionComponent
-                    id='privacyPolicy'
-                    value={conditions.privacyPolicy.value}
-                    onChangeValue={() => toggleConditions('privacyPolicy')}
-                    text={conditions.privacyPolicy.text}
-                    show={(id) => showConditions(id)}
-                />
-
-                <ConditionComponent
-                    id={'termsOfUse'}
-                    value={conditions.termsOfUse.value}
-                    onChangeValue={() => toggleConditions('termsOfUse')}
-                    text={conditions.termsOfUse.text}
-                    show={(id) => showConditions(id)}
-                />
-
-                <View style={styles.noAccount}>
-                    <Text>Already have an account?</Text>
-                    <Text
-                        style={styles.singUp}
-                        onPress={() => navigation.navigate('Login')}>Sign in  😎
-                    </Text>
-                </View>
 
             </View>
         </>

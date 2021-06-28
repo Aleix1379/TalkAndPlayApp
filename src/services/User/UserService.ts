@@ -1,8 +1,6 @@
 import Api from "../Api"
 import {LoginResponse, User} from "../../types/PostsTypes"
 import LocalStorage from "../../utils/LocalStorage/LocalStorage"
-import {Platform} from "react-native"
-import {ImagePickerResponse} from "react-native-image-picker/src/types"
 import {RecoveryPasswordResponse} from "../../types/EmailTypes"
 import {VerificationResponse} from "../../types/VerificationTypes"
 import {FollowCounter} from "../../types/FollowCounter"
@@ -44,23 +42,23 @@ class UserService extends Api {
         return this.http.put(`${this.getUrl()}/${id}`, data).then((res) => res.data)
     }
 
-    async fileUpload(image: ImagePickerResponse, name: string): Promise<number> {
-        const user: User | null = await LocalStorage.getUser()
-        const formData = new FormData()
-        formData.append('file', {
-            ...image,
-            name,
-            uri: Platform.OS === 'android' ? image.uri : image.uri?.replace('file://', '')
-        })
-        const config = {
-            headers: {
-                'content-type': 'multipart/form-data',
-            },
-        }
-        return this.http
-            .post(`${this.getUrl()}/${user?.id}/avatar`, formData, config)
-            .then((res) => res.data)
-    }
+    /*    async fileUpload(image: any, name: string): Promise<number> {
+            const user: User | null = await LocalStorage.getUser()
+            const formData = new FormData()
+            formData.append('file', {
+                ...image,
+                name,
+                uri: Platform.OS === 'android' ? image.uri : image.uri?.replace('file://', '')
+            })
+            const config = {
+                headers: {
+                    'content-type': 'multipart/form-data',
+                },
+            }
+            return this.http
+                .post(`${this.getUrl()}/${user?.id}/avatar`, formData, config)
+                .then((res) => res.data)
+        }*/
 
     checkIfUserExists(field: string, value: string): Promise<boolean> {
         return new Promise<boolean>((resolve) => {

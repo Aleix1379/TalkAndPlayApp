@@ -469,7 +469,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                 key={element.item.post.id}
                 post={element.item.post}
                 user={element.item.user}
-                lastAuthor={element.item.lastAuthor}
+                lastAuthor={element.item.lastAuthor || ''}
                 unreadMessages={(this.state.commentsUnSeen && this.state.commentsUnSeen[element.item.post.id] >= 0) ? this.state.commentsUnSeen[element.item.post.id] : this.state.totalMessages[element.item.post.id]}
                 totalMessages={this.state.totalMessages[element.item.post.id]}
                 onClick={this.goToDetail}

@@ -22,6 +22,7 @@ import {connect, shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
 import {setLoading} from "../../store/loading/actions"
 import PostUtils from "../../utils/PostUtils"
+import languages from '../../store/languages.json'
 
 interface PostEditProperties {
     theme: Theme
@@ -136,6 +137,15 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
         }
     }
 
+    const getLanguages = () => {
+        if (user.languages.length > 0) {
+            return user.languages.map(lang => ({
+                ...lang,
+                image: 'language'
+            }))
+        }
+        return languages
+    }
     return (
         <>
             <HeaderComponent
@@ -171,10 +181,7 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
                     <CheckBoxListComponent
                         id="languages"
                         label="Language"
-                        values={user.languages.map(lang => ({
-                            ...lang,
-                            image: 'language'
-                        }))}
+                        values={getLanguages()}
                         initialValues={[post.language]}
                         singleMode={true}
                         error={errors.language}

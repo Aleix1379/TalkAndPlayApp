@@ -62,7 +62,7 @@ const ButtonPageComponent: React.FC<ButtonPageProperties> = ({
         }
     }
 
-    const getNumberStyles = ():StyleProp<TextStyle> => {
+    const getNumberStyles = (): StyleProp<TextStyle> => {
         return {
             fontFamily: 'Ranchers-Regular',
             fontSize: 18,
@@ -89,18 +89,24 @@ const ButtonPageComponent: React.FC<ButtonPageProperties> = ({
 
     return (
         <View style={getButtonStyles()} onTouchEnd={() => onClick(label)}>
-            {isCurrentPage && <Animated.View style={[
-                styles.fadingContainer,
-                {
-                    opacity: opacity
-                }
-            ]}>
-                <Text style={getNumberStyles()}>{label}</Text>
-            </Animated.View>}
+            {
+                isCurrentPage &&
+                <Animated.View style={[
+                    styles.fadingContainer,
+                    {
+                        opacity: opacity
+                    }
+                ]}>
+                    <Text style={getNumberStyles()}>{label}</Text>
+                </Animated.View>
+            }
 
-            {!isCurrentPage && <View style={getAfterStyle()}>
-                <Text style={getNumberStyles()}>{label}</Text>
-            </View>}
+            {
+                !isCurrentPage &&
+                <View style={getAfterStyle()}>
+                    <Text style={getNumberStyles()}>{label}</Text>
+                </View>
+            }
         </View>
     )
 }

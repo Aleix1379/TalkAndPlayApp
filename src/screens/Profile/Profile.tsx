@@ -1,11 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {
-    Dimensions,
-    GestureResponderEvent,
-    StyleSheet,
-    useWindowDimensions,
-    View
-} from 'react-native'
+import {Dimensions, GestureResponderEvent, StyleSheet, useWindowDimensions, View} from 'react-native'
 import {login} from "../../store/user/actions"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {ModalOption} from "../PostDetail/PostDetail"
@@ -15,7 +9,6 @@ import {Snackbar, Text, withTheme} from "react-native-paper"
 import HeaderComponent from "../../components/HeaderComponent"
 import {ApplicationState} from "../../store"
 import AvatarComponent from "../../components/AvatarComponent/AvatarComponent"
-import UserUtils from "../../utils/UserUtils"
 import Info from "../../components/Info/Info"
 import FollowersCounterComponent from "../../components/FollowersCounterComponent"
 import ChannelComponent from "../../components/ChannelComponent"
@@ -179,22 +172,27 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
 
     const UserScreen = () => (
         <>
-            {user &&
-            <View style={styles.user}>
-                <AvatarComponent
-                    style={styles.avatar} uri={UserUtils.getImageUrl(user)}
-                />
+            {
+                user &&
+                <View style={styles.user}>
 
-                <FollowersCounterComponent followCounter={followCounter} onPress={goToFollowingFollowersList}/>
+                    <AvatarComponent
+                        style={styles.avatar} name={user.avatar}
+                    />
 
-                <Info label="Email" value={user.email} style={styles.info}/>
-                <Info label="Languages"
-                      value={user.languages.map(language => language.name).join(', ')}
-                      style={styles.info}/>
-                <Info label="Platforms"
-                      value={user.platforms.map(platform => platform.name).join(', ')}
-                      style={styles.info}/>
-            </View>}
+                    <FollowersCounterComponent followCounter={followCounter} onPress={goToFollowingFollowersList}/>
+
+                    <Info label="Email" value={user.email} style={styles.info}/>
+                    <Info label="Languages"
+                          value={user.languages.map(language => language.name).join(', ') || null}
+                          style={styles.info}
+                    />
+                    <Info label="Platforms"
+                          value={user.platforms.map(platform => platform.name).join(', ') || null}
+                          style={styles.info}
+                    />
+                </View>
+            }
         </>
     )
     const AccountsRoute = () => {

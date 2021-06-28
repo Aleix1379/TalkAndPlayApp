@@ -23,8 +23,8 @@ const PageGoButtonComponent: React.FC<PageGoButtonProperties> = ({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            height: 28,
-            width: 28,
+            height: 30,
+            width: 30,
             shadowColor: theme.colors.primary,
             shadowOffset: {
                 width: 0,

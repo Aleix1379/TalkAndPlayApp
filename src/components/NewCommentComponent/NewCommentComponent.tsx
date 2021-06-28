@@ -2,23 +2,12 @@ import React, {useEffect, useState} from 'react'
 import {Animated, Easing, StyleSheet, TextInput, View} from "react-native"
 import TextInputComponent from "../TextInputComponent"
 import {Theme} from "react-native-paper/lib/typescript/types"
-import AvatarComponent from "../AvatarComponent"
-import {connect, shallowEqual, useSelector} from "react-redux"
-import {ApplicationState} from "../../store"
-import UserUtils from "../../utils/UserUtils"
+import {connect} from "react-redux"
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
-import Validator from "../../utils/Validator/Validator"
-import {ErrorType} from "../../utils/Validator/types"
 import {withTheme} from "react-native-paper"
-import {ImagePickerResponse} from "react-native-image-picker"
 import {closeDialog, openDialog} from "../../store/dialog/actions"
 import {DialogOption} from "../../store/dialog/types"
 import ImagePicker from 'react-native-image-crop-picker'
-import {User} from "../../types/PostsTypes"
-
-interface Errors {
-    message: ErrorType
-}
 
 interface NewCommentProperties {
     theme: Theme
@@ -31,7 +20,7 @@ interface NewCommentProperties {
     label?: string
     openDialog: (title: string, content: string[], actions: DialogOption[]) => void
     closeDialog: () => void
-    uploadPicture?: (image: ImagePickerResponse) => void
+    uploadPicture?: (image: any[]) => void
 }
 
 const NewCommentComponent: React.FC<NewCommentProperties> = ({
@@ -83,26 +72,6 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
         outputRange: [theme.colors.text, theme.colors.accent]
     })
 
-    const [errors, setFormErrors] = useState<Errors>({
-        message: {
-            message: '',
-            touched: false,
-            label: 'Message',
-            validations: [
-                {
-                    key: 'MAX_LENGTH',
-                    value: 5000
-                }
-            ]
-        }
-    })
-
-    const validator = new Validator(errors, setFormErrors)
-
-    const user: User = useSelector((state: ApplicationState) => {
-        return state.user
-    }, shallowEqual)
-
     const styles = StyleSheet.create({
         newComment: {
             display: "flex",
@@ -110,7 +79,7 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
             alignItems: "center",
             backgroundColor: theme.colors.background,
             paddingVertical: 6,
-            paddingHorizontal: 12,
+            paddingHorizontal: 6,
             borderTopColor: theme.colors.primary,
             borderTopWidth: 1,
             shadowColor: theme.colors.primary,
@@ -128,9 +97,7 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
             borderRadius: 0,
             marginLeft: 6
         },
-        imageIcon: {
-            marginLeft: 2,
-        },
+        imageIcon: {},
         button: {
             marginLeft: 12,
             right: 5,
@@ -187,6 +154,7 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
                     images = [response]
                 }
                 console.log(images)
+                uploadPicture && uploadPicture(images)
             })
             .catch(err => {
                 console.log('Error image picker')
@@ -225,26 +193,12 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
     return (
         <View style={styles.newComment}>
 
-            <AvatarComponent
+            {/*<AvatarComponent
                 borderWidth={0}
                 style={{marginLeft: -6}}
                 size={40}
-                uri={UserUtils.getImageUrl(user)}/>
-            <TextInputComponent
-                id="new-comment"
-                setRef={ref => {
-                    setRef && setRef(ref)
-                }}
-                value={message}
-                onChange={update}
-                onBlur={onMessageBlur}
-                multiLine={true}
-                maxLength={5000}
-                style={styles.textInput}
-                error={errors.message}
-                placeholder={label}
-                onImageChange={onImageChange}
-            />
+                uri={UserUtils.getImageUrl(user)}
+            />*/}
 
             {
                 uploadPicture &&
@@ -256,6 +210,21 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
                     />
                 </View>
             }
+
+            <TextInputComponent
+                id="new-comment"
+                setRef={ref => {
+                    setRef && setRef(ref)
+                }}
+                value={message}
+                onChange={update}
+                onBlur={onMessageBlur}
+                multiLine={true}
+                maxLength={5000}
+                style={styles.textInput}
+                placeholder={label}
+                onImageChange={onImageChange}
+            />
 
             <View onTouchEnd={() => sendComment()}>
                 <Animated.View style={[styles.button, animatedStyles.rotation]}>

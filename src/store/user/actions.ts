@@ -34,7 +34,10 @@ export const logout = () => {
             id: -1,
             name: '',
             email: '',
-            imageName: 0,
+            avatar: {
+                id: -1,
+                name: ''
+            },
             languages: [],
             platforms: [],
             seenMessages: {},

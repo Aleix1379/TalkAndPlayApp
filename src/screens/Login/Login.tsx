@@ -160,6 +160,7 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading, navig
         setLoading(true)
         userService.login(form.email, form.password)
             .then(loginResponse => {
+                console.log('Response login => ' + JSON.stringify(loginResponse, null, 2))
                 login(loginResponse.user, loginResponse.token)
             })
             .catch(() => {

@@ -16,7 +16,6 @@ import {setLoading} from "../../store/loading/actions"
 import ReplyToComponent from "../../components/ReplyToComponent"
 import {closeDialog, openDialog} from "../../store/dialog/actions"
 import {DialogOption} from "../../store/dialog/types"
-import {ImagePickerResponse} from "react-native-image-picker"
 import {BannerAd, BannerAdSize, TestIds} from "@react-native-firebase/admob"
 import RBSheet from "react-native-raw-bottom-sheet"
 import BottomSheetComponent from "../../components/BottomSheetContentComponent/BottomSheetComponent"
@@ -25,6 +24,7 @@ import SeenMessageUtils from "../../utils/SeenMessage"
 import EditModeComponent from "../../components/EditModeComponent"
 import PageGoButtonComponent from "../../components/PageGoButtonComponent"
 import PageInputModalComponent from "../../components/PageInputComponent/PageInputModalComponent"
+import {ImageResponse} from "../../types/ImageRequest";
 
 interface PostDetailProperties {
     navigation: any
@@ -113,7 +113,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         },
         goToFirstUnSeen: {
             marginLeft: 8,
-            marginTop: 4,
+            marginTop: 0,
             marginHorizontal: 10,
         },
         bottomPagination: {
@@ -262,8 +262,8 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                             label: "Delete",
                             backgroundColor: theme.colors.error,
                             onPress: () => {
-                                closeDialog()
                                 deletePost()
+                                closeDialog()
                             }
                         }
                     ])
@@ -356,12 +356,15 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         }
     }
 
-    const sendComment = (message: string) => {
+    const sendComment = (message: string, images: ImageResponse[] = []) => {
         const comment: Comment = {
             id: commentId,
             text: message,
-            author: user
+            author: user,
+            images
         }
+        console.log('SEND COMMENT ')
+        console.log(JSON.stringify(comment, null, 2))
         if (commentToReply) {
             comment.reply = commentToReply
         }
@@ -444,6 +447,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
             let index = values.findIndex(c => c.id === commentId)
             if (index >= 0) {
                 values[index].text = ''
+                values[index].images = []
                 setComments(values)
             }
         }
@@ -473,12 +477,14 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         }
     }
 
-    const onSendPicture = (value: string): void => {
-        sendComment(value)
+    const onSendPicture = (value: string, images: ImageResponse[] = []): void => {
+        sendComment(value, images)
     }
 
-    const uploadPicture = (image: ImagePickerResponse): void => {
-        navigation.navigate('PictureUpload', {image, title, id, onSendPicture})
+    const uploadPicture = (images: any[]): void => {
+        console.log('uploadPicture')
+        console.log(JSON.stringify(images, null, 2))
+        navigation.navigate('PictureUpload', {images, title, id, onSendPicture})
     }
 
     const editComment = (comment: Comment): void => {
@@ -569,7 +575,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                             <View style={styles.pagination}>
 
                                 <PageGoButtonComponent
-                                    style={styles.goToFirstUnSeen}
+                                    style={[styles.goToFirstUnSeen, {marginTop: 3}]}
                                     icon='book-open-page-variant'
                                     onPress={() => setShowInputPage(true)}
                                 />
@@ -617,7 +623,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                     editComment={(comment) => editComment(comment)}
                                     onReport={(id) => reportComment(id)}
                                     goToProfile={(email) => {
-                                        if (user.id >= 0 && user.id !== comment.author.id) {
+                                        if (user.id >= 0 && user.id !== comment.author?.id) {
                                             navigation.navigate('ProfileViewer', {
                                                 email,
                                                 origin: {

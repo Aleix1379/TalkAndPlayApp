@@ -8,10 +8,11 @@ class UserUtils {
             return ''
         }
 
-        if (user.imageName >= 0) {
-            return `${REACT_APP_IMAGES_URL}/${user.id}_${user.imageName}.png`
+        if (user.avatar.length > 0) {
+            return `${REACT_APP_IMAGES_URL}/${user.avatar}`
         }
-        return `${user.imageName}`
+        return ''
+        // return `${user.imageName}`
     }
 
     public static getImageUserByName(id: number, imageName: number): string {

@@ -3,25 +3,31 @@ import {Image, ImageStyle, StyleProp, StyleSheet, View} from "react-native"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {Text, withTheme} from "react-native-paper"
 import ErrorHelperComponent from "../ErrorHelperComponent"
+import {REACT_APP_IMAGES_URL} from "@env";
+import {ImageSelected} from "../../screens/PictureUploadScreen/PictureUploadScreen";
 
 interface AvatarProperties {
     theme: Theme
     style?: StyleProp<ImageStyle>
-    uri: string
     onPress?: () => void
     size?: number
     borderWidth?: number
     error?: string
+    path?: string
+    name?: string
+    image?: ImageSelected
 }
 
 const AvatarComponent: React.FC<AvatarProperties> = ({
                                                          theme,
-                                                         uri,
                                                          style,
                                                          onPress,
                                                          size = 120,
                                                          borderWidth = 4,
-                                                         error = ''
+                                                         error = '',
+                                                         path,
+                                                         name,
+                                                         image
                                                      }) => {
     const styles = StyleSheet.create({
         container: {
@@ -56,15 +62,37 @@ const AvatarComponent: React.FC<AvatarProperties> = ({
 
     return (
         <View style={[styles.container, style]} onTouchEnd={() => onPress && onPress()}>
-            {uri !== '-1' && uri.length > 0 && <Image
-                style={styles.image}
-                source={{uri}}
-            />}
+            {
+                image &&
+                <Image
+                    style={styles.image}
+                    source={{uri: 'data:' + image.mime + ';base64,' + image.base64}}
+                />
+            }
 
-            {(!uri || uri === '-1') && <Image
-                style={styles.image}
-                source={require('../../assets/images/spinner.png')}
-            />}
+            {
+                path && !image &&
+                <Image
+                    style={styles.image}
+                    source={{uri: path}}
+                />
+            }
+
+            {
+                name && !image &&
+                <Image
+                    style={styles.image}
+                    source={{uri: REACT_APP_IMAGES_URL + name}}
+                />
+            }
+
+            {
+                !path && !name && !image &&
+                <Image
+                    style={styles.image}
+                    source={require('../../assets/images/spinner.png')}
+                />
+            }
 
             {!error && onPress && <Text style={styles.label}>Choose an image</Text>}
             <ErrorHelperComponent style={{marginTop: 16,}} visible={!!error} message={error}/>
