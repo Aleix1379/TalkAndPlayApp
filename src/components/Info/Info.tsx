@@ -36,6 +36,10 @@ const Info: React.FC<InfoProperties> = ({
             shadowRadius: 3.84,
             elevation: 5,
         },
+        label:{
+            flex: 1,
+            textAlign: 'left'
+        },
         text: {
             textAlign: valueAlign,
             flex: 1,
@@ -45,7 +49,7 @@ const Info: React.FC<InfoProperties> = ({
 
     return (
         <View style={[styles.info, style]}>
-            {label && label.length > 0 && <Text style={{flex: 1}}>{label}</Text>}
+            {label && label.length > 0 && <Text style={styles.label}>{label}</Text>}
             {value && value.length > 0 && <Text style={styles.text}>{value}</Text>}
         </View>
     )

@@ -23,7 +23,7 @@ const BottomSheetContentComponent: React.FC<BottomSheetProperties> = ({theme, op
         },
         optionText: {
             fontSize: 18,
-            marginLeft: 16,
+            marginLeft: 24,
             flex: 1,
         }
     })

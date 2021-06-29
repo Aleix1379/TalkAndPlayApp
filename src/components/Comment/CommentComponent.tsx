@@ -339,11 +339,9 @@ const CommentComponent: React.FC<CommentProperties> = ({
                                 name={comment.author.avatar}
                             />
                         </View>
-                        <Text
-                            style={{
-                                color: user.id >= 0 && user.id !== comment.author.id ? '#238cff' : '#959595'
-                            }}
-                            onPress={() => user.id >= 0 && goToProfile(comment.author!.email)}>{comment.author.name}</Text>
+                        <Text onPress={() => user.id >= 0 && goToProfile(comment.author!.email)}>
+                            {comment.author.name}
+                        </Text>
                         <Text
                             style={[styles.date, {color: '#959595', marginRight: showExtraOptions() ? 0 : 6}]}>
                             {Time.diff(comment.lastUpdate)}

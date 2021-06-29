@@ -645,6 +645,9 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     }
 
     updateIndex = (index: number) => {
+        if (index !== this.state.lastIndex) {
+            this.setState({showModal: false})
+        }
         LocalStorage.setPostTabIndex(index).catch(err => {
             console.log('Error set post tab index')
             console.log(err)
