@@ -1,36 +1,39 @@
 import React from 'react'
-import {StyleSheet, View} from "react-native"
-import {withTheme} from 'react-native-paper'
-import {Theme} from "react-native-paper/lib/typescript/types"
+import {StyleProp, StyleSheet, TextStyle, View} from "react-native"
 import InputCodeComponent from "../InputCodeComponent"
 
 interface ValidationCodeProperties {
-    theme: Theme,
     length: number,
     values: string[]
+    style?: StyleProp<TextStyle>
 }
 
-const ValidationCodeComponent: React.FC<ValidationCodeProperties> = ({theme, length, values}) => {
+const ValidationCodeComponent: React.FC<ValidationCodeProperties> = ({
+                                                                         length,
+                                                                         values,
+                                                                         style = {}
+                                                                     }) => {
     const items = Array.from(Array(length).keys())
 
     const styles = StyleSheet.create({
         validationCode: {
             display: "flex",
             flexDirection: "row",
-            justifyContent: "space-around",
-            marginBottom: 24
+            justifyContent: "space-around"
         }
     })
 
     return (
-        <View style={styles.validationCode}>
+        <View style={[styles.validationCode, style]}>
 
-            {items.map((val) => (
-                <InputCodeComponent key={val} value={values[val]}/>
-            ))}
+            {
+                items.map((val) => (
+                    <InputCodeComponent key={val} value={values[val]}/>
+                ))
+            }
 
         </View>
     )
 }
 
-export default withTheme(ValidationCodeComponent)
+export default ValidationCodeComponent

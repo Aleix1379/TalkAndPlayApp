@@ -221,7 +221,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
 
     unsubscribe = this.props.navigation.addListener('didFocus', async (response: any) => {
         if (response.action.params?.lastIndex) {
-            this.updateIndex(response.action.params?.lastIndex)
+            // this.updateIndex(response.action.params?.lastIndex)
         }
 
         const indexSaved = await LocalStorage.getPostTabIndex()
@@ -231,7 +231,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
         }
 
         if (this.mounted) {
-            this.loadData()
+            // this.loadData()
         } else {
             typeof this.unsubscribe === "function" && this.unsubscribe()
         }
@@ -266,12 +266,14 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
 
     onRefresh = () => {
         this.setState({refreshing: true})
+        console.log('on refresh load data')
         this.loadData()
 
         // setTimeout(() => this.setState({refreshing: false}), 2000)
     }
 
     loadData = () => {
+        console.log('load data...')
         LocalStorage.getMessagesSeen()
             .then(data => {
                 let result: { [id: number]: number } = SeenMessageUtils.mergeSeenMessages(data, this.props.user.seenMessages)
@@ -336,6 +338,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     }
 
     fetchData = (page: number = 0, filter?: Filter) => {
+        console.log('set loading true => fetchData')
         this.props.setLoading(true)
         this.postService.get(page, this.state.postType, filter)
             .then((response: PostsResponse) => {
@@ -365,7 +368,8 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     }
 
     search = (filter: Filter) => {
-        setLoading(true)
+        console.log('set loading true => search')
+        this.props.setLoading(true)
         this.postService.get(0, this.state.postType, {
             ...filter,
             channels: this.state.postType === PostType.STREAMERS ? filter.channels : []
@@ -387,6 +391,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
 
     loadMore = () => {
         if (!this.state.headerVisible && !this.state.isLast) {
+            console.log('set loading true => loadMore')
             this.props.setLoading(true)
             if (this.state.data) {
                 this.postService.get(this.state.data.number + 1, this.state.postType, this.state.form)
