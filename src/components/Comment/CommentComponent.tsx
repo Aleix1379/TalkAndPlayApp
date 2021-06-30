@@ -113,9 +113,8 @@ const CommentComponent: React.FC<CommentProperties> = ({
 
     const markDownStyles = {
         view: {
-            // marginTop: 10,
+            marginTop: 8,
             marginLeft: 6,
-            marginBottom: 8,
             backgroundColor: theme.colors.background,
             paddingHorizontal: 4,
             paddingVertical: 4,
@@ -245,7 +244,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                                 height={0.56 * width}
                                 width={width - diff}
                                 videoId={CommentUtils.getIdByUrl(node.target)}
-                                webViewStyle={{opacity: 0.99}}
+                                webViewStyle={{opacity: 0.99, marginVertical: node.target === comment.text ? 0 :  8}}
                             />
                         </View>
                     )
@@ -303,13 +302,13 @@ const CommentComponent: React.FC<CommentProperties> = ({
         }
     }
 
-    const isEmoji = (): boolean => {
-        return comment.text.startsWith("![gif](https://media.googleusercontent.com") || comment.text.startsWith("![gif](https://www.gstatic.com")
-    }
+    // const isEmoji = (value: string): boolean => {
+    //     return false // value.startsWith("![gif](https://media.googleusercontent.com") || comment.text.startsWith("![gif](https://www.gstatic.com")
+    // }
     const getImageSize = () => {
-        if (isEmoji()) {
-            return 100
-        }
+        // if (isEmoji(value || comment.text)) {
+        //     return 100
+        // }
         return Dimensions.get('window').width
     }
 
@@ -411,8 +410,8 @@ const CommentComponent: React.FC<CommentProperties> = ({
                     },
                     container: {
                         backgroundColor: theme.colors.surface,
-                        borderTopLeftRadius: 16,
-                        borderTopRightRadius: 16,
+                        borderTopLeftRadius: 26,
+                        borderTopRightRadius: 26,
                         paddingLeft: 12
                     }
                 }}

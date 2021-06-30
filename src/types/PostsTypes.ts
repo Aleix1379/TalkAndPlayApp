@@ -121,6 +121,7 @@ export const availableChannels: Channel[] = [
 export interface LoginResponse {
     token: string
     user: User
+    message: string
 }
 
 export interface Sort {

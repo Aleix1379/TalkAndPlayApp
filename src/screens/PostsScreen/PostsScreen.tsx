@@ -367,31 +367,27 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
         })
     }
 
-    search = (filter: Filter) => {
-        console.log('set loading true => search')
+    search = async (filter: Filter) => {
         this.props.setLoading(true)
-        this.postService.get(0, this.state.postType, {
-            ...filter,
-            channels: this.state.postType === PostType.STREAMERS ? filter.channels : []
-        })
-            .then(data => {
-                this.setState({
-                    data: data,
-                    isLast: data.last
-                })
+        try {
+            const response = await this.postService.get(0, this.state.postType, {
+                ...filter,
+                channels: this.state.postType === PostType.STREAMERS ? filter.channels : []
             })
-            .catch(err => {
-                console.log('Error searching')
-                console.log(err)
+            this.setState({
+                data: response,
+                isLast: response.last
             })
-            .finally(() => {
-                setLoading(false)
-            })
+        } catch (err) {
+            console.log('Error searching')
+            console.log(err)
+        } finally {
+            this.props.setLoading(false)
+        }
     }
 
     loadMore = () => {
         if (!this.state.headerVisible && !this.state.isLast) {
-            console.log('set loading true => loadMore')
             this.props.setLoading(true)
             if (this.state.data) {
                 this.postService.get(this.state.data.number + 1, this.state.postType, this.state.form)
@@ -658,7 +654,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
             postType: this.getPostType(index),
             lastIndex: index
         })
-        this.loadData()
+         this.loadData()
     }
 
     render() {

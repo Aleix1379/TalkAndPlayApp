@@ -160,12 +160,11 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading, navig
         setLoading(true)
         userService.login(form.email, form.password)
             .then(loginResponse => {
-                console.log('Response login => ' + JSON.stringify(loginResponse, null, 2))
                 login(loginResponse.user, loginResponse.token)
             })
-            .catch(() => {
+            .catch((errorResponse) => {
                 const err = errors['email']
-                err.message = 'Your username and/or password do not match'
+                err.message = errorResponse.message
                 setErrors({...errors, ['email']: err})
             })
             .finally(() => setLoading(false))

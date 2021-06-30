@@ -77,7 +77,7 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-            backgroundColor: theme.colors.background,
+            backgroundColor: theme.colors.primary,
             paddingVertical: 6,
             paddingHorizontal: 6,
             borderTopColor: theme.colors.primary,
@@ -95,7 +95,8 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
             flex: 1,
             backgroundColor: theme.colors.primary,
             borderRadius: 0,
-            marginLeft: 6
+            marginLeft: 6,
+            borderColor: theme.colors.primary
         },
         imageIcon: {},
         button: {
@@ -159,46 +160,10 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
                 console.log('Error image picker')
                 console.log(err)
             })
-        /*
-        launchImageLibrary(
-            {
-                mediaType: "photo",
-                // @ts-ignore
-                allowsMultiple: true
-
-            },
-            (result) => {
-                if (!result.didCancel) {
-                    if (result.fileSize && result.fileSize >= 26214400) {
-                        openDialog(
-                            "Error",
-                            ["'Maximum upload file size: 25MB'"],
-                            [
-                                {
-                                    label: "Close",
-                                    onPress: () => closeDialog()
-                                }
-                            ])
-                    } else {
-//                        setImage(result)
-                        uploadPicture && uploadPicture(result)
-                    }
-                }
-            }
-        )
-        */
     }
 
     return (
         <View style={styles.newComment}>
-
-            {/*<AvatarComponent
-                borderWidth={0}
-                style={{marginLeft: -6}}
-                size={40}
-                uri={UserUtils.getImageUrl(user)}
-            />*/}
-
             {
                 uploadPicture &&
                 <View style={styles.imageIcon} onTouchEnd={() => choosePicture()}>
@@ -223,6 +188,7 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
                 style={styles.textInput}
                 placeholder={label}
                 onImageChange={onImageChange}
+                borderColor={theme.colors.primary}
             />
 
             <View onTouchEnd={() => sendComment()}>
