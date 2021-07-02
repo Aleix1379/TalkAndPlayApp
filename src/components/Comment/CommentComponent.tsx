@@ -18,11 +18,12 @@ import Markdown from 'react-native-simple-markdown'
 import YoutubePlayer from "react-native-youtube-iframe"
 import CommentUtils from "../../utils/Comment"
 import Image from "react-native-scalable-image";
-import RoundButtonComponent from "../RoundButtonComponent";
-import ImageCarouselComponent from "../ImageCarouselComponent";
-import BottomSheetComponent from "../BottomSheetContentComponent";
-import {closeDialog, openDialog} from "../../store/dialog/actions";
-import RBSheet from "react-native-raw-bottom-sheet";
+import RoundButtonComponent from "../RoundButtonComponent"
+import ImageCarouselComponent from "../ImageCarouselComponent"
+import BottomSheetComponent from "../BottomSheetContentComponent"
+import {closeDialog, openDialog} from "../../store/dialog/actions"
+import RBSheet from "react-native-raw-bottom-sheet"
+import {REACT_APP_IMAGES_URL} from "@env";
 
 interface CommentProperties {
     comment: Comment
@@ -201,6 +202,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
     const buildReplies = (com: Comment) => {
         replies.push({
             author: !com.author ? 'user deleted' : com.author.name + '  ❱  ' + Time.diff(com.lastUpdate),
+            avatar: com.author?.avatar,
             text: com.text
         })
         if (com.reply) {
@@ -213,7 +215,17 @@ const CommentComponent: React.FC<CommentProperties> = ({
     const buildLine = (content: any, index: number): any => {
         const value = content.map((it: any, i: number) => {
             if (it.type === 'text') {
-                return <Text key={index + ' ' + i}>{it.content}</Text>
+                return <Text key={index + ' ' + i} style={{alignSelf: 'center'}}>{it.content}</Text>
+            } else if (it.type === 'image') {
+                return <AvatarComponent
+                    key={i}
+                    path={it.target}
+                    borderWidth={0}
+                    size={32}
+                    style={{marginLeft: 2, marginVertical: 3, marginRight: 6}}
+                />
+            } else if (it.type === 'paragraph') {
+                return buildLine(it.content, 0)
             }
             return <Text key={index + ' ' + i}>{it.content.map((ct: any) => ct.content)}</Text>
         })
@@ -244,7 +256,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                                 height={0.56 * width}
                                 width={width - diff}
                                 videoId={CommentUtils.getIdByUrl(node.target)}
-                                webViewStyle={{opacity: 0.99, marginVertical: node.target === comment.text ? 0 :  8}}
+                                webViewStyle={{opacity: 0.99, marginVertical: node.target === comment.text ? 0 : 8}}
                             />
                         </View>
                     )
@@ -274,8 +286,8 @@ const CommentComponent: React.FC<CommentProperties> = ({
             let result = buildReplies(com)
             if (result) {
                 let message = ''
-                result.reverse().forEach((rep: Comment, index) => {
-                    message += getQuotes(index) + rep.author + ' \n\n' + rep.text + '\n'
+                result.reverse().forEach((rep: any, index) => {
+                    message += getQuotes(index) + ' ![](' + REACT_APP_IMAGES_URL + rep.avatar + ') ' + rep.author + ' \n\n' + rep.text + '\n'
                 })
 
 
