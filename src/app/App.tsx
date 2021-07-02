@@ -96,6 +96,7 @@ const App = () => {
 
     const loadToken = async () => {
         let fcmToken = await LocalStorage.getFcmToken()
+        console.log(fcmToken)
         if (!fcmToken) {
             fcmToken = await firebase.messaging().getToken()
             if (fcmToken) {

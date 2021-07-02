@@ -10,6 +10,11 @@ class PictureService extends Api {
         return this.http
             .post(`${this.getUrl()}`, items)
             .then((res) => res.data)
+            .catch(err => {
+                console.log('file upload....')
+                console.log(JSON.stringify(err.response.data))
+                return err
+            })
     }
 }
 

@@ -1,8 +1,9 @@
 import React from 'react'
-import {Image, StyleSheet, View} from "react-native"
+import {StyleSheet, View} from "react-native"
 import UserUtils from "../../utils/UserUtils"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {withTheme} from "react-native-paper"
+import FastImage from 'react-native-fast-image'
 
 interface AdButtonProperties {
     image: string
@@ -34,7 +35,7 @@ const AdButtons: React.FC<AdButtonProperties> = ({image, theme}) => {
 
     return (
         <View style={styles.adButton}>
-            <Image style={styles.image} source={{uri: UserUtils.getImageByName(image)}}/>
+            <FastImage style={styles.image} source={{uri: UserUtils.getImageByName(image)}}/>
         </View>
     )
 }

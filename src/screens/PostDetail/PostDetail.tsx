@@ -359,6 +359,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     }
 
     const sendComment = (message: string, images: ImageResponse[] = []) => {
+        setLoading(true)
         const comment: Comment = {
             id: commentId,
             text: message,
@@ -380,6 +381,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                     console.log('Error creating comment')
                     console.error(error)
                 })
+                .finally(() => setLoading(false))
         } else if (post && editModeEnabled) {
             postService.editComment(post.id, comment)
                 .then(() => {
@@ -395,6 +397,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                     console.log('Error updating comment')
                     console.error(error)
                 })
+                .finally(() => setLoading(false))
         }
     }
 

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {AppState, BackHandler, Dimensions, StyleSheet, View} from "react-native"
+import {BackHandler, Dimensions, StyleSheet, View} from "react-native"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import Image from "react-native-scalable-image"
 import {withTheme} from "react-native-paper"

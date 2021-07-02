@@ -231,7 +231,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
         }
 
         if (this.mounted) {
-            // this.loadData()
+            this.loadData()
         } else {
             typeof this.unsubscribe === "function" && this.unsubscribe()
         }

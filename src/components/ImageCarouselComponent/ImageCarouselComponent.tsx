@@ -1,5 +1,6 @@
-import React, {useRef, useState} from 'react';
-import {FlatList, Image, StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle} from "react-native";
+import React, {useRef, useState} from 'react'
+import {FlatList, StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle} from "react-native"
+import FastImage from 'react-native-fast-image'
 import {REACT_APP_IMAGES_URL} from "@env"
 
 interface ImageCarouselProperties {
@@ -64,10 +65,10 @@ const ImageCarouselComponent: React.FC<ImageCarouselProperties> = ({
                 onMomentumScrollEnd={ev => {
                     scrollToActiveIndex(Math.round(ev.nativeEvent.contentOffset.x / width))
                 }}
-                contentContainerStyle={{alignSelf: "flex-end"}}
+                // contentContainerStyle={{alignSelf: "flex-end"}}
                 renderItem={({item}) =>
                     <View style={{height, width}}>
-                        <Image
+                        <FastImage
                             source={{uri: getUri(item)}}
                             style={StyleSheet.absoluteFillObject}
                         />
@@ -90,7 +91,7 @@ const ImageCarouselComponent: React.FC<ImageCarouselProperties> = ({
                     contentContainerStyle={{paddingHorizontal: SPACING}}
                     renderItem={({item, index}) =>
                         <TouchableOpacity onPress={() => scrollToActiveIndex(index)}>
-                            <Image
+                            <FastImage
                                 source={{uri: getUri(item)}}
                                 style={{
                                     width: IMAGE_SIZE,
