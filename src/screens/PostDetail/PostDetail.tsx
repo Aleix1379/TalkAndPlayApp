@@ -732,7 +732,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                     },
                     container: {
                         backgroundColor: theme.colors.surface,
-                        borderTopLeftRadius: 26,
+                        borderTopLeftRadius: 16,
                         borderTopRightRadius: 26,
                         paddingLeft: 12
                     }

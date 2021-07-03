@@ -32,6 +32,7 @@ const ReplyToComponent: React.FC<ReplyToProperties> = ({theme, comment, close}) 
         },
         content: {
             paddingBottom: 6,
+            marginTop: 6,
             paddingHorizontal: 12
         },
         title: {
@@ -50,7 +51,7 @@ const ReplyToComponent: React.FC<ReplyToProperties> = ({theme, comment, close}) 
                 <View style={styles.replyTo}>
                     <View style={styles.header}>
                         <Text style={styles.title}>Reply to <Text
-                            style={styles.author}>@{comment.author.name}</Text></Text>
+                            style={styles.author}>@{comment.author?.name}</Text></Text>
                         <RoundButtonComponent
                             icon={'close'}
                             onPress={() => close()}
@@ -60,7 +61,7 @@ const ReplyToComponent: React.FC<ReplyToProperties> = ({theme, comment, close}) 
                         <Markdown
                             styles={{
                                 text: {
-                                    color: theme.colors.text
+                                    color: theme.colors.text,
                                 },
                                 blockquote: {
                                     backgroundColor: theme.colors.background,
