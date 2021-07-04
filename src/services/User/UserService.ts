@@ -44,7 +44,7 @@ class UserService extends Api {
     updateProfile(id: number, data: User): Promise<User> {
         return this.http.put(`${this.getUrl()}/${id}`, data).then((res) => res.data)
     }
-    
+
     checkIfUserExists(field: string, value: string): Promise<boolean> {
         return new Promise<boolean>((resolve) => {
             return this.http.get(`${this.getUrl()}?${field}=${value}`).then((res) => {
@@ -141,6 +141,21 @@ class UserService extends Api {
 
     isFollower(userId: number, followerId: number): Promise<boolean> {
         return this.http.get(`${this.getUrl(userId)}/followers/${followerId}`)
+            .then((res) => res.data)
+    }
+
+    updateFcmToken(userId: number, fcmToken: string): Promise<boolean> {
+        return this.http.put(`${this.getUrl(userId)}/fcmToken`, fcmToken)
+            .then((res) => res.data)
+    }
+
+    addPostSubscription(userId: number, postId: number): Promise<number[]> {
+        return this.http.post(`${this.getUrl(userId)}/subscriptions/${postId}`)
+            .then((res) => res.data)
+    }
+
+    deleteSubscription(userId: number, postId: number): Promise<number[]> {
+        return this.http.delete(`${this.getUrl(userId)}/subscriptions/${postId}`)
             .then((res) => res.data)
     }
 

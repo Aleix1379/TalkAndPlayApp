@@ -90,8 +90,8 @@ const content: React.FC<ContentProperties> = ({theme, login, closeDialog, setThe
         loadCustomTheme()
     }, [isDarkTheme])
 
-    useEffect(() => {
-    }, [user])
+    // useEffect(() => {
+    // }, [user])
 
     return (
         <View style={{flex: 1, backgroundColor: theme.colors.background}}>

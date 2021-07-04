@@ -222,7 +222,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                     path={it.target}
                     borderWidth={0}
                     size={32}
-                    style={{marginLeft: 2, marginVertical: 3, marginRight: 6}}
+                    style={{marginVertical: 3, marginRight: 6}}
                 />
             } else if (it.type === 'paragraph') {
                 return buildLine(it.content, 0)
@@ -421,7 +421,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                         backgroundColor: theme.colors.accent
                     },
                     container: {
-                        backgroundColor: theme.colors.surface,
+                        backgroundColor: 'rgba(10, 10, 10, 0.95)',
                         borderTopLeftRadius: 16,
                         borderTopRightRadius: 26,
                         paddingLeft: 12

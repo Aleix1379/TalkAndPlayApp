@@ -9,6 +9,7 @@ export type User = {
     platforms: Option[]
     profiles: Account[]
     seenMessages: { [id: number]: number }
+    postsSubscribed: number[]
 }
 
 export enum PostType {

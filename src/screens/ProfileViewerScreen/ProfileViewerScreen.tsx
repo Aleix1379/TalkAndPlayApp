@@ -173,7 +173,7 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
                     title={userVisited?.name}
                     leftAction={{
                         image: "arrow-left",
-                        onPress: () => navigation.goBack()
+                        onPress: () => goBack()
                     }}
                 />
             }

@@ -9,7 +9,9 @@ import {
     availablePlatforms,
     Channel,
     Filter,
-    Option, PostRenderItem, PostRow,
+    Option,
+    PostRenderItem,
+    PostRow,
     PostsResponse,
     PostType,
     SelectItem,
@@ -30,6 +32,9 @@ import Image from "react-native-scalable-image"
 import UserService from "../../services/User"
 import SeenMessageUtils from "../../utils/SeenMessage"
 import {setLoading} from "../../store/loading/actions"
+import firebase from "react-native-firebase"
+import {DialogOption} from "../../store/dialog/types"
+import {closeDialog, openDialog} from "../../store/dialog/actions"
 
 export interface PostsProperties {
     navigation: any,
@@ -37,6 +42,8 @@ export interface PostsProperties {
     user: User
     postType: PostType
     setLoading: (visible: boolean) => void
+    openDialog: (title: string, content: string[], actions: DialogOption[]) => void
+    closeDialog: () => void
 }
 
 interface Form {
@@ -120,8 +127,11 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
         headerVisible: true,
         lastIndex: -1,
         refreshing: false,
-        isEmpty: false
+        isEmpty: false,
     }
+
+    notificationListener: any = null
+    notificationOpenedListener: any = null
 
     readonly styles = StyleSheet.create({
         posts: {
@@ -244,6 +254,116 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     componentDidMount() {
         this.mounted = true
         this.startAnimation(true)
+        this.initNotificationsListener()
+    }
+
+    initNotificationsListener() {
+        //we check if user has granted permission to receive push notifications.
+        this.checkPermission().catch(err => {
+            console.log('Error check permission')
+            console.log(err)
+        })
+        // Register all listener for notification
+        this.createNotificationListeners().catch(err => {
+            console.log('Error createNotificationListeners')
+            console.log(err)
+        })
+    }
+
+    createNotificationListeners = async () => {
+
+        // This listener triggered when notification has been received in foreground
+        this.notificationListener = firebase.notifications().onNotification((notification) => {
+            const {title, body} = notification
+            this.displayNotification(title, body, notification.data)
+        })
+
+        // This listener triggered when app is in background and we click, tapped and opened notification
+        this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
+            this.handleBackgroundNotification(notificationOpen.notification.data)
+        })
+
+        // This listener triggered when app is closed and we click,tapped and opened notification
+        const notificationOpen = await firebase.notifications().getInitialNotification()
+        if (notificationOpen) {
+            this.handleBackgroundNotification(notificationOpen.notification.data)
+        }
+    }
+
+    handleBackgroundNotification = (data: { [key: string]: string }) => {
+        console.log(`handleBackgroundNotification | data => ${JSON.stringify(data)}`)
+        this.props.navigation.navigate('Detail', {
+            title: data.postTitle,
+            id: data.postId,
+            newCommentId: data.commentId
+        })
+    }
+
+    checkPermission = async () => {
+        const enabled = await firebase.messaging().hasPermission()
+        // If Permission granted proceed towards token fetch
+        if (enabled) {
+            this.loadToken().catch(err => {
+                console.log('Error get token')
+                console.log(err)
+            })
+        } else {
+            // If permission hasn't been granted to our app, request user in requestPermission method.
+            this.requestPermission().catch(err => {
+                console.log('Error request permission')
+                console.log(err)
+            })
+        }
+    }
+
+    requestPermission = async () => {
+        try {
+            await firebase.messaging().requestPermission()
+            // User has authorised
+            this.loadToken().catch(error => {
+                console.log('Error get token')
+                console.log(error)
+            })
+        } catch (error) {
+            // User has rejected permissions
+            console.log('permission rejected')
+        }
+    }
+
+    loadToken = async () => {
+        let fcmToken = await LocalStorage.getFcmToken()
+        if (!fcmToken) {
+            fcmToken = await firebase.messaging().getToken()
+            if (fcmToken) {
+                // user has a device token
+                LocalStorage.setFcmToken(fcmToken).catch(error => {
+                    console.log('Error saving fcm token')
+                    console.log(error)
+                })
+            }
+        }
+    }
+
+    displayNotification = (title: string, body: string, data: { [key: string]: string }) => {
+        // we display notification in alert box with title and body
+        if (data.authorId !== this.props.user.id.toString()) {
+            // this.setState({showDialog: true, notification: {title, body, data}})
+            this.props.openDialog(
+                title,
+                [body],
+                [
+                    {
+                        label: 'See comment',
+                        backgroundColor: this.props.theme.colors.accent,
+                        onPress: () => {
+                            this.props.closeDialog()
+                            this.handleBackgroundNotification(data)
+                        }
+                    }
+                ])
+        } else {
+            // this.handleBackgroundNotification(data)
+        }
     }
 
     onScroll = (event: any) => {
@@ -331,6 +451,23 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                     })
                     .catch(err => {
                         console.log('error getting number of comments by post')
+                        console.log(err)
+                    })
+            }
+
+            if (this.props.user.id >= 0) {
+                LocalStorage.getFcmToken()
+                    .then((fcmToken: string | null) => {
+                        if (fcmToken) {
+                            this.userService.updateFcmToken(this.props.user.id, fcmToken)
+                                .catch(err => {
+                                    console.log('error updateFcmToken')
+                                    console.log(err.response.data)
+                                })
+                        }
+                    })
+                    .catch(err => {
+                        console.log('Error getting fcm token')
                         console.log(err)
                     })
             }
@@ -617,7 +754,10 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                                 channels: this.state.form.channels
                             }
                             this.setState({showModal: false})
-                            this.search(filter)
+                            this.search(filter).catch(err => {
+                                console.log('error search')
+                                console.log(err)
+                            })
                             LocalStorage.saveFilter(filter)
                                 .catch(err => {
                                     console.log('Error saving filter')
@@ -654,7 +794,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
             postType: this.getPostType(index),
             lastIndex: index
         })
-         this.loadData()
+        this.loadData()
     }
 
     render() {
@@ -685,6 +825,22 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                         </View>
                     )}
                 />
+
+                {/*                <DialogComponent
+                    visible={this.state.showDialog} onDismiss={() => this.setState({showDialog: false})}
+                    title={this.state.notification.title}
+                    content={[this.state.notification.body]}
+                    actions={[
+                        {
+                            label: 'See comment',
+                            backgroundColor: this.props.theme.colors.accent,
+                            onPress: () => {
+                                this.setState({showDialog: false})
+                                this.handleBackgroundNotification(this.state.notification.data)
+                            }
+                        }
+                    ]}
+                />*/}
             </View>
         )
     }
@@ -693,5 +849,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
 const mapStateToProps = (state: ApplicationState) => ({user: state.user})
 
 export default connect(mapStateToProps, {
-    setLoading: setLoading
+    setLoading: setLoading,
+    openDialog: openDialog,
+    closeDialog: closeDialog
 })(withTheme(PostsScreen))

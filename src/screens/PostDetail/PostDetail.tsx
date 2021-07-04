@@ -1,7 +1,7 @@
 import React, {MutableRefObject, useEffect, useRef, useState} from 'react'
-import {withTheme} from 'react-native-paper'
+import {Snackbar, Text, withTheme} from 'react-native-paper'
 import {Theme} from "react-native-paper/lib/typescript/types"
-import {AppState, AppStateStatus, BackHandler, ScrollView, StyleSheet, View} from "react-native"
+import {AppState, AppStateStatus, BackHandler, Dimensions, ScrollView, StyleSheet, View} from "react-native"
 import {Channel, Comment, CommentResponse, Option, PostInfo, PostType, User} from "../../types/PostsTypes"
 import PostsService from "../../services/Posts"
 import Info from "../../components/Info"
@@ -24,7 +24,17 @@ import SeenMessageUtils from "../../utils/SeenMessage"
 import EditModeComponent from "../../components/EditModeComponent"
 import PageGoButtonComponent from "../../components/PageGoButtonComponent"
 import PageInputModalComponent from "../../components/PageInputComponent/PageInputModalComponent"
-import {ImageResponse} from "../../types/ImageRequest";
+import {ImageResponse} from "../../types/ImageRequest"
+import StarFollowComponent from "../../components/StarFollowComponent"
+import {login} from "../../store/user/actions"
+import firebase from "react-native-firebase"
+
+interface SnackBar {
+    visible: boolean
+    content: string
+    color?: string
+}
+
 
 interface PostDetailProperties {
     navigation: any
@@ -39,6 +49,7 @@ interface InfoPage {
     number: number
     totalOfElements: number
     totalPages: number
+    elementsPerPage: number
 }
 
 export interface ModalOption {
@@ -53,39 +64,9 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                                               theme,
                                                               setLoading,
                                                               openDialog,
-                                                              closeDialog
+                                                              closeDialog,
+                                                              login
                                                           }) => {
-    const refRBSheet = useRef()
-    const {title, id} = navigation.state.params
-    const postType: PostType = navigation.state.params.postType
-    const [post, setPost] = useState<PostInfo | null>(navigation.state.params.post)
-    const [authorId, setAuthorId] = useState(-1)
-    const lastIndex = navigation.state.params.lastIndex
-    const [comments, setComments] = useState<Comment[]>()
-    const postService = new PostsService()
-    const userService = new UserService()
-    const [elementsPerPage, setElementsPerPage] = useState(10)
-    const [currentPage, setCurrentPage] = useState<number>(0)
-    const [page, setPage] = useState<InfoPage>()
-    const scrollRef: MutableRefObject<any> = useRef()
-    const [modalOptions, setModalOptions] = useState<ModalOption[]>([])
-    const [message, setMessage] = useState('')
-    const [unseenMessages, setUnseenMessages] = useState(0)
-    const [pageFirstUnseenComment, setPageFirstUnseenComment] = useState(0)
-    const [lastCommentId, setLastCommentId] = useState(0)
-    const [dataSourceCords, setDataSourceCords] = useState<any>([])
-    const [manualScrollEnabled, setManualScrollEnabled] = useState(false)
-    const [commentToReply, setCommentToReply] = useState<Comment | null>(null)
-    const [editModeEnabled, setEditModeEnabled] = useState(false)
-    const [commentId, setCommentId] = useState<number | null>(null)
-    const appState = useRef(AppState.currentState)
-    const [{}, setAppStateVisible] = useState(appState.current)
-    let inputRef: any = null
-    const [showInputPage, setShowInputPage] = useState<boolean>(false)
-    const user: User = useSelector((state: ApplicationState) => {
-        return state.user
-    }, shallowEqual)
-
     const styles = StyleSheet.create({
         post: {
             backgroundColor: theme.colors.background
@@ -118,8 +99,50 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         },
         bottomPagination: {
             flexDirection: "row"
-        }
+        },
+        snackBarContainer: {
+            backgroundColor: theme.colors.primary,
+        },
+        snackBarWrapper: {
+            width: Dimensions.get('window').width,
+        },
     })
+    const refRBSheet = useRef()
+    const {title, id, newCommentId} = navigation.state.params
+    const postType: PostType = navigation.state.params.postType
+    const [post, setPost] = useState<PostInfo | null>(navigation.state.params.post)
+    const [authorId, setAuthorId] = useState(-1)
+    const lastIndex = navigation.state.params.lastIndex
+    const [comments, setComments] = useState<Comment[]>()
+    const postService = new PostsService()
+    const userService = new UserService()
+    const [elementsPerPage, setElementsPerPage] = useState(10)
+    const [currentPage, setCurrentPage] = useState<number>(0)
+    const [page, setPage] = useState<InfoPage>()
+    const scrollRef: MutableRefObject<any> = useRef()
+    const [modalOptions, setModalOptions] = useState<ModalOption[]>([])
+    const [message, setMessage] = useState('')
+    const [unseenMessages, setUnseenMessages] = useState(0)
+    const [pageFirstUnseenComment, setPageFirstUnseenComment] = useState(0)
+    const [lastCommentId, setLastCommentId] = useState(0)
+    const [dataSourceCords, setDataSourceCords] = useState<any>([])
+    const [manualScrollEnabled, setManualScrollEnabled] = useState(false)
+    const [commentToReply, setCommentToReply] = useState<Comment | null>(null)
+    const [editModeEnabled, setEditModeEnabled] = useState(false)
+    const [commentId, setCommentId] = useState<number | null>(null)
+    const appState = useRef(AppState.currentState)
+    const [{}, setAppStateVisible] = useState(appState.current)
+    let inputRef: any = null
+    const [showInputPage, setShowInputPage] = useState<boolean>(false)
+    const [following, setFollowing] = useState(false)
+    const [snackbar, setSnackbar] = useState<SnackBar>({
+        visible: false,
+        content: '',
+        color: 'rgba(10, 10, 10, 0.95)',
+    })
+    const user: User = useSelector((state: ApplicationState) => {
+        return state.user
+    }, shallowEqual)
 
     const handleBackButtonClick = (): boolean => {
         goBack()
@@ -138,73 +161,78 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
             AppState.addEventListener("change", handleAppStateChange)
             BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick)
 
-            LocalStorage.getMessagesSeen()
-                .then(data => {
+            if (user) {
+                LocalStorage.getMessagesSeen()
+                    .then(data => {
 
-                    let result: { [id: number]: number } = SeenMessageUtils.mergeSeenMessages(data, user.seenMessages)
+                        let result: { [id: number]: number } = SeenMessageUtils.mergeSeenMessages(data, user.seenMessages)
 
-                    userService.getCommentsUnseen(user.id, result).then(values => {
-                        let lastId = data[id]
-                        setLastCommentId(lastId)
-                        if (id && lastId) {
-                            postService.getPageFirstUnseenComment(id, lastId, 10)
-                                .then(newPage => {
-                                    setPageFirstUnseenComment(newPage)
-                                })
-                                .catch(err => {
-                                    console.log('postService.getPageFirstUnseenComment')
-                                    console.log(err)
-                                })
-                            if (values[id] > 0) {
-                                setUnseenMessages(values[id])
+                        console.log(`user.id: ${user.id}`)
+                        console.log(`result: ${result}`)
+
+                        userService.getCommentsUnseen(user.id, result).then(values => {
+                            let lastId = data[id]
+                            setLastCommentId(lastId)
+                            if (id && lastId) {
+                                postService.getPageFirstUnseenComment(id, lastId, 10)
+                                    .then(newPage => {
+                                        setPageFirstUnseenComment(newPage)
+                                    })
+                                    .catch(err => {
+                                        console.log('postService.getPageFirstUnseenComment')
+                                        console.log(err)
+                                    })
+                                if (values[id] > 0) {
+                                    setUnseenMessages(values[id])
+                                }
                             }
-                        }
+                        })
+                            .catch(err => {
+                                console.log('postService.getCommentsUnseen')
+                                console.log(err)
+                            })
                     })
+
+                LocalStorage.getCommentsPerPage()
+                    .then(value => setElementsPerPage(value))
+                    .catch(error => {
+                        console.log('LocalStorage.getCommentsPerPage')
+                        console.error(error)
+                    })
+
+                if (!post) {
+                    postService.getPostById(id)
+                        .then(response => {
+                            setPost(response.post)
+                            setAuthorId(response.authorId)
+                        })
                         .catch(err => {
-                            console.log('postService.getCommentsUnseen')
+                            console.log('postService.getPostById(')
                             console.log(err)
                         })
-                })
-
-            LocalStorage.getCommentsPerPage()
-                .then(value => setElementsPerPage(value))
-                .catch(error => {
-                    console.log('LocalStorage.getCommentsPerPage')
-                    console.error(error)
-                })
-
-            if (!post) {
-                postService.getPostById(id)
-                    .then(response => {
-                        setPost(response.post)
-                        setAuthorId(response.authorId)
+                }
+                postService.getCommentsByPost(id)
+                    .then((response: CommentResponse) => {
+                        setPage({
+                            number: response.number,
+                            totalOfElements: response.totalElements,
+                            totalPages: response.totalPages,
+                            elementsPerPage: response.size
+                        })
+                        setComments(response.content)
                     })
                     .catch(err => {
-                        console.log('postService.getPostById(')
+                        console.log('postService.getCommentsByPost')
                         console.log(err)
                     })
-            }
-            postService.getCommentsByPost(id)
-                .then((response: CommentResponse) => {
-                    setPage({
-                        number: response.number,
-                        totalOfElements: response.totalElements,
-                        totalPages: response.totalPages
-                    })
-                    setComments(response.content)
-                })
-                .catch(err => {
-                    console.log('postService.getCommentsByPost')
-                    console.log(err)
-                })
 
-            return () => {
-                BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick)
-                AppState.removeEventListener("change", handleAppStateChange)
-                updateMessagesSeen()
+                return () => {
+                    BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick)
+                    AppState.removeEventListener("change", handleAppStateChange)
+                    updateMessagesSeen()
+                }
             }
-
-        }, []
+        }, [user]
     )
 
     useEffect(() => {
@@ -216,6 +244,32 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     useEffect(() => {
         loadPostOptions()
     }, [authorId])
+
+    useEffect(() => {
+        if (post) {
+            setFollowing(user.postsSubscribed.some(postSubscribed => postSubscribed === post.id))
+        }
+    }, [post])
+
+    useEffect(() => {
+        console.log('######################## newCommentId @@@@@@@@@@@@@@@@@@@@@@@@@@@')
+        console.log(`newCommentId => ${newCommentId}`)
+        if (post && newCommentId) {
+            console.log(`go to this comment: ${newCommentId}`)
+            postService.getPageFirstUnseenComment(post.id, newCommentId)
+                .then(newCommentPage => {
+                    console.log('get page first unseen')
+                    console.log(newCommentPage)
+                    setManualScrollEnabled(true)
+                    fetchComments('top', newCommentPage, newCommentId)
+                })
+                .catch(err => {
+                    console.log('error getPageFirstUnseenComment')
+                    console.log(err)
+                })
+        }
+    }, [post, newCommentId])
+
 
     const updateMessagesSeen = () => {
         if (user.id >= 0)
@@ -337,14 +391,16 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                     setPage({
                         number: data.number,
                         totalOfElements: data.totalElements,
-                        totalPages: data.totalPages
+                        totalPages: data.totalPages,
+                        elementsPerPage: data.size
                     })
                     setComments(data.content)
                     if (!commentId && scrollTo === 'bottom') {
                         setCurrentPage(data.totalPages - 1)
                         scrollToTop(scrollTo)
-                    } else if (commentId) {
+                    } else if (commentId && newPage) {
                         scrollToElement(commentId)
+                        setCurrentPage(newPage)
                     } else {
                         if (newPage! >= 0) {
                             setCurrentPage(newPage!)
@@ -433,8 +489,8 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 
     const gotoFirstUnseenMessage = () => {
         setManualScrollEnabled(true)
-        setUnseenMessages(0)
         fetchComments('top', pageFirstUnseenComment, lastCommentId)
+        setUnseenMessages(0)
     }
 
     const reply = (comment: Comment | null): void => {
@@ -517,6 +573,41 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         navigation.navigate('Posts', {lastIndex})
     }
 
+    const toggleFollowing = async () => {
+        setFollowing(!following)
+
+        let subscriptions: number[] = []
+
+        try {
+            if (following && post) {
+                subscriptions = await userService.deleteSubscription(user.id, post.id)
+            } else if (post) {
+                subscriptions = await userService.addPostSubscription(user.id, post.id)
+            }
+
+            console.log('subscriptions: ' + JSON.stringify(subscriptions))
+
+            if (following && post) {
+                console.log('DELETE post-${post.id}: ' + `post-${post.id}`)
+                firebase.messaging().unsubscribeFromTopic(`post-${post.id}`)
+            } else if (post) {
+                console.log('ADD post-${post.id}: ' + `post-${post.id}`)
+                firebase.messaging().subscribeToTopic(`post-${post.id}`)
+            }
+
+            setSnackbar({
+                ...snackbar,
+                visible: true,
+                content: following ? 'You will not get notifications' : 'You will get notifications when someone sends a comment',
+            })
+
+            login({...user, postsSubscribed: subscriptions})
+        } catch (e) {
+            console.log('error updating subscriptions')
+            console.log(e)
+        }
+    }
+
     return (
         <>
             <PageInputModalComponent
@@ -572,7 +663,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                     <View style={styles.comments}>
 
                         {
-                            page && page.totalPages > 1 &&
+                            page && page.totalPages > 0 &&
                             <View style={styles.pagination}>
 
                                 <PageGoButtonComponent
@@ -590,7 +681,16 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                     />
                                 }
 
-                                <View style={{marginLeft: 'auto'}}>
+                                <View style={{
+                                    marginLeft: 'auto',
+                                    flexDirection: "row",
+                                }}>
+                                    <StarFollowComponent
+                                        visible={user.id >= 0}
+                                        following={following}
+                                        style={{marginRight: 8}}
+                                        onPress={() => toggleFollowing()}
+                                    />
                                     <PaginationComponent
                                         number={currentPage}
                                         totalPages={page?.totalPages}
@@ -731,7 +831,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                         backgroundColor: theme.colors.accent
                     },
                     container: {
-                        backgroundColor: theme.colors.surface,
+                        backgroundColor: 'rgba(10, 10, 10, 0.95)',
                         borderTopLeftRadius: 16,
                         borderTopRightRadius: 26,
                         paddingLeft: 12
@@ -740,6 +840,16 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
             >
                 <BottomSheetComponent options={modalOptions} sheet={refRBSheet}/>
             </RBSheet>
+
+            <Snackbar
+                visible={snackbar.visible}
+                duration={5000}
+                onDismiss={() => setSnackbar({...snackbar, visible: false, content: ''})}
+                wrapperStyle={styles.snackBarWrapper}
+                style={[styles.snackBarContainer, {backgroundColor: snackbar.color}]}
+            >
+                <Text>{snackbar.content}</Text>
+            </Snackbar>
         </>
     )
 }
@@ -748,6 +858,7 @@ export default connect(null, {
         setLoading: setLoading,
         openDialog: openDialog,
         closeDialog: closeDialog,
+        login: login
     }
 )
 (withTheme(PostDetailScreen))

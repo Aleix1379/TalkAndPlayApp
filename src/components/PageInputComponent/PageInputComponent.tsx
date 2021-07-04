@@ -21,7 +21,7 @@ const PageInputComponent: React.FC<PageInputProperties> = ({
                                                            }) => {
     const styles = StyleSheet.create({
         pageInputContainer: {
-            backgroundColor: 'rgba(15,15,15,0.95)',
+            backgroundColor: 'rgba(10, 10, 10, 0.95)',
             borderRadius: 15,
             width: Dimensions.get('screen').width * 0.80,
             alignItems: "center",

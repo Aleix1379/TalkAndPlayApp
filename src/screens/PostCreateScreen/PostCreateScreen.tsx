@@ -22,17 +22,19 @@ import {setLoading} from "../../store/loading/actions"
 import PostsService from "../../services/Posts"
 import HeaderComponent from "../../components/HeaderComponent"
 import languages from '../../store/languages.json'
-import {logout} from "../../store/user/actions"
+import {login, logout} from "../../store/user/actions"
 import PostUtils, {Errors} from "../../utils/PostUtils/PostUtils"
+import firebase from "react-native-firebase"
 
 interface PostCreateProperties {
     navigation: any,
     theme: Theme,
     setLoading: Function
     logout: Function
+    login: (user: User, token?: string) => void
 }
 
-const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoading, theme, logout}) => {
+const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoading, theme, logout, login}) => {
     const {postType} = navigation.state.params
     const [untouched, setUntouched] = useState(true)
     const postService = new PostsService()
@@ -97,7 +99,8 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
             languages: [],
             platforms: [],
             profiles: [],
-            seenMessages: {}
+            seenMessages: {},
+            postsSubscribed: []
         },
         images: []
     })
@@ -163,8 +166,11 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
 
             postService
                 .add(data, comment)
-                .then((postCreated) =>
-                    navigation.navigate('Detail', {title: postCreated.title, id: postCreated.id})
+                .then((postCreated) => {
+                        login({...user, postsSubscribed: [...user.postsSubscribed, postCreated.id]})
+                        firebase.messaging().unsubscribeFromTopic(`post-${post.id}`)
+                        navigation.navigate('Detail', {title: postCreated.title, id: postCreated.id})
+                    }
                 )
                 .catch(error => {
                     console.log('create post')
@@ -297,5 +303,6 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
 
 export default connect(null, {
     setLoading: setLoading,
-    logout: logout
+    logout: logout,
+    login: login
 })(withTheme(PostCreateScreen))
