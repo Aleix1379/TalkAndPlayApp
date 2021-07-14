@@ -33,7 +33,7 @@ const HeaderComponent: React.FC<HeaderProperties> = ({
         },
         bell: {
             position: "absolute",
-            right: 55
+            right: !!rightAction ? 50 : 16
         }
     })
 
