@@ -110,6 +110,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     const refRBSheet = useRef()
     const {title, id, newCommentId} = navigation.state.params
     const postType: PostType = navigation.state.params.postType
+    const notificationRead: boolean = navigation.state.params.notificationRead
     const [post, setPost] = useState<PostInfo | null>(navigation.state.params.post)
     const [authorId, setAuthorId] = useState(-1)
     const lastIndex = navigation.state.params.lastIndex
@@ -167,11 +168,14 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 
                         let result: { [id: number]: number } = SeenMessageUtils.mergeSeenMessages(data, user.seenMessages)
 
-                        console.log(`user.id: ${user.id}`)
-                        console.log(`result: ${result}`)
+                        // console.log(`user.id: ${user.id}`)
+                        // console.log(`result: ${JSON.stringify(result)}`)
 
                         userService.getCommentsUnseen(user.id, result).then(values => {
-                            let lastId = data[id]
+                            // console.log('get comments unseen: ' + JSON.stringify(values))
+                            // console.log(`id: ${id}`)
+                            // console.log(`result[id]: ${JSON.stringify(result[id])}`)
+                            let lastId = result[id]
                             setLastCommentId(lastId)
                             if (id && lastId) {
                                 postService.getPageFirstUnseenComment(id, lastId, 10)
@@ -252,14 +256,9 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     }, [post])
 
     useEffect(() => {
-        console.log('######################## newCommentId @@@@@@@@@@@@@@@@@@@@@@@@@@@')
-        console.log(`newCommentId => ${newCommentId}`)
         if (post && newCommentId) {
-            console.log(`go to this comment: ${newCommentId}`)
             postService.getPageFirstUnseenComment(post.id, newCommentId)
                 .then(newCommentPage => {
-                    console.log('get page first unseen')
-                    console.log(newCommentPage)
                     setManualScrollEnabled(true)
                     fetchComments('top', newCommentPage, newCommentId)
                 })
@@ -272,8 +271,9 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 
 
     const updateMessagesSeen = () => {
-        if (user.id >= 0)
+        if (user.id > 0)
             LocalStorage.getMessagesSeen().then(data => {
+                // console.log('getMessagesSeen | data => ' + JSON.stringify(data))
                 userService.updateCommentsUnseen(user.id, data)
                     .catch(err => {
                         console.log('updateCommentsUnseen')
@@ -479,6 +479,9 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 
     const loadComment = (commentSeen: Comment) => {
         if (post && (commentSeen.id && commentSeen.id >= lastCommentId || !lastCommentId)) {
+            // console.log(`post.id: ${post.id}`)
+            // console.log(`commentSeen.id: ${commentSeen.id}`)
+            // console.log(`commentSeen.text: ${commentSeen.text}`)
             LocalStorage.addCommentSeen(post.id, commentSeen.id)
                 .catch(err => {
                     console.log('error addCommentSeen')
@@ -570,7 +573,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     }
 
     const goBack = () => {
-        navigation.navigate('Posts', {lastIndex})
+        navigation.navigate('Posts', {lastIndex, notificationRead})
     }
 
     const toggleFollowing = async () => {
@@ -621,6 +624,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
             />
 
             <HeaderComponent
+                navigation={navigation}
                 title={post?.title}
                 leftAction={{
                     image: "arrow-left",

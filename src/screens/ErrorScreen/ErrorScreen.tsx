@@ -49,6 +49,7 @@ const ErrorScreen: React.FC<ErrorProperties> = ({theme, navigation}) => {
     return (
         <>
             <HeaderComponent
+                navigation={navigation}
                 title='Connection failed!'
             />
             <View style={styles.error}>

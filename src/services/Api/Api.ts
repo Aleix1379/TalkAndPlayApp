@@ -24,6 +24,7 @@ abstract class Api {
                 if (statusCode === 403) {
                     console.log('statusCode === 403...........................................')
                     LocalStorage.removeAuthToken()
+                    LocalStorage.removeUser()
 
                     //console.log("this.http.defaults.headers.common['Authorization']")
                     //console.log(this.http.defaults.headers.common['Authorization'])

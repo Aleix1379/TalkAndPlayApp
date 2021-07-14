@@ -83,7 +83,9 @@ const PictureUploadScreen: React.FC<PictureUploadProperties> = ({theme, navigati
 
     return (
         <>
+
             <HeaderComponent
+                navigation={navigation}
                 title={title}
                 leftAction={{
                     image: "arrow-left",

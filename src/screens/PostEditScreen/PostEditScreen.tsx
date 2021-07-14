@@ -149,6 +149,7 @@ const PostEditScreen: React.FC<PostEditProperties> = ({theme, navigation, setLoa
     return (
         <>
             <HeaderComponent
+                navigation={navigation}
                 title="Edit post"
                 leftAction={{
                     image: "arrow-left",

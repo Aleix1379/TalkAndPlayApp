@@ -148,8 +148,6 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
         setRef && setRef(input)
     }
 
-    // @ts-ignore
-    // @ts-ignore
     return (
         <View style={getStyles()}>
             {

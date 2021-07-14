@@ -12,7 +12,8 @@ export default class LocalStorage {
         FCM_TOKEN: 'fcm-token',
         THEME: 'theme',
         POST_TAB_INDEX: 'post-tab-index',
-        NEW_MAP: 'new-map'
+        NEW_MAP: 'new-map',
+        NOTIFICATIONS: 'notifications'
     }
 
     public static setAuthToken = async (token: string) => {

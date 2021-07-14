@@ -4,6 +4,8 @@ import LocalStorage from "../../utils/LocalStorage/LocalStorage"
 import {RecoveryPasswordResponse} from "../../types/EmailTypes"
 import {VerificationResponse} from "../../types/VerificationTypes"
 import {FollowCounter} from "../../types/FollowCounter"
+import {Device} from "../../types/Device"
+import {Notification} from "../../types/Notification";
 
 class UserService extends Api {
     constructor() {
@@ -144,8 +146,8 @@ class UserService extends Api {
             .then((res) => res.data)
     }
 
-    updateFcmToken(userId: number, fcmToken: string): Promise<boolean> {
-        return this.http.put(`${this.getUrl(userId)}/fcmToken`, fcmToken)
+    registerDevice(userId: number, device: Device): Promise<boolean> {
+        return this.http.post(`${this.getUrl(userId)}/devices`, device)
             .then((res) => res.data)
     }
 
@@ -156,6 +158,21 @@ class UserService extends Api {
 
     deleteSubscription(userId: number, postId: number): Promise<number[]> {
         return this.http.delete(`${this.getUrl(userId)}/subscriptions/${postId}`)
+            .then((res) => res.data)
+    }
+
+    getNotifications(userId: number): Promise<Notification []> {
+        return this.http.get(`${this.getUrl(userId)}/notifications`)
+            .then((res) => res.data)
+    }
+
+    updateNotifications(userId: number, notifications: Notification[]): Promise<boolean> {
+        return this.http.put(`${this.getUrl(userId)}/notifications`, notifications)
+            .then((res) => res.data)
+    }
+
+    deleteNotification(userId: number, notificationId: number): Promise<boolean> {
+        return this.http.delete(`${this.getUrl(userId)}/notifications/${notificationId}`)
             .then((res) => res.data)
     }
 

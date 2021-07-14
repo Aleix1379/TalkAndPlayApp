@@ -129,6 +129,7 @@ const RecoveryPasswordScreen: React.FC<RecoveryPasswordProperties> = ({navigatio
     return (
         <>
             <HeaderComponent
+                navigation={navigation}
                 title="Forgot password?"
                 leftAction={{
                     image: "arrow-left",

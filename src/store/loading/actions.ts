@@ -4,9 +4,7 @@ import {DispatchType, LoadingAction} from './types'
 export const setLoading = (visible: boolean) => {
     const action: LoadingAction = {
         type: actionTypes.SET_LOADING,
-        state: {
-            visible
-        }
+        state: {visible}
     }
 
     return (dispatch: DispatchType) => {

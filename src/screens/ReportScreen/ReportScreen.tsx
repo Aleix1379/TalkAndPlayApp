@@ -92,6 +92,7 @@ const ReportScreen: React.FC<ReportProperties> = ({theme, navigation}) => {
     return (
         <>
             <HeaderComponent
+                navigation={navigation}
                 title={'Report'}
                 leftAction={{
                     image: "arrow-left",

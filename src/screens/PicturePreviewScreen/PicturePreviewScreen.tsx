@@ -56,6 +56,7 @@ const PicturePreviewScreen: React.FC<PicturePreviewProperties> = ({theme, naviga
     return (
         <>
             <HeaderComponent
+                navigation={navigation}
                 title={title}
                 leftAction={{
                     image: "arrow-left",

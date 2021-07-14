@@ -177,6 +177,7 @@ const PasswordEditScreen: React.FC<PasswordEditProperties> = ({navigation, theme
     return (
         <>
             <HeaderComponent
+                navigation={navigation}
                 title="Edit password"
                 leftAction={{
                     image: "arrow-left",

@@ -11,6 +11,7 @@ interface RoundButtonProperties {
     iconSize?: number,
     style?: StyleProp<ViewStyle>
     onPress: () => void
+    color?: string
 }
 
 const RoundButtonComponent: React.FC<RoundButtonProperties> = ({
@@ -19,7 +20,8 @@ const RoundButtonComponent: React.FC<RoundButtonProperties> = ({
                                                                    containerSize = 36,
                                                                    iconSize = 24,
                                                                    style = {},
-                                                                   onPress
+                                                                   onPress,
+                                                                   color = theme.colors.accent
                                                                }) => {
     const [active, setActive] = useState(false)
 
@@ -51,7 +53,7 @@ const RoundButtonComponent: React.FC<RoundButtonProperties> = ({
             onTouchEnd={endTouch}
         >
             <MaterialCommunityIcons name={icon}
-                                    color={theme.colors.accent}
+                                    color={color}
                                     size={iconSize}
             />
         </View>

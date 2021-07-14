@@ -6,11 +6,16 @@ const initialState: User = {
     id: 0,
     name: '',
     email: '',
-    imageName: 0,
     languages: [],
     platforms: [],
     profiles: [],
-    seenMessages: []
+    seenMessages: [],
+    notifications: [],
+    postsSubscribed: [],
+    avatar: '',
+    devices: [],
+    followers: [],
+    following: []
 }
 
 const reducer = (state: User = initialState, action: UserAction) => {

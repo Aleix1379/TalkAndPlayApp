@@ -111,6 +111,7 @@ const PasswordEditWithCodeScreen: React.FC<PasswordEditWithCodeProperties> = ({n
     return (
         <>
             <HeaderComponent
+                navigation={navigation}
                 title="New password"
                 leftAction={{
                     image: "arrow-left",

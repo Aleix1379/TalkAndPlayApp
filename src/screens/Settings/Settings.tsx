@@ -80,6 +80,7 @@ const SettingsScreen: React.FC<SettingsProperties> = ({navigation, theme, logout
     return (
         <>
             <HeaderComponent
+                navigation={navigation}
                 title="Settings"
                 leftAction={{
                     image: "arrow-left",

@@ -5,6 +5,7 @@ import loadingReducer from './loading/reducer'
 import topSheetReducer from './topSheet/reducer'
 import dialogReducer from './dialog/reducer'
 import themeReducer from './theme/reducer'
+
 import {LoadingState} from "./loading/types"
 import {TopSheetState} from "./topSheet/types"
 import {DialogState} from "./dialog/types"
@@ -28,7 +29,7 @@ const reducers: Reducer<ApplicationState> = combineReducers<ApplicationState>({
     loading: loadingReducer,
     topSheet: topSheetReducer,
     dialog: dialogReducer,
-    theme: themeReducer
+    theme: themeReducer,
 })
 
 export default reducers

@@ -170,6 +170,7 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
             {
                 userVisited &&
                 <HeaderComponent
+                    navigation={navigation}
                     title={userVisited?.name}
                     leftAction={{
                         image: "arrow-left",

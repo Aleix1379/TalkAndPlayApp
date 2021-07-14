@@ -35,6 +35,8 @@ import {setLoading} from "../../store/loading/actions"
 import firebase from "react-native-firebase"
 import {DialogOption} from "../../store/dialog/types"
 import {closeDialog, openDialog} from "../../store/dialog/actions"
+import {login} from "../../store/user/actions"
+import DeviceInfo from 'react-native-device-info'
 
 export interface PostsProperties {
     navigation: any,
@@ -44,6 +46,7 @@ export interface PostsProperties {
     setLoading: (visible: boolean) => void
     openDialog: (title: string, content: string[], actions: DialogOption[]) => void
     closeDialog: () => void
+    login: (user: User, token?: string) => void
 }
 
 interface Form {
@@ -70,6 +73,7 @@ export interface PostListState {
     lastIndex: number
     refreshing: boolean
     isEmpty: boolean
+    notificationRead: boolean
 }
 
 interface RouteItem {
@@ -128,6 +132,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
         lastIndex: -1,
         refreshing: false,
         isEmpty: false,
+        notificationRead: true
     }
 
     notificationListener: any = null
@@ -234,6 +239,14 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
             // this.updateIndex(response.action.params?.lastIndex)
         }
 
+        console.log('response.action.params?.notificationRead => ' + response.action.params?.notificationRead)
+        if (!response.action.params || response.action.params.notificationRead) {
+            this.setState({notificationRead: true})
+        } else {
+            this.setState({notificationRead: false})
+        }
+
+
         const indexSaved = await LocalStorage.getPostTabIndex()
 
         if (indexSaved > 0) {
@@ -254,7 +267,6 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     componentDidMount() {
         this.mounted = true
         this.startAnimation(true)
-        this.initNotificationsListener()
     }
 
     initNotificationsListener() {
@@ -280,23 +292,37 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
 
         // This listener triggered when app is in background and we click, tapped and opened notification
         this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
-            this.handleBackgroundNotification(notificationOpen.notification.data)
+            console.log('onNotificationOpened......................')
+            if (this.state.notificationRead) {
+                this.handleBackgroundNotification(notificationOpen.notification.data.postTitle, notificationOpen.notification.data.body, notificationOpen.notification.data)
+            }
         })
 
         // This listener triggered when app is closed and we click,tapped and opened notification
-        const notificationOpen = await firebase.notifications().getInitialNotification()
-        if (notificationOpen) {
-            this.handleBackgroundNotification(notificationOpen.notification.data)
-        }
+        firebase.notifications().getInitialNotification().then(notificationOpen => {
+            if (notificationOpen?.notification && this.state.notificationRead) {
+                this.handleBackgroundNotification(notificationOpen.notification.data.postTitle, notificationOpen.notification.data.body, notificationOpen.notification.data)
+            }
+        })
     }
 
-    handleBackgroundNotification = (data: { [key: string]: string }) => {
-        console.log(`handleBackgroundNotification | data => ${JSON.stringify(data)}`)
-        this.props.navigation.navigate('Detail', {
-            title: data.postTitle,
-            id: data.postId,
-            newCommentId: data.commentId
-        })
+    handleBackgroundNotification = (title: string, body: string, data: { [key: string]: string }) => {
+        this.userService.updateNotifications(this.props.user.id, this.props.user.notifications.map(nt => ({
+            ...nt,
+            seen: true
+        })))
+            .then(() => {
+                this.props.navigation.navigate('Detail', {
+                    title: data.postTitle,
+                    id: data.postId,
+                    newCommentId: data.commentId,
+                    notificationRead: false
+                })
+            })
+            .catch(err => {
+                console.log('error update notifications')
+                console.log(err)
+            })
     }
 
     checkPermission = async () => {
@@ -335,7 +361,18 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
         if (!fcmToken) {
             fcmToken = await firebase.messaging().getToken()
             if (fcmToken) {
-                // user has a device token
+                const name = await DeviceInfo.getDeviceName()
+                this.userService.registerDevice(
+                    this.props.user.id,
+                    {
+                        name,
+                        fcmToken,
+                        uniqueId: DeviceInfo.getUniqueId()
+                    })
+                    .catch(err => {
+                        console.log('error register new device')
+                        console.log(err.response.data)
+                    })
                 LocalStorage.setFcmToken(fcmToken).catch(error => {
                     console.log('Error saving fcm token')
                     console.log(error)
@@ -347,20 +384,24 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     displayNotification = (title: string, body: string, data: { [key: string]: string }) => {
         // we display notification in alert box with title and body
         if (data.authorId !== this.props.user.id.toString()) {
+            this.props.login({
+                ...this.props.user,
+                notifications: [...this.props.user.notifications, {title, body, data}]
+            })
             // this.setState({showDialog: true, notification: {title, body, data}})
-            this.props.openDialog(
-                title,
-                [body],
-                [
-                    {
-                        label: 'See comment',
-                        backgroundColor: this.props.theme.colors.accent,
-                        onPress: () => {
-                            this.props.closeDialog()
-                            this.handleBackgroundNotification(data)
-                        }
-                    }
-                ])
+            /*     this.props.openDialog(
+                     title,
+                     [body],
+                     [
+                         {
+                             label: 'See comment',
+                             backgroundColor: this.props.theme.colors.accent,
+                             onPress: () => {
+                                 this.props.closeDialog()
+                                 this.handleBackgroundNotification(data)
+                             }
+                         }
+                     ])*/
         } else {
             // this.handleBackgroundNotification(data)
         }
@@ -393,7 +434,6 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     }
 
     loadData = () => {
-        console.log('load data...')
         LocalStorage.getMessagesSeen()
             .then(data => {
                 let result: { [id: number]: number } = SeenMessageUtils.mergeSeenMessages(data, this.props.user.seenMessages)
@@ -456,26 +496,28 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
             }
 
             if (this.props.user.id >= 0) {
-                LocalStorage.getFcmToken()
-                    .then((fcmToken: string | null) => {
-                        if (fcmToken) {
-                            this.userService.updateFcmToken(this.props.user.id, fcmToken)
-                                .catch(err => {
-                                    console.log('error updateFcmToken')
-                                    console.log(err.response.data)
-                                })
-                        }
-                    })
-                    .catch(err => {
-                        console.log('Error getting fcm token')
-                        console.log(err)
-                    })
+                this.initNotificationsListener()
+                /*           LocalStorage.getFcmToken()
+                               .then((fcmToken: string | null) => {
+                                   if (fcmToken) {
+                                       this.userService.updateFcmToken(this.props.user.id, fcmToken)
+                                           .catch(err => {
+                                               console.log('error updateFcmToken')
+                                               console.log(err.response.data)
+                                           })
+                                   }
+                               })
+                               .catch(err => {
+                                   console.log('Error getting fcm token')
+                                   console.log(err)
+                               })*/
             }
+
         }
     }
 
     fetchData = (page: number = 0, filter?: Filter) => {
-        console.log('set loading true => fetchData')
+        // console.log('set loading true => fetchData')
         this.props.setLoading(true)
         this.postService.get(page, this.state.postType, filter)
             .then((response: PostsResponse) => {
@@ -802,7 +844,9 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
             <View style={this.styles.posts}>
                 <Animated.View style={[this.styles.topSheet, this.animatedStyles.upper]}>
                     <HeaderComponent
+                        navigation={this.props.navigation}
                         title={this.getTitle()}
+                        originalScreen='Posts'
                         rightAction={{
                             image: "magnify",
                             onPress: () => this.setState({showModal: !this.state.showModal})
@@ -846,10 +890,13 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     }
 }
 
-const mapStateToProps = (state: ApplicationState) => ({user: state.user})
+const mapStateToProps = (state: ApplicationState) => ({
+    user: state.user,
+})
 
 export default connect(mapStateToProps, {
     setLoading: setLoading,
     openDialog: openDialog,
-    closeDialog: closeDialog
+    closeDialog: closeDialog,
+    login: login
 })(withTheme(PostsScreen))

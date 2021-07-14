@@ -1,4 +1,6 @@
 import {ImageResponse} from "./ImageRequest";
+import {Notification} from "./Notification";
+import {Device} from "./Device";
 
 export type User = {
     id: number
@@ -9,7 +11,11 @@ export type User = {
     platforms: Option[]
     profiles: Account[]
     seenMessages: { [id: number]: number }
+    following: User[]
+    followers: User[]
+    devices: Device[]
     postsSubscribed: number[]
+    notifications: Notification[]
 }
 
 export enum PostType {

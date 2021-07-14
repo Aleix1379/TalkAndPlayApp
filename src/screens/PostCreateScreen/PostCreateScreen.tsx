@@ -100,7 +100,11 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
             platforms: [],
             profiles: [],
             seenMessages: {},
-            postsSubscribed: []
+            postsSubscribed: [],
+            notifications: [],
+            following: [],
+            followers: [],
+            devices: []
         },
         images: []
     })
@@ -216,6 +220,7 @@ const PostCreateScreen: React.FC<PostCreateProperties> = ({navigation, setLoadin
     return (
         <>
             <HeaderComponent
+                navigation={navigation}
                 title="Create new post"
                 leftAction={{
                     image: "arrow-left",

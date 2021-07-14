@@ -134,6 +134,7 @@ const FollowingFollowersListScreen: React.FC<FollowingFollowersListProperties> =
     return (
         <View style={styles.container}>
             <HeaderComponent
+                navigation={navigation}
                 title={capitalize(userType)}
                 leftAction={{
                     image: "arrow-left",

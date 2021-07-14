@@ -115,6 +115,7 @@ const UserAccountsEditScreen: React.FC<UserAccountsEditProperties> = ({theme, na
     return (
         <>
             <HeaderComponent
+                navigation={navigation}
                 title="Enter the user name"
                 leftAction={{
                     image: "arrow-left",

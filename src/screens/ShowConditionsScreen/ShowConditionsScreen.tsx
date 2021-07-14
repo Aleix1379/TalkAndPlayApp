@@ -1,17 +1,14 @@
 import React from 'react'
 import {ScrollView, StyleSheet} from "react-native"
-import {withTheme} from 'react-native-paper'
-import {Theme} from "react-native-paper/lib/typescript/types"
 // @ts-ignore
 import Markdown from 'react-native-simple-markdown'
 import HeaderComponent from "../../components/HeaderComponent"
 
 interface ShowConditionsProperties {
     navigation: any
-    theme: Theme
 }
 
-const ShowConditionsScreen: React.FC<ShowConditionsProperties> = ({theme, navigation}) => {
+const ShowConditionsScreen: React.FC<ShowConditionsProperties> = ({navigation}) => {
     const styles = StyleSheet.create({
         showConditions: {
             flex: 1,
@@ -137,6 +134,7 @@ This privacy policy page was created at [privacypolicytemplate.net](https://priv
     return (
         <>
             <HeaderComponent
+                navigation={navigation}
                 title={getTitle()}
                 leftAction={{
                     image: "arrow-left",
@@ -152,4 +150,4 @@ This privacy policy page was created at [privacypolicytemplate.net](https://priv
     )
 }
 
-export default withTheme(ShowConditionsScreen)
+export default ShowConditionsScreen

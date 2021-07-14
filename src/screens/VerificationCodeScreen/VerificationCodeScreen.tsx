@@ -104,6 +104,7 @@ const VerificationCodeScreen: React.FC<VerificationCodeProperties> = ({navigatio
                 <Text>{snackbar.content}</Text>
             </Snackbar>
             <HeaderComponent
+                navigation={navigation}
                 title="Verification"
                 leftAction={{
                     image: "arrow-left",

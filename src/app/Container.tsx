@@ -19,6 +19,7 @@ import ErrorScreen from "../screens/ErrorScreen"
 import PostsScreen from "../screens/PostsScreen"
 import UserAccountsEditScreen from "../screens/UserAccountsEditScreen"
 import FollowingFollowersListScreen from "../screens/FollowingFollowersListScreen"
+import NotificationsListScreen from "../screens/NotificationsListScreen";
 
 const PostsStack = createStackNavigator({
     Home: {
@@ -136,6 +137,12 @@ const HomeDetailStack = createStackNavigator({
     },
     FollowingFollowersList: {
         screen: FollowingFollowersListScreen,
+        navigationOptions: {
+            headerShown: false
+        }
+    },
+    NotificationsList: {
+        screen: NotificationsListScreen,
         navigationOptions: {
             headerShown: false
         }

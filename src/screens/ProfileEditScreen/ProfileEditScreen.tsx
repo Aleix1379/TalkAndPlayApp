@@ -226,6 +226,7 @@ const ProfileEditScreen: React.FC<ProfileEditProperties> = ({theme, navigation, 
         <>
             <View style={{flex: 1, backgroundColor: theme.colors.background}}>
                 <HeaderComponent
+                    navigation={navigation}
                     title="Edit profile"
                     leftAction={{
                         image: "arrow-left",

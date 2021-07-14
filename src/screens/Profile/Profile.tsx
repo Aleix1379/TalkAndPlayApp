@@ -273,6 +273,7 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
         <>
             <HeaderComponent
                 title={user?.name}
+                navigation={navigation}
                 rightAction={user.id >= 0 ? {
                     image: "dots-vertical",
                     onPress: () => toggleModal()
