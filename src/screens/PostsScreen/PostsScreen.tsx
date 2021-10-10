@@ -662,7 +662,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                 element.index === this.state.data?.content.length || 1 - 1 || element.index % 5 === 0 &&
                 <View style={{marginTop: 4, marginBottom: 2}}>
                     <BannerAd
-                        unitId={TestIds.BANNER}
+                        unitId='ca-app-pub-3339437277990541/9618328669'
                         size={BannerAdSize.ADAPTIVE_BANNER}
                         onAdLoaded={() => {
                             console.log('Advert loaded')

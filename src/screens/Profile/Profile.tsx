@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react'
 import {Dimensions, GestureResponderEvent, StyleSheet, useWindowDimensions, View} from 'react-native'
-import {login} from "../../store/user/actions"
+import {logout} from "../../store/user/actions"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {ModalOption} from "../PostDetail/PostDetail"
 import {SceneMap, TabBar, TabView} from "react-native-tab-view"
@@ -22,7 +22,8 @@ import {User} from "../../types/PostsTypes"
 
 interface ProfileProperties {
     navigation: any,
-    theme: Theme
+    theme: Theme,
+    logout: Function
 }
 
 interface SnackBar {
@@ -31,7 +32,7 @@ interface SnackBar {
     color?: string
 }
 
-const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
+const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, logout}) => {
     const refRBSheet = useRef()
     const [index, setIndex] = useState(0)
     const [followCounter, setFollowCounter] = useState<FollowCounter>({
@@ -136,6 +137,9 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
             .catch(err => {
                 console.log('error getFollowCounter')
                 console.log(err)
+                if (err.message === "Request failed with status code 403") {
+                    logout()
+                }
             })
     }
 
@@ -324,6 +328,6 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme}) => {
 
 export default connect(null,
     {
-        login: login,
+        logout: logout
     }
 )(withTheme(ProfileScreen))

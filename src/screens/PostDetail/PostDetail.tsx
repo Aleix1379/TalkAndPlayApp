@@ -250,7 +250,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     }, [authorId])
 
     useEffect(() => {
-        if (post) {
+        if (post && user.postsSubscribed) {
             setFollowing(user.postsSubscribed.some(postSubscribed => postSubscribed === post.id))
         }
     }, [post])
@@ -744,7 +744,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                     index === comments.length || index % 5 === 0 &&
                                     <View style={{marginTop: 4, marginBottom: 1}}>
                                         <BannerAd
-                                            unitId={TestIds.BANNER}
+                                            unitId='ca-app-pub-3339437277990541/9618328669'
                                             size={BannerAdSize.ADAPTIVE_BANNER}
                                             onAdLoaded={() => {
                                             }}
