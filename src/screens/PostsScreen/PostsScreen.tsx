@@ -19,7 +19,7 @@ import {
 } from "../../types/PostsTypes"
 import HeaderComponent from "../../components/HeaderComponent"
 import PostComponent from "../../components/PostComponent/PostComponent"
-import {BannerAd, BannerAdSize, TestIds} from "@react-native-firebase/admob"
+import {BannerAd, BannerAdSize} from "@react-native-firebase/admob"
 import TextInputComponent from "../../components/TextInputComponent/TextInputComponent"
 import CheckBoxListComponent from "../../components/CheckBoxListComponent/CheckBoxListComponent"
 import ButtonComponent from "../../components/ButtonComponent/ButtonComponent"
@@ -37,6 +37,7 @@ import {DialogOption} from "../../store/dialog/types"
 import {closeDialog, openDialog} from "../../store/dialog/actions"
 import {login} from "../../store/user/actions"
 import DeviceInfo from 'react-native-device-info'
+import AdService from "../../services/AdService";
 
 export interface PostsProperties {
     navigation: any,
@@ -668,7 +669,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                 element.index === this.state.data?.content.length || 1 - 1 || element.index % 5 === 0 &&
                 <View style={{marginTop: 4, marginBottom: 2}}>
                     <BannerAd
-                        unitId='ca-app-pub-3339437277990541/9857664440'
+                        unitId={AdService.getPostsListUnitAd()}
                         size={BannerAdSize.ADAPTIVE_BANNER}
                         onAdLoaded={() => {
                             console.log('Advert loaded')

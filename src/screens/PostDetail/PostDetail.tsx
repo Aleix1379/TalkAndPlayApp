@@ -16,7 +16,7 @@ import {setLoading} from "../../store/loading/actions"
 import ReplyToComponent from "../../components/ReplyToComponent"
 import {closeDialog, openDialog} from "../../store/dialog/actions"
 import {DialogOption} from "../../store/dialog/types"
-import {BannerAd, BannerAdSize, TestIds} from "@react-native-firebase/admob"
+import {BannerAd, BannerAdSize} from "@react-native-firebase/admob"
 import RBSheet from "react-native-raw-bottom-sheet"
 import BottomSheetComponent from "../../components/BottomSheetContentComponent/BottomSheetComponent"
 import UserService from "../../services/User"
@@ -28,6 +28,7 @@ import {ImageResponse} from "../../types/ImageRequest"
 import StarFollowComponent from "../../components/StarFollowComponent"
 import {login} from "../../store/user/actions"
 import firebase from "react-native-firebase"
+import AdService from "../../services/AdService";
 
 interface SnackBar {
     visible: boolean
@@ -744,7 +745,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                     index === comments.length || index % 5 === 0 &&
                                     <View style={{marginTop: 4, marginBottom: 1}}>
                                         <BannerAd
-                                            unitId='ca-app-pub-3339437277990541/9618328669'
+                                            unitId={AdService.getPostDetailUnitAd()}
                                             size={BannerAdSize.ADAPTIVE_BANNER}
                                             onAdLoaded={() => {
                                             }}
