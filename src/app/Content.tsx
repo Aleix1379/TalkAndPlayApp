@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react'
-import {View} from "react-native"
+import {SafeAreaView} from "react-native"
 import Container from "./Container"
 import ContainerAnonymous from "./ContainerAnonymous"
 import {connect, shallowEqual, useSelector} from "react-redux"
@@ -94,24 +94,25 @@ const content: React.FC<ContentProperties> = ({theme, login, closeDialog, setThe
     // }, [user])
 
     return (
-        <View style={{flex: 1, backgroundColor: theme.colors.background}}>
-            <LoadingComponent visible={isLoadingVisible}/>
-            <DialogComponent
-                visible={dialog.visible}
-                onDismiss={() => closeDialog()}
-                title={dialog.title}
-                content={dialog.content}
-                actions={dialog.actions}
-            />
-            <TopSheetComponent
-                visible={topSheet.visible}
-                onChange={topSheet.onChange}
-                options={topSheet.options}
-                top={topSheet.top}
-            />
-            {user.id >= 0 ? <Container/> : <ContainerAnonymous/>}
-
-        </View>
+        <SafeAreaView style={{flex: 1, backgroundColor: theme.colors.background}}>
+            {/*<View style={{flex: 1, backgroundColor: theme.colors.background}}>*/}
+                <LoadingComponent visible={isLoadingVisible}/>
+                <DialogComponent
+                    visible={dialog.visible}
+                    onDismiss={() => closeDialog()}
+                    title={dialog.title}
+                    content={dialog.content}
+                    actions={dialog.actions}
+                />
+                <TopSheetComponent
+                    visible={topSheet.visible}
+                    onChange={topSheet.onChange}
+                    options={topSheet.options}
+                    top={topSheet.top}
+                />
+                {user.id >= 0 ? <Container/> : <ContainerAnonymous/>}
+            {/*</View>*/}
+        </SafeAreaView>
     )
 }
 
