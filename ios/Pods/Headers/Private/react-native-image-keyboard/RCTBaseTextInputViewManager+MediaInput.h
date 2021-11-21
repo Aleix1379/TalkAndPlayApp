@@ -1,0 +1,1 @@
+../../../../../node_modules/react-native-image-keyboard/ios/RCTBaseTextInputViewManager+MediaInput.h

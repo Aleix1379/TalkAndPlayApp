@@ -3,7 +3,7 @@ import {Animated, Dimensions, FlatList, RefreshControl, ScrollView, StyleSheet, 
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {TabBar, TabView} from "react-native-tab-view"
 import {FAB, Modal, Text, withTheme} from "react-native-paper"
-import {NavigationState} from "react-native-tab-view/lib/typescript/src/types"
+import {NavigationState} from "react-native-tab-view/lib/typescript/src/error get messages seentypes"
 import {
     availableChannels,
     availablePlatforms,
@@ -249,16 +249,19 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
 
         const indexSaved = await LocalStorage.getPostTabIndex()
 
+        console.log('indexSaved: => ' + indexSaved)
         if (indexSaved > 0) {
             this.updateIndex(indexSaved)
-        }
-
-        if (this.mounted) {
-            this.loadData()
         } else {
-            typeof this.unsubscribe === "function" && this.unsubscribe()
+            console.log('this.mounted: => ' + this.mounted)
+            if (this.mounted) {
+                this.loadData()
+            } else {
+                typeof this.unsubscribe === "function" && this.unsubscribe()
+            }
         }
     })
+
 
     componentWillUnmount() {
         this.mounted = false
@@ -439,6 +442,8 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                 let result: { [id: number]: number } = SeenMessageUtils.mergeSeenMessages(data, this.props.user.seenMessages)
 
                 if (this.props.user.id >= 0) {
+                    console.log('this.props.user')
+                    console.log(JSON.stringify(this.props.user, null, 2))
                     this.userService.getCommentsUnseen(this.props.user.id, result).then(values => {
                         this.setState({commentsUnSeen: values})
                     }).catch(err => {
@@ -472,6 +477,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                         .then(() => this.setState({form: data}))
                         .catch(err => console.log(err))
                 } else {
+                    console.log('fetchData without filter.......')
                     this.fetchData()
                 }
             })
@@ -496,7 +502,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
             }
 
             if (this.props.user.id >= 0) {
-                this.initNotificationsListener()
+                //this.initNotificationsListener()
                 /*           LocalStorage.getFcmToken()
                                .then((fcmToken: string | null) => {
                                    if (fcmToken) {
@@ -517,14 +523,14 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     }
 
     fetchData = (page: number = 0, filter?: Filter) => {
-        // console.log('set loading true => fetchData')
+        console.log('set loading true => fetchData')
         this.props.setLoading(true)
         this.postService.get(page, this.state.postType, filter)
             .then((response: PostsResponse) => {
-                this.setState({
-                    data: response,
-                    isLast: response.last
-                })
+                const stateData: PostListState = {...this.state}
+                stateData.data = response
+                stateData.isLast = response.last
+                this.setState(stateData)
                 if (this.state.refreshing) {
                     this.setState({refreshing: false})
                 }
@@ -662,7 +668,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                 element.index === this.state.data?.content.length || 1 - 1 || element.index % 5 === 0 &&
                 <View style={{marginTop: 4, marginBottom: 2}}>
                     <BannerAd
-                        unitId='ca-app-pub-3339437277990541/9618328669'
+                        unitId='ca-app-pub-3339437277990541/9857664440'
                         size={BannerAdSize.ADAPTIVE_BANNER}
                         onAdLoaded={() => {
                             console.log('Advert loaded')
@@ -823,6 +829,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     }
 
     updateIndex = (index: number) => {
+        console.log('TAB INDEX')
         if (index !== this.state.lastIndex) {
             this.setState({showModal: false})
         }
@@ -836,6 +843,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
             postType: this.getPostType(index),
             lastIndex: index
         })
+        console.log('tab index | load data')
         this.loadData()
     }
 

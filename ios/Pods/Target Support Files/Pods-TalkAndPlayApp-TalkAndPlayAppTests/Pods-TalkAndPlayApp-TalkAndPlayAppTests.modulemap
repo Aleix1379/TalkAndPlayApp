@@ -1,0 +1,6 @@
+module Pods_TalkAndPlayApp_TalkAndPlayAppTests {
+  umbrella header "Pods-TalkAndPlayApp-TalkAndPlayAppTests-umbrella.h"
+
+  export *
+  module * { export * }
+}

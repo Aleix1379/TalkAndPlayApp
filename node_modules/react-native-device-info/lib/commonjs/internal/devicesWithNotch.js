@@ -81,6 +81,9 @@ const devicesWithNotch = [{
   model: 'POT-LX1'
 }, {
   brand: 'Huawei',
+  model: 'Honor Play'
+}, {
+  brand: 'Huawei',
   model: 'Honor 10'
 }, {
   brand: 'Huawei',
@@ -248,6 +251,9 @@ const devicesWithNotch = [{
 }, {
   brand: 'Samsung',
   model: 'SM-A217F'
+}, {
+  brand: 'Samsung',
+  model: 'SM-A715F'
 }];
 var _default = devicesWithNotch;
 exports.default = _default;

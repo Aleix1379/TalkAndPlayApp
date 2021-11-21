@@ -33,11 +33,11 @@ export interface PostInfo {
     game: string
     language: Option
     platforms: Option[]
-    user: User | null
+    user?: User | null
     lastUpdate: any
     postType: PostType
     channels?: Channel[]
-    lastAuthor: User | null
+    lastAuthor?: User | null
 }
 
 export interface UserPost {

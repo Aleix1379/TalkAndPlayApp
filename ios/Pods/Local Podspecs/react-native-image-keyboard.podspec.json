@@ -1,0 +1,28 @@
+{
+  "name": "react-native-image-keyboard",
+  "version": "2.0.0",
+  "summary": "Enables clipboard image pasting and GIFs from TextInput.",
+  "description": "react-native-media-input",
+  "homepage": "https://github.com/Gustash/react-native-image-keyboard",
+  "license": {
+    "type": "GPLv3",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "Gustavo Parreira": "gustavotcparreira@gmail.com"
+  },
+  "platforms": {
+    "ios": "9.0"
+  },
+  "source": {
+    "git": "https://github.com/Gustash/react-native-image-keyboard.git",
+    "tag": "2.0.0"
+  },
+  "source_files": "ios/**/*.{h,m,swift}",
+  "requires_arc": true,
+  "dependencies": {
+    "React": [
+
+    ]
+  }
+}

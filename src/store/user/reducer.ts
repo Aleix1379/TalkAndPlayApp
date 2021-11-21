@@ -3,7 +3,7 @@ import {UserAction} from './types'
 import {User} from "../../types/PostsTypes"
 
 const initialState: User = {
-    id: 0,
+    id: -1,
     name: '',
     email: '',
     languages: [],

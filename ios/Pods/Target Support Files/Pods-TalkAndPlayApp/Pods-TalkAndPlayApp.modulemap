@@ -1,0 +1,6 @@
+module Pods_TalkAndPlayApp {
+  umbrella header "Pods-TalkAndPlayApp-umbrella.h"
+
+  export *
+  module * { export * }
+}
