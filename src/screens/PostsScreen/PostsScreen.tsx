@@ -443,8 +443,6 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                 let result: { [id: number]: number } = SeenMessageUtils.mergeSeenMessages(data, this.props.user.seenMessages)
 
                 if (this.props.user.id >= 0) {
-                    console.log('this.props.user')
-                    console.log(JSON.stringify(this.props.user, null, 2))
                     this.userService.getCommentsUnseen(this.props.user.id, result).then(values => {
                         this.setState({commentsUnSeen: values})
                     }).catch(err => {

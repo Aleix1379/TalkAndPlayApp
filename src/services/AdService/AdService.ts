@@ -3,6 +3,7 @@ import {Platform} from "react-native";
 class AdService {
 
     private static getUnitAd(androidId: string ,iOSId: string) {
+        console.log('Platform.OS: ' + Platform.OS)
         return Platform.OS === 'ios' ? iOSId : androidId
     }
 
