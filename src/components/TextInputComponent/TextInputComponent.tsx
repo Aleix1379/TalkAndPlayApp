@@ -92,7 +92,8 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
             paddingRight: password ? 40 : 0,
             color: textColor,
             backgroundColor: 'rgba(20,20,20, 0.6)',
-            lineHeight: 15
+            lineHeight: 15,
+            height: 36
         },
         icon: {
             position: "absolute",
@@ -112,6 +113,7 @@ const TextInputComponent: React.FC<TextInputProperties> = ({
 
     const getStyles = (): StyleProp<ViewStyle> => {
         let item: StyleProp<ViewStyle> = {
+            height: 40,
             marginTop: label ? 10 : 0,
             display: "flex",
             borderWidth: 2,
