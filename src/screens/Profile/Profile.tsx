@@ -3,7 +3,7 @@ import {Dimensions, GestureResponderEvent, StyleSheet, useWindowDimensions, View
 import {logout} from "../../store/user/actions"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {ModalOption} from "../PostDetail/PostDetail"
-import {SceneMap, TabBar, TabView} from "react-native-tab-view"
+import {SceneMap, TabView} from "react-native-tab-view"
 import {connect, shallowEqual, useSelector} from 'react-redux'
 import {Snackbar, Text, withTheme} from "react-native-paper"
 import HeaderComponent from "../../components/HeaderComponent"
@@ -108,8 +108,10 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, logout})
     }, shallowEqual)
 
     useEffect(() => {
+        console.log('oldIndex: ' + oldIndex)
+        console.log('index: ' + index)
         if (oldIndex !== index) {
-            setIndex(oldIndex)
+            setIndex(oldIndex + 1)
         }
 
         loadFollowCounter()
@@ -288,12 +290,12 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, logout})
                 renderScene={renderScene}
                 onIndexChange={(num => setIndex(num))}
                 initialLayout={{width: layout.width}}
-                renderTabBar={props => (
-                    <TabBar
-                        indicatorStyle={{backgroundColor: theme.colors.text}}
-                        style={styles.tab} {...props}
-                    />
-                )}
+                // renderTabBar={props => (
+                //     <TabBar
+                //         indicatorStyle={{backgroundColor: theme.colors.text}}
+                //         style={styles.tab} {...props}
+                //     />
+                // )}
             />
 
             <RBSheet
