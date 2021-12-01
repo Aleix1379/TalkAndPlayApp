@@ -3,7 +3,7 @@ import {Dimensions, GestureResponderEvent, StyleSheet, useWindowDimensions, View
 import {logout} from "../../store/user/actions"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {ModalOption} from "../PostDetail/PostDetail"
-import {SceneMap, TabBar, TabView} from "react-native-tab-view"
+import {NavigationState, SceneMap, TabBar, TabView} from "react-native-tab-view"
 import {connect, shallowEqual, useSelector} from 'react-redux'
 import {Snackbar, Text, withTheme} from "react-native-paper"
 import HeaderComponent from "../../components/HeaderComponent"
@@ -32,9 +32,20 @@ interface SnackBar {
     color?: string
 }
 
+interface RouteItem {
+    key: string
+    title: string
+}
+
 const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, logout}) => {
     const refRBSheet = useRef()
-    const [index, setIndex] = useState(0)
+    const [navigationState, setNavigationState] = useState<NavigationState<RouteItem>>({
+        index: 0,
+        routes: [
+            {key: 'info', title: 'Info'},
+            {key: 'accounts', title: 'Accounts'}
+        ]
+    })
     const [followCounter, setFollowCounter] = useState<FollowCounter>({
         following: 0,
         followers: 0
@@ -45,6 +56,7 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, logout})
         color: theme.colors.primary
     })
     const oldIndex = navigation.state?.params?.index
+    console.log('OLD INDEX: ' + oldIndex)
     let unsubscribe: Function | null = null
     const styles = StyleSheet.create({
         tab: {
@@ -62,7 +74,6 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, logout})
             paddingTop: 8,
             display: "flex",
             flex: 1,
-            // alignItems: "center"
         },
         avatar: {
             marginTop: 16,
@@ -108,10 +119,6 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, logout})
     }, shallowEqual)
 
     useEffect(() => {
-        if (oldIndex !== index) {
-            setIndex(oldIndex)
-        }
-
         loadFollowCounter()
         unsubscribe = navigation.addListener('didFocus', async () => {
             loadFollowCounter()
@@ -124,12 +131,8 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, logout})
     }, [])
 
     useEffect(() => {
-        console.log('USER => ' + JSON.stringify(user, null, 2))
-    }, [user])
-
-    useEffect(() => {
         loadPostOptions()
-    }, [index])
+    }, [navigationState.index])
 
     const loadFollowCounter = () => {
         userService.getFollowCounter(user.id)
@@ -144,10 +147,10 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, logout})
     }
 
     const goToEdit = () => {
-        console.log('Go to edit index => ' + index)
-        if (index === 0) {
+        console.log('Go to edit index => ' + navigationState.index)
+        if (navigationState.index === 0) {
             navigation.navigate('ProfileEdit')
-        } else if (index === 1) {
+        } else if (navigationState.index === 1) {
             navigation.navigate('UserAccountsEdit')
         }
     }
@@ -179,7 +182,7 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, logout})
     }
 
     const UserScreen = () => (
-        <>
+        <View style={{flex: 1}}>
             {
                 user &&
                 <View style={styles.user}>
@@ -201,7 +204,7 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, logout})
                     />
                 </View>
             }
-        </>
+        </View>
     )
     const AccountsRoute = () => {
         let startX = 0
@@ -263,11 +266,6 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, logout})
 
     const layout = useWindowDimensions()
 
-    const [routes] = React.useState([
-        {key: 'info', title: 'Info'},
-        {key: 'accounts', title: 'Accounts'},
-    ])
-
     const toggleModal = () => {
         // @ts-ignore
         refRBSheet.current?.open()
@@ -284,10 +282,13 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, logout})
                 } : undefined}
             />
             <TabView
-                navigationState={{index, routes}}
+                lazy={false}
+                navigationState={navigationState}
                 renderScene={renderScene}
-                onIndexChange={(num => setIndex(num))}
-                initialLayout={{width: layout.width}}
+                onIndexChange={(num) =>  setNavigationState(
+                    {...navigationState, ...{num}}
+                )}
+                initialLayout={{height: layout.height, width: layout.width}}
                 renderTabBar={props => (
                     <TabBar
                         indicatorStyle={{backgroundColor: theme.colors.text}}

@@ -103,12 +103,12 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
             marginLeft: 12,
             right: 5,
             shadowOffset: {
-                width: 10,
-                height: 10,
+                width: 2,
+                height: 2,
             },
-            shadowOpacity: 1,
-            shadowRadius: 5,
-            elevation: 25
+            shadowOpacity: 0.75,
+            shadowRadius: 10,
+            elevation: 10
         }
     })
 

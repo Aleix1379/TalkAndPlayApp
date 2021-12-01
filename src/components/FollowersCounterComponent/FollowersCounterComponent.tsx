@@ -15,9 +15,10 @@ const FollowersCounterComponent: React.FC<FollowersCounterProperties> = ({
                                                                              followCounter,
                                                                              onPress
                                                                          }) => {
-    const locale =
+/*    const locale =
         Platform.OS === 'ios'
-            ? NativeModules.SettingsManager.settings.AppleLocale.replace("_", "-")
+            ? NativeModules.SettingsManager.settings.AppleLocale ||
+                NativeModules.SettingsManager.settings.AppleLanguages[0]
             : NativeModules.I18nManager.localeIdentifier.replace("_", "-")
 
     console.log('locale -> ' + locale)
@@ -25,7 +26,7 @@ const FollowersCounterComponent: React.FC<FollowersCounterProperties> = ({
     if (Platform.OS === 'android') { // only android needs polyfill
         require('intl') // import intl object
         require('intl/locale-data/jsonp/ca-ES') // load the required locale details
-    }
+    }*/
 
     const styles = StyleSheet.create({
         followersCounter: {
