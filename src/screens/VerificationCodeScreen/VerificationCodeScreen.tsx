@@ -37,13 +37,13 @@ const VerificationCodeScreen: React.FC<VerificationCodeProperties> = ({navigatio
             paddingHorizontal: 24
         },
         image: {
-            marginBottom: 24,
+            marginVertical: 30,
             alignSelf: "center"
         },
         title: {
             marginBottom: 16,
             fontSize: 18,
-            textAlign: "center"
+            textAlign: "center",
         },
         snackBarContainer: {
             backgroundColor: theme.colors.error,
@@ -75,8 +75,6 @@ const VerificationCodeScreen: React.FC<VerificationCodeProperties> = ({navigatio
                             // setErrorMessage('')
                             navigation.navigate('PasswordEditWithCode', {verificationCode: data.join(''), email})
                         } else {
-                            console.log('error verifyPassword')
-                            console.log(result.message)
                             setSnackbar({
                                 visible: true,
                                 content: result.message
@@ -112,25 +110,23 @@ const VerificationCodeScreen: React.FC<VerificationCodeProperties> = ({navigatio
                 }}
             />
             <View style={styles.verificationCode}>
-                <ScrollView>
+                <Image width={Dimensions.get('window').width * 0.5} style={styles.image}
+                       source={require('../../assets/images/undraw_secure_login_pdn4.png')}/>
 
-                    <Image width={Dimensions.get('window').width * 0.5} style={styles.image}
-                           source={require('../../assets/images/undraw_secure_login_pdn4.png')}/>
+                <Text style={styles.title}>Enter the verification code we just sent you on your email address</Text>
 
-                    <Text style={styles.title}>Enter the verification code we just sent you on your email address</Text>
+                <ValidationCodeComponent values={values} length={length} style={{marginBottom: 16}}/>
 
-                    <ValidationCodeComponent values={values} length={length} style={{marginBottom: 16}}/>
-
-                    {/*               <View style={styles.errorContainer}>
+                {/*               <View style={styles.errorContainer}>
                         {
                             errorMessage.length > 0 &&
                             <Text style={styles.error}>{errorMessage}</Text>
                         }
                     </View>*/}
 
+                <View style={{marginTop: 'auto', marginBottom: 16}}>
                     <KeyboardComponent onPress={(value => pressKey(value))}/>
-
-                </ScrollView>
+                </View>
             </View>
         </>
     )

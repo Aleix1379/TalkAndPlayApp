@@ -12,12 +12,13 @@ const InputCodeComponent: React.FC<InputCodeProperties> = ({theme, value}) => {
     const styles = StyleSheet.create({
         inputCode: {
             height: 40,
-            width: 40,
+            width: 30,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             borderBottomColor: theme.colors.accent,
-            borderBottomWidth: 2
+            borderBottomWidth: 2,
+            marginHorizontal: 10
         },
         value: {
             fontSize: 25
