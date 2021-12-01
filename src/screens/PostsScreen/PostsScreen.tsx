@@ -1,9 +1,8 @@
 import React from 'react'
 import {Animated, Dimensions, FlatList, Platform, RefreshControl, ScrollView, StyleSheet, View} from "react-native"
 import {Theme} from "react-native-paper/lib/typescript/types"
-import {TabBar, TabView} from "react-native-tab-view"
+import {NavigationState, TabBar, TabView} from "react-native-tab-view"
 import {FAB, Modal, Text, withTheme} from "react-native-paper"
-import {NavigationState} from "react-native-tab-view/lib/typescript/src/error get messages seentypes"
 import {
     availableChannels,
     availablePlatforms,
@@ -474,6 +473,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                         .then(() => this.setState({form: data}))
                         .catch(err => console.log(err))
                 } else {
+                    console.log('else fetch data...')
                     this.fetchData()
                 }
             })
