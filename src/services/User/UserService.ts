@@ -176,6 +176,20 @@ class UserService extends Api {
             .then((res) => res.data)
     }
 
+    blockUser(userId: number, userToBlock: number): Promise<number[]> {
+        return this.http.put(`${this.getUrl(userId)}/blocked`, {userId: userToBlock})
+            .then((res) => res.data)
+    }
+
+    unblockUser(userId: number, userToBlock: number): Promise<number[]> {
+        return this.http.delete(`${this.getUrl(userId)}/blocked/${userToBlock}`)
+            .then((res) => res.data)
+    }
+
+    findByIds(ids: number[]): Promise<User[]> {
+        return this.http.get(`${this.getUrl()}?ids=${ids}`).then((res) => res.data)
+    }
+
 }
 
 export default UserService

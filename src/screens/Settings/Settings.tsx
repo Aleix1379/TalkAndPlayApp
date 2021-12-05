@@ -1,7 +1,7 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {withTheme} from 'react-native-paper'
 import {Theme} from "react-native-paper/lib/typescript/types"
-import {StyleSheet, View} from "react-native"
+import {BackHandler, StyleSheet, View} from "react-native"
 import ButtonComponent from "../../components/ButtonComponent"
 import {connect, shallowEqual, useSelector} from "react-redux"
 import {logout} from "../../store/user/actions"
@@ -29,6 +29,23 @@ const SettingsScreen: React.FC<SettingsProperties> = ({navigation, theme, logout
     // const isDarkTheme: boolean = useSelector((state: ApplicationState) => {
     //     return state.theme.isDarkTheme
     // }, shallowEqual)
+
+    const goBack = () => {
+        navigation.goBack()
+    }
+
+    const handleBackButtonClick = (): boolean => {
+        goBack()
+        return true
+    }
+
+    useEffect(() => {
+        BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick)
+
+        return () => {
+            BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick)
+        }
+    }, [])
 
     const styles = StyleSheet.create({
         settings: {
@@ -71,7 +88,7 @@ const SettingsScreen: React.FC<SettingsProperties> = ({navigation, theme, logout
     }
 
     // const updateTheme = () => {
-    //     setTheme(isDarkTheme ? 'light' : 'dark')
+    //     setTheme(isDarkTheme ? 'light' : 'dark')N
     //     LocalStorage.setTheme(isDarkTheme ? 'light' : 'dark')
     //         .then(() => DevSettings.reload())
     //         .catch(err => console.log(err))
@@ -84,7 +101,7 @@ const SettingsScreen: React.FC<SettingsProperties> = ({navigation, theme, logout
                 title="Settings"
                 leftAction={{
                     image: "arrow-left",
-                    onPress: () => navigation.navigate('Profile')
+                    onPress: () => goBack()
                 }}
             />
 
@@ -99,6 +116,13 @@ const SettingsScreen: React.FC<SettingsProperties> = ({navigation, theme, logout
                                      label="Delete account"
                                      icon="delete-forever"
                                      onPress={() => setShowDialog(true)}
+                    />
+
+                    <ButtonComponent
+                        label="Blocked accounts"
+                        icon="account-cancel"
+                        onPress={() => navigation.navigate("BlockedUsers")}
+                        style={{marginTop: 24}}
                     />
 
                     <ButtonComponent label="Change password"

@@ -16,6 +16,7 @@ export type User = {
     devices: Device[]
     postsSubscribed: number[]
     notifications: Notification[]
+    blocked: number[]
 }
 
 export enum PostType {

@@ -56,7 +56,6 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, logout})
         color: theme.colors.primary
     })
     const oldIndex = navigation.state?.params?.index
-    console.log('OLD INDEX: ' + oldIndex)
     let unsubscribe: Function | null = null
     const styles = StyleSheet.create({
         tab: {

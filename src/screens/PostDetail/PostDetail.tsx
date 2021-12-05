@@ -28,7 +28,7 @@ import {ImageResponse} from "../../types/ImageRequest"
 import StarFollowComponent from "../../components/StarFollowComponent"
 import {login} from "../../store/user/actions"
 import firebase from "react-native-firebase"
-import AdService from "../../services/AdService";
+import AdService from "../../services/AdService"
 
 interface SnackBar {
     visible: boolean
@@ -327,7 +327,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
             options.push({
                 id: 'report',
                 icon: 'alert',
-                title: 'Report',
+                title: 'Report post',
                 action: reportPost
             })
         }
@@ -381,11 +381,11 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                     post.id,
                     scrollTo === 'bottom' && page
                         ? page.totalOfElements < page.totalPages * size
-                        ? page.totalPages - 1
-                        : page.totalPages
+                            ? page.totalPages - 1
+                            : page.totalPages
                         : newPage! >= 0
-                        ? newPage
-                        : currentPage,
+                            ? newPage
+                            : currentPage,
                     size
                 )
                 .then((data) => {
@@ -612,6 +612,10 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         }
     }
 
+    const updateBlockList = (newList: number[]) => {
+        login({...user, blocked: newList})
+    }
+
     return (
         <>
             <PageInputModalComponent
@@ -722,12 +726,21 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                             >
                                 <CommentComponent
                                     key={comment.id}
+                                    blocked={user.blocked}
                                     comment={comment}
                                     checkVisible={() => loadComment(comment)}
                                     reply={(comment) => reply(comment)}
                                     onCommentDelete={(id: number | null) => deleteComment(id)}
                                     editComment={(comment) => editComment(comment)}
                                     onReport={(id) => reportComment(id)}
+                                    onBlockUser={(userToBlock: number) => {
+                                        userService.blockUser(user.id, userToBlock)
+                                            .then(result => updateBlockList(result))
+                                    }}
+                                    onUnblockUser={(userToBlock: number) => {
+                                        userService.unblockUser(user.id, userToBlock)
+                                            .then(result => updateBlockList(result))
+                                    }}
                                     goToProfile={(email) => {
                                         if (user.id >= 0 && user.id !== comment.author?.id) {
                                             navigation.navigate('ProfileViewer', {

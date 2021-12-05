@@ -24,6 +24,8 @@ import BottomSheetComponent from "../BottomSheetContentComponent"
 import {closeDialog, openDialog} from "../../store/dialog/actions"
 import RBSheet from "react-native-raw-bottom-sheet"
 import {REACT_APP_IMAGES_URL} from "@env";
+import ButtonComponent from "../ButtonComponent";
+import userService from "../../services/User";
 
 interface CommentProperties {
     comment: Comment
@@ -36,6 +38,9 @@ interface CommentProperties {
     editComment: (comment: Comment) => void
     onReport: (id: number) => void
     goToProfile: (email: string) => void
+    blocked: number[]
+    onBlockUser: (userToBlock: number) => void
+    onUnblockUser: (userToBlock: number) => void
 }
 
 const CommentComponent: React.FC<CommentProperties> = ({
@@ -48,7 +53,10 @@ const CommentComponent: React.FC<CommentProperties> = ({
                                                            closeDialog,
                                                            editComment,
                                                            onReport,
-                                                           goToProfile
+                                                           goToProfile,
+                                                           blocked,
+                                                           onBlockUser,
+                                                           onUnblockUser
                                                        }) => {
     const refRBSheet = useRef()
     const [options, setOptions] = useState<ModalOption[]>([])
@@ -56,10 +64,12 @@ const CommentComponent: React.FC<CommentProperties> = ({
     let replies: any[] = []
     const [resultReplies, setResultReplies] = useState<any>([])
     const {height, width} = Dimensions.get('screen')
+    const [userBlocked, setUserBlocked] = useState<boolean>(blocked.some(id => id === comment.author?.id))
 
     const user: User = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
+
     const styles = StyleSheet.create({
         comment: {
             backgroundColor: theme.colors.primary,
@@ -109,6 +119,9 @@ const CommentComponent: React.FC<CommentProperties> = ({
             fontSize: 18,
             marginLeft: 16,
             flex: 1,
+        },
+        unavailable: {
+            color: '#747474'
         }
     })
 
@@ -135,8 +148,51 @@ const CommentComponent: React.FC<CommentProperties> = ({
         }
     }
 
+    const blockUser = () => {
+        openDialog(
+            "Block user",
+            [`You will not see comments or receive messages from @${comment.author?.name}`],
+            [
+                {
+                    label: 'Cancel',
+                    onPress: () => closeDialog()
+                },
+                {
+                    label: 'Block',
+                    backgroundColor: theme.colors.error,
+                    onPress: () => {
+                        onBlockUser(comment.author?.id || -1)
+                        closeDialog()
+                    }
+                }
+            ]
+        )
+    }
+
+    const unblockUser = () => {
+        openDialog(
+            "Unblock user",
+            [`You will see comments or receive messages from @${comment.author?.name}`],
+            [
+                {
+                    label: 'Cancel',
+                    onPress: () => closeDialog()
+                },
+                {
+                    label: 'Unblock',
+                    backgroundColor: theme.colors.error,
+                    onPress: () => {
+                        onUnblockUser(comment.author?.id || -1)
+                        closeDialog()
+                    }
+                }
+            ]
+        )
+    }
+
     const showExtraOptions = (): boolean => (!!comment.text || comment.images.length > 0) && user.id >= 0
-    useEffect(() => {
+
+    function updateModalOptions() {
         const values: ModalOption[] = []
 
         if (!!comment.text && user?.id !== comment.author?.id && user.id >= 0) {
@@ -144,14 +200,30 @@ const CommentComponent: React.FC<CommentProperties> = ({
                 id: 'reply',
                 action: () => reply(comment),
                 icon: 'reply',
-                title: 'Reply'
+                title: 'Reply comment'
             })
             values.push({
                 id: 'report',
                 action: () => sendReport(),
                 icon: 'alert',
-                title: 'Report'
+                title: 'Report comment'
             })
+
+            if (userBlocked) {
+                values.push({
+                    id: 'unblock',
+                    action: () => unblockUser(),
+                    icon: 'account',
+                    title: 'Unblock user'
+                })
+            } else {
+                values.push({
+                    id: 'block',
+                    action: () => blockUser(),
+                    icon: 'account-cancel',
+                    title: 'Block user'
+                })
+            }
         } else if (showExtraOptions()) {
             values.push({
                 id: 'edit',
@@ -184,9 +256,18 @@ const CommentComponent: React.FC<CommentProperties> = ({
         }
 
         setOptions(values)
+    }
 
+    useEffect(() => {
+        updateModalOptions()
         displayReplies(comment.reply)
     }, [])
+
+    useEffect(() => {
+         setUserBlocked(blocked.some(id => id === comment.author?.id))
+    }, [blocked])
+
+    useEffect(() => updateModalOptions(), [userBlocked])
 
     const getQuotes = (max: number): string => {
         let quotes = '>'
@@ -337,7 +418,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
             <View style={styles.details}>
                 {
                     !comment.author &&
-                    <Text style={{marginLeft: 8, color: '#747474'}}>💀 User deleted</Text>
+                    <Text style={[{marginLeft: 8}, styles.unavailable]}>💀 User deleted</Text>
                 }
                 {
                     comment.author &&
@@ -388,7 +469,32 @@ const CommentComponent: React.FC<CommentProperties> = ({
             />
 
             {
-                comment.author && (comment.text.length > 0 || comment.text.length === 0 && comment.images.length === 0) &&
+                userBlocked &&
+                <View style={{marginLeft: 8, marginBottom: 8}}>
+                    <Text style={[{fontWeight: 'bold'}, styles.unavailable]}>@{comment.author?.name} is blocked</Text>
+                    <Text style={styles.unavailable}>
+                        Are you sure you want to view this comment? Viewing this comment
+                        won't unblock {comment.author?.name}
+                    </Text>
+
+                    <ButtonComponent
+                        label="View comment"
+                        fontSize={12}
+                        onPress={() => setUserBlocked(false)}
+                        style={{
+                            backgroundColor: theme.colors.background,
+                            height: 20,
+                            width: 100,
+                            marginTop: 16,
+                            marginBottom: 8,
+                            alignSelf: 'center'
+                        }}
+                    />
+                </View>
+            }
+
+            {
+                !userBlocked && comment.author && (comment.text.length > 0 || comment.text.length === 0 && comment.images.length === 0) &&
                 <Markdown
                     styles={{
                         text: {

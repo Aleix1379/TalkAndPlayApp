@@ -12,6 +12,7 @@ interface ButtonProperties {
     theme: Theme
     style?: StyleProp<ViewStyle>
     disabled?: boolean
+    fontSize?: number
 }
 
 const ButtonComponent: React.FC<ButtonProperties> = ({
@@ -20,12 +21,13 @@ const ButtonComponent: React.FC<ButtonProperties> = ({
                                                          onPress,
                                                          theme,
                                                          style,
-                                                         disabled = false
+                                                         disabled = false,
+                                                         fontSize = 20
                                                      }) => {
     const [isPressed, setIsPressed] = useState(false)
     const styles = StyleSheet.create({
         label: {
-            fontSize: 20,
+            fontSize: fontSize,
             color: disabled ? '#333333' : '#e0e0e0'
         }
     })

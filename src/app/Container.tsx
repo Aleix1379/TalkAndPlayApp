@@ -20,6 +20,7 @@ import PostsScreen from "../screens/PostsScreen"
 import UserAccountsEditScreen from "../screens/UserAccountsEditScreen"
 import FollowingFollowersListScreen from "../screens/FollowingFollowersListScreen"
 import NotificationsListScreen from "../screens/NotificationsListScreen";
+import BlockedUsersScreen from "../screens/BlockedUsersScreen";
 
 const PostsStack = createStackNavigator({
     Home: {
@@ -143,6 +144,12 @@ const HomeDetailStack = createStackNavigator({
     },
     NotificationsList: {
         screen: NotificationsListScreen,
+        navigationOptions: {
+            headerShown: false
+        }
+    },
+    BlockedUsers: {
+        screen: BlockedUsersScreen,
         navigationOptions: {
             headerShown: false
         }

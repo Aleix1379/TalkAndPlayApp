@@ -669,9 +669,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                     <BannerAd
                         unitId={AdService.getPostsListUnitAd()}
                         size={BannerAdSize.ADAPTIVE_BANNER}
-                        onAdLoaded={() => {
-                            console.log('Advert loaded')
-                        }}
+                        onAdLoaded={() => {}}
                         onAdFailedToLoad={(error) => {
                             console.error('Advert failed to load: ', error)
                         }}
