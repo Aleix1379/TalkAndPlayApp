@@ -13,6 +13,7 @@ import PasswordEditWithCodeScreen from "../screens/PasswordEditWithCodeScreen/Pa
 import ShowConditionsScreen from "../screens/ShowConditionsScreen"
 import ErrorScreen from "../screens/ErrorScreen"
 import PostsScreen from "../screens/PostsScreen/PostsScreen"
+import ShowEulaScreen from "../screens/ShowEulaScreen";
 
 const PostsStack = createStackNavigator({
     Home: {
@@ -96,6 +97,12 @@ const HomeDetailStack = createStackNavigator({
     },
     Error: {
         screen: ErrorScreen,
+        navigationOptions: {
+            headerShown: false
+        }
+    },
+    ShowEula: {
+        screen: ShowEulaScreen,
         navigationOptions: {
             headerShown: false
         }

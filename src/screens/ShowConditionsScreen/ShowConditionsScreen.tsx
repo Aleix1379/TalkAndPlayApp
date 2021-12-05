@@ -47,6 +47,13 @@ With respect to Aleix Martínez Pena’s responsibility for your use of the app,
 
 At some point, we may wish to update the app. The app is currently available on Android & iOS – the requirements for both systems(and for any additional systems we decide to extend the availability of the app to) may change, and you’ll need to download the updates if you want to keep using the app. Aleix Martínez Pena does not promise that it will always update the app so that it is relevant to you and/or works with the Android & iOS version that you have installed on your device. However, you promise to always accept updates to the application when offered to you, We may also wish to stop providing the app, and may terminate use of it at any time without giving notice of termination to you. Unless we tell you otherwise, upon any termination, (a) the rights and licenses granted to you in these terms will end; (b) you must stop using the app, and (if needed) delete it from your device.
 
+**Objectionable Content Policy**
+
+Content or User which is Objectionable will be blocked from Talk And Play App by moderators Objectionable Content. Objectionable Content includes, but is not limited to:
+(i) sexually explicit materials;
+(ii) obscene, defamatory, libelous, slanderous, violent and/or unlawful content or profanity;
+(iii) content that infringes upon the rights of any third party, including copyright, trademark, privacy, publicity or other personal or proprietary right, or that is deceptive or fraudulent; (iv) content that promotes the use or sale of illegal or regulated substances, tobacco products, ammunition and/or firearms; and (v) gambling, including without limitation, any online casino, sports books, bingo or poker.
+
 **Changes to This Terms and Conditions**
 
 I may update our Terms and Conditions from time to time. Thus, you are advised to review this page periodically for any changes. I will notify you of any changes by posting the new Terms and Conditions on this page.

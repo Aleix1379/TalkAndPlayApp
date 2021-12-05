@@ -6,5 +6,9 @@ export interface Conditions {
     termsOfUse: {
         value: boolean,
         text: string
+    },
+    eula: {
+        value: boolean,
+        text: string
     }
 }

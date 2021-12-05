@@ -51,6 +51,10 @@ const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login,
         termsOfUse: {
             text: 'I have read and agree with the terms and conditions',
             value: false
+        },
+        eula: {
+            text: 'I have read and agree with EULA',
+            value: false
         }
     })
     const [focused, setFocused] = useState(false)
@@ -260,7 +264,12 @@ const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login,
     }
 
     const showConditions = (id: string) => {
-        navigation.navigate('ShowConditions', {id})
+        if (id === 'eula') {
+            console.log(`show conditions => ${id}`)
+            navigation.navigate('ShowEula')
+        } else {
+            navigation.navigate('ShowConditions', {id})
+        }
     }
 
     return (
@@ -352,6 +361,14 @@ const RegisterScreen: React.FC<RegisterProperties> = ({theme, setLoading, login,
                         text={conditions.termsOfUse.text}
                         show={(id) => showConditions(id)}
                     />
+
+{/*                    <ConditionComponent
+                        id={'eula'}
+                        value={conditions.eula.value}
+                        onChangeValue={() => toggleConditions('eula')}
+                        text={conditions.eula.text}
+                        show={(id) => showConditions(id)}
+                    />*/}
 
                     <ButtonComponent
                         label="Create account"
