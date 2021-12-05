@@ -237,7 +237,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                     updateMessagesSeen()
                 }
             }
-        }, [user]
+        }, []
     )
 
     useEffect(() => {

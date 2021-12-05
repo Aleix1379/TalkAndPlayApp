@@ -195,7 +195,10 @@ const CommentComponent: React.FC<CommentProperties> = ({
     function updateModalOptions() {
         const values: ModalOption[] = []
 
-        if (!!comment.text && user?.id !== comment.author?.id && user.id >= 0) {
+        console.log('USER.ID = ' + user?.id)
+        console.log('comment author = ' + comment.author?.id)
+
+        if ((!!comment.text || comment.images.length > 0) && user?.id !== comment.author?.id && user.id >= 0) {
             values.push({
                 id: 'reply',
                 action: () => reply(comment),
@@ -264,7 +267,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
     }, [])
 
     useEffect(() => {
-         setUserBlocked(blocked.some(id => id === comment.author?.id))
+        setUserBlocked(blocked.some(id => id === comment.author?.id))
     }, [blocked])
 
     useEffect(() => updateModalOptions(), [userBlocked])
@@ -456,22 +459,29 @@ const CommentComponent: React.FC<CommentProperties> = ({
 
             {resultReplies}
 
-            <ImageCarouselComponent
-                dataImages={comment.images}
-                height={height - 230}
-                width={width}
-                style={{
-                    position: 'relative',
-                    marginTop: 8,
-                    marginBottom: comment.text.length === 0 && comment.images.length > 0 ? 0 : 8
-                }}
-                bottomThumbList={10}
-            />
+            {
+                !userBlocked &&
+                <ImageCarouselComponent
+                    dataImages={comment.images}
+                    height={height - 230}
+                    width={width}
+                    style={{
+                        position: 'relative',
+                        marginTop: 8,
+                        marginBottom: comment.text.length === 0 && comment.images.length > 0 ? 0 : 8
+                    }}
+                    bottomThumbList={10}
+                />
+            }
 
             {
                 userBlocked &&
                 <View style={{marginLeft: 8, marginBottom: 8}}>
-                    <Text style={[{fontWeight: 'bold'}, styles.unavailable]}>@{comment.author?.name} is blocked</Text>
+                    <Text style={[{
+                        fontWeight: 'bold',
+                        marginTop: 12,
+                        marginBottom: 6
+                    }, styles.unavailable]}>@{comment.author?.name} is blocked</Text>
                     <Text style={styles.unavailable}>
                         Are you sure you want to view this comment? Viewing this comment
                         won't unblock {comment.author?.name}
