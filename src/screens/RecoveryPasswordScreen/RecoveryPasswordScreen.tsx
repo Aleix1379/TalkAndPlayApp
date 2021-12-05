@@ -13,8 +13,8 @@ import {connect} from "react-redux"
 import {setLoading} from "../../store/loading/actions"
 
 interface RecoveryPasswordProperties {
-    navigation: any,
-    theme: Theme,
+    navigation: any
+    theme: Theme
     setLoading: Function
 }
 

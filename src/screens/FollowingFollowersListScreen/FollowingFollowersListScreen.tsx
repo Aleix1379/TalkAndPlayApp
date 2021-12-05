@@ -3,16 +3,18 @@ import {BackHandler, Dimensions, ScrollView, StyleSheet, View} from "react-nativ
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {Text, withTheme} from "react-native-paper"
 import UserService from "../../services/User"
-import {shallowEqual, useSelector} from "react-redux"
+import {connect, shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
 import HeaderComponent from "../../components/HeaderComponent"
 import UserItemComponent from "../../components/UserItemComponent"
 import Image from "react-native-scalable-image"
 import {User} from "../../types/PostsTypes"
+import {setLoading} from "../../store/loading/actions"
 
 interface FollowingFollowersListProperties {
     theme: Theme
     navigation: any
+    setLoading: Function
 }
 
 interface FollowState {
@@ -20,7 +22,7 @@ interface FollowState {
     follower: boolean
 }
 
-const FollowingFollowersListScreen: React.FC<FollowingFollowersListProperties> = ({theme, navigation}) => {
+const FollowingFollowersListScreen: React.FC<FollowingFollowersListProperties> = ({theme, navigation, setLoading}) => {
     const styles = StyleSheet.create({
         container: {
             flex: 1,
@@ -65,10 +67,13 @@ const FollowingFollowersListScreen: React.FC<FollowingFollowersListProperties> =
     useEffect(() => {
         BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick)
 
-        loadData().catch(err => {
-            console.log('error load data')
-            console.log(err)
-        })
+        setLoading(true)
+        loadData()
+            .catch(err => {
+                console.log('error load data')
+                console.log(err)
+            })
+            .finally(() => setLoading(false))
 
         return () => {
             BackHandler.removeEventListener('hardwareBackPress', handleBackButtonClick)
@@ -172,4 +177,6 @@ const FollowingFollowersListScreen: React.FC<FollowingFollowersListProperties> =
     )
 }
 
-export default withTheme(FollowingFollowersListScreen)
+export default connect(null, {
+    setLoading: setLoading
+})(withTheme(FollowingFollowersListScreen))
