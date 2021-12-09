@@ -359,7 +359,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
 
     loadToken = async () => {
         let fcmToken = await LocalStorage.getFcmToken()
-        if (!fcmToken) {
+        if (!fcmToken && this.props.user.id >= 0) {
             fcmToken = await firebase.messaging().getToken()
             if (fcmToken) {
                 const name = await DeviceInfo.getDeviceName()
@@ -528,6 +528,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
             .then((response: PostsResponse) => {
                 const stateData: PostListState = {...this.state}
                 stateData.data = response
+                console.log('RESPONSE', JSON.stringify(response))
                 stateData.isLast = response.last
                 this.setState(stateData)
                 if (this.state.refreshing) {
