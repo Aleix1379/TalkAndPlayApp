@@ -38,7 +38,7 @@ interface CommentProperties {
     editComment: (comment: Comment) => void
     onReport: (id: number) => void
     goToProfile: (email: string) => void
-    blocked: number[]
+    blocked?: number[]
     onBlockUser: (userToBlock: number) => void
     onUnblockUser: (userToBlock: number) => void
 }
@@ -54,7 +54,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                                                            editComment,
                                                            onReport,
                                                            goToProfile,
-                                                           blocked,
+                                                           blocked = [],
                                                            onBlockUser,
                                                            onUnblockUser
                                                        }) => {
