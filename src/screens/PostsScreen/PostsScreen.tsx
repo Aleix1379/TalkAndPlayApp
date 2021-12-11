@@ -817,7 +817,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
             </Modal>
 
         </View>
-    )
+    );
 
     getPostType = (index: number): any => {
         if (this.state.navigationState.routes[index]) {

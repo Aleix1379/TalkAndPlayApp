@@ -27,7 +27,7 @@
     "@react-native-firebase/app": "^11.3.3",
     "@react-navigation/native": "^5.9.3",
     "@types/enzyme-adapter-react-16": "^1.0.6",
-    "@types/react-native": "^0.63.50",
+    "@types/react-native": "^0.66.8",
     "add": "^2.0.6",
     "axios": "^0.21.1",
     "babel-eslint": "^10.1.0",
