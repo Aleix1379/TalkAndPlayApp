@@ -92,7 +92,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         pagination: {
             display: "flex",
             flexDirection: "row",
-            marginTop: 8,
             marginBottom: 4
         },
         goToFirstUnSeen: {
@@ -707,7 +706,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 
                         {
                             page && page.totalPages > 0 &&
-                            <View style={styles.pagination}>
+                            <View style={[styles.pagination, {marginTop: page.totalPages === 1 ? 0 : 8}]}>
 
                                 {
                                     page?.totalPages > 1 &&
@@ -727,17 +726,20 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                     />
                                 }
 
-                                <View style={{
-                                    marginLeft: 'auto',
-                                    flexDirection: "row",
-                                }}>
-                                    <PaginationComponent
-                                        number={currentPage}
-                                        totalPages={page?.totalPages}
-                                        onPageChange={(newPage: number) => fetchComments('top', newPage)}
-                                        marginTop={3}
-                                    />
-                                </View>
+                                {
+                                    page?.totalPages > 1 &&
+                                    <View style={{
+                                        marginLeft: 'auto',
+                                        flexDirection: "row",
+                                    }}>
+                                        <PaginationComponent
+                                            number={currentPage}
+                                            totalPages={page?.totalPages}
+                                            onPageChange={(newPage: number) => fetchComments('top', newPage)}
+                                            marginTop={3}
+                                        />
+                                    </View>
+                                }
                             </View>
                         }
 
