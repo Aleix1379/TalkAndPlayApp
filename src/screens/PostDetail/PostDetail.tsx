@@ -29,6 +29,8 @@ import StarFollowComponent from "../../components/StarFollowComponent"
 import {login} from "../../store/user/actions"
 import firebase from "react-native-firebase"
 import AdService from "../../services/AdService"
+import ButtonComponent from "../../components/ButtonComponent";
+import LinkUtils from "../../utils/LinkUtils";
 
 interface SnackBar {
     visible: boolean
@@ -105,6 +107,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
             backgroundColor: theme.colors.primary,
         },
         snackBarWrapper: {
+            bottom: 60,
             width: Dimensions.get('window').width,
         },
     })
@@ -140,7 +143,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     const [snackbar, setSnackbar] = useState<SnackBar>({
         visible: false,
         content: '',
-        color: 'rgba(10, 10, 10, 0.95)',
+        color: theme.colors.primary,
     })
     const user: User = useSelector((state: ApplicationState) => {
         return state.user
@@ -668,6 +671,37 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                 }
 
                 {
+                    post &&
+                    <View style={{
+                        flexDirection: "row",
+                        marginTop: 8,
+                        marginHorizontal: 8,
+                        alignItems: 'center'
+                    }}>
+                        <ButtonComponent
+                            label={'Instant gaming'}
+                            onPress={() => LinkUtils.open(`https://www.instant-gaming.com/en/search/?query=${post?.game}`)}
+                            fontSize={14}
+                            iconSize={18}
+                            icon={'basket'}
+                            style={{
+                                height: 28,
+                                paddingVertical: 4,
+                                paddingHorizontal: 8,
+                                borderRadius: 4,
+                                marginRight: 'auto',
+                            }}
+                        />
+                        <StarFollowComponent
+                            style={{marginRight: 5}}
+                            visible={user.id >= 0}
+                            following={following}
+                            onPress={() => toggleFollowing()}
+                        />
+                    </View>
+                }
+
+                {
                     // comments &&
                     <View style={styles.comments}>
 
@@ -675,11 +709,14 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                             page && page.totalPages > 0 &&
                             <View style={styles.pagination}>
 
-                                <PageGoButtonComponent
-                                    style={styles.goToFirstUnSeen}
-                                    icon='book-open-page-variant'
-                                    onPress={() => setShowInputPage(true)}
-                                />
+                                {
+                                    page?.totalPages > 1 &&
+                                    <PageGoButtonComponent
+                                        style={styles.goToFirstUnSeen}
+                                        icon='book-open-page-variant'
+                                        onPress={() => setShowInputPage(true)}
+                                    />
+                                }
 
                                 {
                                     unseenMessages > 0 && pageFirstUnseenComment > 0 &&
@@ -694,12 +731,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                                     marginLeft: 'auto',
                                     flexDirection: "row",
                                 }}>
-                                    <StarFollowComponent
-                                        visible={user.id >= 0}
-                                        following={following}
-                                        style={{marginRight: 8}}
-                                        onPress={() => toggleFollowing()}
-                                    />
                                     <PaginationComponent
                                         number={currentPage}
                                         totalPages={page?.totalPages}

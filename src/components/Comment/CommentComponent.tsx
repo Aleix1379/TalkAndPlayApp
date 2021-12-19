@@ -17,15 +17,14 @@ import {DialogOption} from "../../store/dialog/types"
 import Markdown from 'react-native-simple-markdown'
 import YoutubePlayer from "react-native-youtube-iframe"
 import CommentUtils from "../../utils/Comment"
-import Image from "react-native-scalable-image";
+import Image from "react-native-scalable-image"
 import RoundButtonComponent from "../RoundButtonComponent"
 import ImageCarouselComponent from "../ImageCarouselComponent"
 import BottomSheetComponent from "../BottomSheetContentComponent"
 import {closeDialog, openDialog} from "../../store/dialog/actions"
 import RBSheet from "react-native-raw-bottom-sheet"
-import {REACT_APP_IMAGES_URL} from "@env";
-import ButtonComponent from "../ButtonComponent";
-import userService from "../../services/User";
+import {REACT_APP_IMAGES_URL} from "@env"
+import ButtonComponent from "../ButtonComponent"
 
 interface CommentProperties {
     comment: Comment
@@ -43,21 +42,23 @@ interface CommentProperties {
     onUnblockUser: (userToBlock: number) => void
 }
 
-const CommentComponent: React.FC<CommentProperties> = ({
-                                                           comment,
-                                                           theme,
-                                                           checkVisible,
-                                                           reply,
-                                                           onCommentDelete,
-                                                           openDialog,
-                                                           closeDialog,
-                                                           editComment,
-                                                           onReport,
-                                                           goToProfile,
-                                                           blocked = [],
-                                                           onBlockUser,
-                                                           onUnblockUser
-                                                       }) => {
+const CommentComponent: React.FC<CommentProperties> = (
+    {
+        comment,
+        theme,
+        checkVisible,
+        reply,
+        onCommentDelete,
+        openDialog,
+        closeDialog,
+        editComment,
+        onReport,
+        goToProfile,
+        blocked = [],
+        onBlockUser,
+        onUnblockUser
+    }
+) => {
     const refRBSheet = useRef()
     const [options, setOptions] = useState<ModalOption[]>([])
     const imageSize = 40
@@ -195,9 +196,6 @@ const CommentComponent: React.FC<CommentProperties> = ({
     function updateModalOptions() {
         const values: ModalOption[] = []
 
-        console.log('USER.ID = ' + user?.id)
-        console.log('comment author = ' + comment.author?.id)
-
         if ((!!comment.text || comment.images.length > 0) && user?.id !== comment.author?.id && user.id >= 0) {
             values.push({
                 id: 'reply',
@@ -287,7 +285,8 @@ const CommentComponent: React.FC<CommentProperties> = ({
         replies.push({
             author: !com.author ? 'user deleted' : com.author.name + '  ❱  ' + Time.diff(com.lastUpdate),
             avatar: com.author?.avatar,
-            text: com.text
+            text: com.text,
+            images: com.images
         })
         if (com.reply) {
             displayReplies(com.reply)
@@ -346,6 +345,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                     )
 
                 }
+                console.log('node.target: ', node.target)
                 return <Image
                     key={state.key}
                     source={{uri: node.target}}
@@ -366,8 +366,12 @@ const CommentComponent: React.FC<CommentProperties> = ({
     }
 
     const displayReplies = (com?: Comment) => {
+        console.log('displayReplies...........................')
         if (com && com.author) {
+
+            console.log('com: ', com)
             let result = buildReplies(com)
+            console.log('result: ', JSON.stringify(result))
             if (result) {
                 let message = ''
                 result.reverse().forEach((rep: any, index) => {
@@ -375,6 +379,7 @@ const CommentComponent: React.FC<CommentProperties> = ({
                 })
 
 
+                console.log('setResultReplies......................')
                 setResultReplies(
                     <Markdown
                         styles={markDownStyles}

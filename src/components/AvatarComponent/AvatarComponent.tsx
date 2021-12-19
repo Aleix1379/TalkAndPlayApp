@@ -3,8 +3,8 @@ import {Image, ImageStyle, StyleProp, StyleSheet, View} from "react-native"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {Text, withTheme} from "react-native-paper"
 import ErrorHelperComponent from "../ErrorHelperComponent"
-import {REACT_APP_IMAGES_URL} from "@env";
-import {ImageSelected} from "../../screens/PictureUploadScreen/PictureUploadScreen";
+import {REACT_APP_IMAGES_URL} from "@env"
+import {ImageSelected} from "../../screens/PictureUploadScreen/PictureUploadScreen"
 
 interface AvatarProperties {
     theme: Theme

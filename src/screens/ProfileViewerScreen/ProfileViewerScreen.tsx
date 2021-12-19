@@ -9,14 +9,16 @@ import UserService from "../../services/User"
 import ChannelComponent from "../../components/ChannelComponent/ChannelComponent"
 import Clipboard from "@react-native-clipboard/clipboard"
 import FollowButtonComponent from "../../components/FollowButtonComponent"
-import {shallowEqual, useSelector} from "react-redux"
+import {connect, shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
 import {User} from "../../types/PostsTypes"
 import FollowsYouComponent from "../../components/FollowsYouComponent"
+import {setLoading} from "../../store/loading/actions";
 
 interface ProfileViewerProperties {
     navigation: any,
     theme: Theme
+    setLoading: (visible: boolean) => void
 }
 
 interface SnackBar {
@@ -25,7 +27,7 @@ interface SnackBar {
     color?: string
 }
 
-const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigation}) => {
+const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigation, setLoading}) => {
     const styles = StyleSheet.create({
         title: {
             textAlign: 'center',
@@ -33,11 +35,14 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
             letterSpacing: 3,
             fontSize: 25
         },
+        profileViewerContainer: {
+            backgroundColor: theme.colors.background,
+            flex: 1,
+        },
         profileViewer: {
             backgroundColor: theme.colors.background,
             paddingHorizontal: 8,
             paddingTop: 8,
-            display: "flex",
             flex: 1,
         },
         avatar: {
@@ -66,7 +71,7 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
             marginBottom: 12
         },
         followsYou: {
-             marginBottom: 12
+            marginBottom: 12
         }
     })
     const [following, setFollowing] = useState(false)
@@ -108,6 +113,7 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
 
     useEffect(() => {
         if (email) {
+            setLoading(true)
             userService.findUserByEmail(email)
                 .then(response => {
                     setUserVisited(response)
@@ -116,6 +122,7 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
                     console.log('error find user by email')
                     console.log(err)
                 })
+                .finally(() => setLoading(false))
         }
     }, [email])
 
@@ -166,7 +173,7 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
     }, [userVisited])
 
     return (
-        <>
+        <View style={styles.profileViewerContainer}>
             {
                 userVisited &&
                 <HeaderComponent
@@ -206,18 +213,21 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
                           value={userVisited.platforms.map(platform => platform.name).join(', ') || null}
                           style={styles.info}/>
 
-                    <View style={{marginBottom: 16}}>
                     {
-                        userVisited?.profiles?.filter(account => account.value).map(account => (
-                            <ChannelComponent
-                                key={account.name}
-                                style={styles.channel}
-                                account={account}
-                                onTouchEnd={((event, color?: string) => onTouchEnd(event, account.value, color))}
-                            />
-                        ))
+                        userVisited?.profiles?.length > 0 &&
+                        <View style={{marginBottom: 16}}>
+                            {
+                                userVisited.profiles.filter(account => account.value).map(account => (
+                                    <ChannelComponent
+                                        key={account.name}
+                                        style={styles.channel}
+                                        account={account}
+                                        onTouchEnd={((event, color?: string) => onTouchEnd(event, account.value, color))}
+                                    />
+                                ))
+                            }
+                        </View>
                     }
-                    </View>
 
                 </ScrollView>
             }
@@ -231,8 +241,10 @@ const ProfileViewerScreen: React.FC<ProfileViewerProperties> = ({theme, navigati
             >
                 <Text>{snackbar.content}</Text>
             </Snackbar>
-        </>
+        </View>
     )
 }
 
-export default withTheme(ProfileViewerScreen)
+export default connect(null, {
+    setLoading: setLoading
+})(withTheme(ProfileViewerScreen))

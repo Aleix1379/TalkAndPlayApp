@@ -13,6 +13,7 @@ interface ButtonProperties {
     style?: StyleProp<ViewStyle>
     disabled?: boolean
     fontSize?: number
+    iconSize?: number
 }
 
 const ButtonComponent: React.FC<ButtonProperties> = ({
@@ -22,7 +23,8 @@ const ButtonComponent: React.FC<ButtonProperties> = ({
                                                          theme,
                                                          style,
                                                          disabled = false,
-                                                         fontSize = 20
+                                                         fontSize = 20,
+                                                         iconSize = 25
                                                      }) => {
     const [isPressed, setIsPressed] = useState(false)
     const styles = StyleSheet.create({
@@ -94,19 +96,20 @@ const ButtonComponent: React.FC<ButtonProperties> = ({
             }
         }
 
-        return {
-            ...item, ...style as {}
-        }
+        return item
+        /*        return {
+                    ...item, ...style as {}
+                }*/
     }
 
     useEffect(() => startAnimation(), [])
 
     return (
-        <View style={getStyles()}
+        <View style={[getStyles(), style]}
               onTouchStart={() => onTouchStart()}
               onTouchEnd={() => onTouchEnd()}>
             {icon && <Animated.View style={[animatedStyles.rotation, {marginRight: 12}]}>
-                <MaterialCommunityIcons name={icon} color={disabled ? '#333333' : '#e0e0e0'} size={25}/>
+                <MaterialCommunityIcons name={icon} color={disabled ? '#333333' : '#e0e0e0'} size={iconSize}/>
             </Animated.View>}
             <Text style={styles.label}>{label}</Text>
         </View>

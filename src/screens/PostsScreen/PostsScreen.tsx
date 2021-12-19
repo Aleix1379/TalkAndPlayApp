@@ -473,7 +473,6 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                         .then(() => this.setState({form: data}))
                         .catch(err => console.log(err))
                 } else {
-                    console.log('else fetch data...')
                     this.fetchData()
                 }
             })
@@ -528,7 +527,6 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
             .then((response: PostsResponse) => {
                 const stateData: PostListState = {...this.state}
                 stateData.data = response
-                console.log('RESPONSE', JSON.stringify(response))
                 stateData.isLast = response.last
                 this.setState(stateData)
                 if (this.state.refreshing) {

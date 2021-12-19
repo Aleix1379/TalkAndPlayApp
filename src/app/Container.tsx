@@ -21,6 +21,10 @@ import UserAccountsEditScreen from "../screens/UserAccountsEditScreen"
 import FollowingFollowersListScreen from "../screens/FollowingFollowersListScreen"
 import NotificationsListScreen from "../screens/NotificationsListScreen"
 import BlockedUsersScreen from "../screens/BlockedUsersScreen"
+import ProductsGridScreen from "../screens/ProductsGridScreen"
+import ProductsScreen from "../screens/ProductsScreen"
+import NavigationBottomTabComponent from "../components/NavigationBottomTabComponent"
+import NavigationUtils from "../types/NavigationUtils"
 
 const PostsStack = createStackNavigator({
     Home: {
@@ -36,16 +40,34 @@ const BottomTabNavigator = createMaterialBottomTabNavigator(
         Posts: {
             screen: PostsStack,
             navigationOptions: {
-                tabBarIcon: ({tintColor}) => {
-                    return <MaterialCommunityIcons name="comment-text-multiple" color={tintColor} size={25}/>
+                tabBarOnPress: ({navigation}) => {
+                    NavigationUtils.navigateTo(navigation, 'Posts')
+                },
+                tabBarIcon: ({tintColor, focused}) => {
+                    return <NavigationBottomTabComponent icon="comment-text-multiple" color={tintColor} size={25}
+                                                         focused={focused}/>
+                }
+            }
+        },
+        Products: {
+            screen: ProductsScreen,
+            navigationOptions: {
+                tabBarOnPress: ({navigation}) => {
+                    NavigationUtils.navigateTo(navigation, 'Products')
+                },
+                tabBarIcon: ({tintColor, focused}) => {
+                    return <NavigationBottomTabComponent icon="basket" color={tintColor} size={25} focused={focused}/>
                 }
             }
         },
         Profile: {
             screen: ProfileScreen,
             navigationOptions: {
-                tabBarIcon: ({tintColor}) => {
-                    return <MaterialCommunityIcons name="account" color={tintColor} size={25}/>
+                tabBarOnPress: ({navigation}) => {
+                    NavigationUtils.navigateTo(navigation, 'Profile')
+                },
+                tabBarIcon: ({tintColor, focused}) => {
+                    return <NavigationBottomTabComponent icon="account" color={tintColor} size={25} focused={focused}/>
                 }
             },
         }
@@ -150,6 +172,12 @@ const HomeDetailStack = createStackNavigator({
     },
     BlockedUsers: {
         screen: BlockedUsersScreen,
+        navigationOptions: {
+            headerShown: false
+        }
+    },
+    ProductsGrid: {
+        screen: ProductsGridScreen,
         navigationOptions: {
             headerShown: false
         }

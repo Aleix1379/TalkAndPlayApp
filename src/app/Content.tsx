@@ -1,9 +1,9 @@
 import React, {useEffect} from 'react'
-import {SafeAreaView} from "react-native"
+import {Dimensions, SafeAreaView} from "react-native"
 import Container from "./Container"
 import ContainerAnonymous from "./ContainerAnonymous"
 import {connect, shallowEqual, useSelector} from "react-redux"
-import {withTheme} from "react-native-paper"
+import {Snackbar, Text, withTheme} from "react-native-paper"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {ApplicationState} from "../store"
 import LocalStorage from "../utils/LocalStorage/LocalStorage"
@@ -18,15 +18,18 @@ import {setTheme} from "../store/theme/actions"
 import UserService from "../services/User"
 import {User} from "../types/PostsTypes"
 import UiUtils from "../utils/UiUtils"
+import {SnackBarState} from "../store/snackBar/types"
+import {closeSnackBar} from "../store/snackBar/actions"
 
 interface ContentProperties {
     theme: Theme
     login: Function
     closeDialog: Function
-    setTheme: (theme: 'dark' | 'light') => void
+    setTheme: (theme: 'dark' | 'light') => void,
+    closeSnackBar: () => void
 }
 
-const content: React.FC<ContentProperties> = ({theme, login, closeDialog, setTheme}) => {
+const content: React.FC<ContentProperties> = ({theme, login, closeDialog, setTheme, closeSnackBar}) => {
     const user: User = useSelector((state: ApplicationState) => {
         return state.user
     }, shallowEqual)
@@ -45,6 +48,10 @@ const content: React.FC<ContentProperties> = ({theme, login, closeDialog, setThe
 
     const isDarkTheme: boolean = useSelector((state: ApplicationState) => {
         return state.theme.isDarkTheme
+    }, shallowEqual)
+
+    const snackbar: SnackBarState = useSelector((state: ApplicationState) => {
+        return state.snackBar
     }, shallowEqual)
 
     const userService = new UserService()
@@ -96,21 +103,38 @@ const content: React.FC<ContentProperties> = ({theme, login, closeDialog, setThe
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: theme.colors.background}}>
             {/*<View style={{flex: 1, backgroundColor: theme.colors.background}}>*/}
-                <LoadingComponent visible={isLoadingVisible}/>
-                <DialogComponent
-                    visible={dialog.visible}
-                    onDismiss={() => closeDialog()}
-                    title={dialog.title}
-                    content={dialog.content}
-                    actions={dialog.actions}
-                />
-                <TopSheetComponent
-                    visible={topSheet.visible}
-                    onChange={topSheet.onChange}
-                    options={topSheet.options}
-                    top={topSheet.top}
-                />
-                {user.id >= 0 ? <Container/> : <ContainerAnonymous/>}
+            <LoadingComponent visible={isLoadingVisible}/>
+            <DialogComponent
+                visible={dialog.visible}
+                onDismiss={() => closeDialog()}
+                title={dialog.title}
+                content={dialog.content}
+                actions={dialog.actions}
+            />
+            <TopSheetComponent
+                visible={topSheet.visible}
+                onChange={topSheet.onChange}
+                options={topSheet.options}
+                top={topSheet.top}
+            />
+            {
+                snackbar.visible &&
+                <Snackbar
+                    visible={snackbar.visible}
+                    duration={snackbar.time || 1000}
+                    onDismiss={() => closeSnackBar()}
+                    wrapperStyle={{
+                        position: 'absolute',
+                        zIndex: 90000,
+                        bottom: 60,
+                        width: Dimensions.get('window').width
+                    }}
+                    style={{backgroundColor: snackbar.color}}
+                >
+                    <Text>{snackbar.content}</Text>
+                </Snackbar>
+            }
+            {user.id >= 0 ? <Container/> : <ContainerAnonymous/>}
             {/*</View>*/}
         </SafeAreaView>
     )
@@ -119,5 +143,6 @@ const content: React.FC<ContentProperties> = ({theme, login, closeDialog, setThe
 export default connect(null, {
     login: login,
     closeDialog: closeDialog,
-    setTheme: setTheme
+    setTheme: setTheme,
+    closeSnackBar: closeSnackBar
 })(withTheme(content))

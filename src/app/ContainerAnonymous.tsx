@@ -14,6 +14,10 @@ import ShowConditionsScreen from "../screens/ShowConditionsScreen"
 import ErrorScreen from "../screens/ErrorScreen"
 import PostsScreen from "../screens/PostsScreen/PostsScreen"
 import ShowEulaScreen from "../screens/ShowEulaScreen";
+import ProductsScreen from "../screens/ProductsScreen/ProductsScreen";
+import ProductsGridScreen from "../screens/ProductsGridScreen/ProductsGridScreen";
+import NavigationBottomTabComponent from "../components/NavigationBottomTabComponent/NavigationBottomTabComponent";
+import NavigationUtils from "../types/NavigationUtils";
 
 const PostsStack = createStackNavigator({
     Home: {
@@ -30,8 +34,22 @@ const BottomTabNavigator = createMaterialBottomTabNavigator(
         Posts: {
             screen: PostsStack,
             navigationOptions: {
-                tabBarIcon: ({tintColor}) => {
-                    return <MaterialCommunityIcons name="comment-text-multiple" color={tintColor} size={25}/>
+                tabBarOnPress: ({navigation}) => {
+                    NavigationUtils.navigateTo(navigation, 'Posts')
+                },
+                tabBarIcon: ({tintColor, focused}) => {
+                    return <NavigationBottomTabComponent icon="comment-text-multiple" color={tintColor} size={25} focused={focused}/>
+                }
+            }
+        },
+        Products: {
+            screen: ProductsScreen,
+            navigationOptions: {
+                tabBarOnPress: ({navigation}) => {
+                    NavigationUtils.navigateTo(navigation, 'Products')
+                },
+                tabBarIcon: ({tintColor, focused}) => {
+                    return <NavigationBottomTabComponent icon="basket" color={tintColor} size={25} focused={focused}/>
                 }
             }
         },
@@ -39,8 +57,11 @@ const BottomTabNavigator = createMaterialBottomTabNavigator(
             screen: LoginScreen,
             navigationOptions: {
                 title: 'Log in',
-                tabBarIcon: ({tintColor}) => {
-                    return <MaterialCommunityIcons name="login" color={tintColor} size={24}/>
+                tabBarOnPress: ({navigation}) => {
+                    NavigationUtils.navigateTo(navigation, 'Login')
+                },
+                tabBarIcon: ({tintColor, focused}) => {
+                    return <NavigationBottomTabComponent icon="login" color={tintColor} size={25} focused={focused}/>
                 }
             }
         }
@@ -103,6 +124,12 @@ const HomeDetailStack = createStackNavigator({
     },
     ShowEula: {
         screen: ShowEulaScreen,
+        navigationOptions: {
+            headerShown: false
+        }
+    },
+    ProductsGrid: {
+        screen: ProductsGridScreen,
         navigationOptions: {
             headerShown: false
         }

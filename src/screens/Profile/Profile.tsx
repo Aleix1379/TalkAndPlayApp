@@ -5,7 +5,7 @@ import {Theme} from "react-native-paper/lib/typescript/types"
 import {ModalOption} from "../PostDetail/PostDetail"
 import {NavigationState, SceneMap, TabBar, TabView} from "react-native-tab-view"
 import {connect, shallowEqual, useSelector} from 'react-redux'
-import {Snackbar, Text, withTheme} from "react-native-paper"
+import {Text, withTheme} from "react-native-paper"
 import HeaderComponent from "../../components/HeaderComponent"
 import {ApplicationState} from "../../store"
 import AvatarComponent from "../../components/AvatarComponent/AvatarComponent"
@@ -19,17 +19,13 @@ import BottomSheetComponent from "../../components/BottomSheetContentComponent/B
 import {FollowCounter} from "../../types/FollowCounter"
 import UserService from "../../services/User"
 import {User} from "../../types/PostsTypes"
+import {openSnackBar} from "../../store/snackBar/actions"
 
 interface ProfileProperties {
     navigation: any,
     theme: Theme,
     logout: Function
-}
-
-interface SnackBar {
-    visible: boolean
-    content: string
-    color?: string
+    openSnackBar: (content: string, color?: string, time?: number) => void
 }
 
 interface RouteItem {
@@ -37,7 +33,7 @@ interface RouteItem {
     title: string
 }
 
-const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, logout}) => {
+const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, logout, openSnackBar}) => {
     const refRBSheet = useRef()
     const [navigationState, setNavigationState] = useState<NavigationState<RouteItem>>({
         index: 0,
@@ -50,12 +46,7 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, logout})
         following: 0,
         followers: 0
     })
-    const [snackbar, setSnackbar] = useState<SnackBar>({
-        visible: false,
-        content: '',
-        color: theme.colors.primary
-    })
-    const oldIndex = navigation.state?.params?.index
+
     let unsubscribe: Function | null = null
     const styles = StyleSheet.create({
         tab: {
@@ -104,12 +95,6 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, logout})
             marginTop: 50,
             marginBottom: 100,
         },
-        snackBarContainer: {
-            backgroundColor: theme.colors.primary,
-        },
-        snackBarWrapper: {
-            width: Dimensions.get('window').width,
-        }
     })
     const userService = new UserService()
     const [modalOptions, setModalOptions] = useState<ModalOption[]>([])
@@ -215,25 +200,11 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, logout})
         const onTouchEnd = (event: GestureResponderEvent, value: string, color?: string) => {
             if (startX === event.nativeEvent.locationX) {
                 Clipboard.setString(value)
-                setSnackbar({
-                    visible: true,
-                    content: `${value} copied`,
-                    color
-                })
+                openSnackBar(`${value} copied`, color)
             }
         }
 
         return <View style={styles.user}>
-            <Snackbar
-                visible={snackbar.visible}
-                duration={1000}
-                onDismiss={() => setSnackbar({visible: false, content: ''})}
-                wrapperStyle={styles.snackBarWrapper}
-                style={[styles.snackBarContainer, {backgroundColor: snackbar.color}]}
-            >
-                <Text>{snackbar.content}</Text>
-            </Snackbar>
-
             {
                 user?.profiles?.filter(account => account.value).map(account => (
                     <ChannelComponent
@@ -284,9 +255,14 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, logout})
                 lazy={false}
                 navigationState={navigationState}
                 renderScene={renderScene}
-                onIndexChange={(num) =>  setNavigationState(
-                    {...navigationState, ...{num}}
-                )}
+                onIndexChange={
+                    (index) => {
+                        console.log('new index: ' + index)
+                        setNavigationState(
+                            {...navigationState, ...{index}}
+                        )
+                    }
+                }
                 initialLayout={{height: layout.height, width: layout.width}}
                 renderTabBar={props => (
                     <TabBar
@@ -328,6 +304,7 @@ const ProfileScreen: React.FC<ProfileProperties> = ({navigation, theme, logout})
 
 export default connect(null,
     {
-        logout: logout
+        logout: logout,
+        openSnackBar: openSnackBar
     }
 )(withTheme(ProfileScreen))

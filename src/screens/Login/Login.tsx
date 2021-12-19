@@ -10,6 +10,7 @@ import Validator from "../../utils/Validator/Validator"
 import {connect} from 'react-redux'
 import {login} from "../../store/user/actions"
 import {setLoading} from "../../store/loading/actions"
+import LocalStorage from "../../utils/LocalStorage/LocalStorage";
 
 interface LoginProperties {
     theme: Theme
@@ -160,6 +161,7 @@ const LoginScreen: React.FC<LoginProperties> = ({theme, login, setLoading, navig
         setLoading(true)
         userService.login(form.email, form.password)
             .then(loginResponse => {
+                LocalStorage.setShowDisclaimer(true).catch(err => console.log(err))
                 login(loginResponse.user, loginResponse.token)
             })
             .catch((errorResponse) => {

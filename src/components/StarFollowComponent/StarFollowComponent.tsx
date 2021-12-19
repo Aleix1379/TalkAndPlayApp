@@ -19,7 +19,7 @@ const StarFollowComponent: React.FC<StarFollowProperties> = ({
         starFollow: {
             width: 30,
             alignSelf: "center",
-            zIndex: 1000,
+            zIndex: 9000000,
         }
     })
     const animationDuration = 500

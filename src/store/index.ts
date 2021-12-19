@@ -5,12 +5,14 @@ import loadingReducer from './loading/reducer'
 import topSheetReducer from './topSheet/reducer'
 import dialogReducer from './dialog/reducer'
 import themeReducer from './theme/reducer'
+import snackBarReducer from './snackBar/reducer'
 
 import {LoadingState} from "./loading/types"
 import {TopSheetState} from "./topSheet/types"
 import {DialogState} from "./dialog/types"
 import {ThemeState} from "./theme/types"
 import {User} from "../types/PostsTypes"
+import {SnackBarState} from './snackBar/types'
 
 // The top-level state object
 export interface ApplicationState {
@@ -19,6 +21,7 @@ export interface ApplicationState {
     topSheet: TopSheetState
     dialog: DialogState
     theme: ThemeState
+    snackBar: SnackBarState
 }
 
 // Whenever an action is dispatched, Redux will update each top-level application state property
@@ -30,6 +33,7 @@ const reducers: Reducer<ApplicationState> = combineReducers<ApplicationState>({
     topSheet: topSheetReducer,
     dialog: dialogReducer,
     theme: themeReducer,
+    snackBar: snackBarReducer
 })
 
 export default reducers
