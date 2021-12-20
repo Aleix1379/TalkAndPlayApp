@@ -1,7 +1,7 @@
 import React, {MutableRefObject, useEffect, useRef, useState} from 'react'
 import {Snackbar, Text, withTheme} from 'react-native-paper'
 import {Theme} from "react-native-paper/lib/typescript/types"
-import {AppState, AppStateStatus, BackHandler, Dimensions, ScrollView, StyleSheet, View} from "react-native"
+import {Animated, AppState, AppStateStatus, BackHandler, Dimensions, ScrollView, StyleSheet, View} from "react-native"
 import {Channel, Comment, CommentResponse, Option, PostInfo, PostType, User} from "../../types/PostsTypes"
 import PostsService from "../../services/Posts"
 import Info from "../../components/Info"
@@ -109,6 +109,14 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
             bottom: 60,
             width: Dimensions.get('window').width,
         },
+        placeHolderInfo: {
+            minHeight: 40,
+            minWidth: 200,
+            marginHorizontal: 8,
+            borderRadius: 4,
+            marginVertical: 8
+        }
+
     })
     const refRBSheet = useRef()
     const {title, id, newCommentId} = navigation.state.params
@@ -164,6 +172,9 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     useEffect(() => {
             AppState.addEventListener("change", handleAppStateChange)
             BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick)
+
+            setPost(postService.getPlaceHolderPost())
+            setComments(postService.getPlaceholderComments())
 
             if (user) {
                 LocalStorage.getMessagesSeen()
@@ -249,6 +260,9 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     }, [dataSourceCords])
 
     useEffect(() => {
+        if (post && post.id < 0) {
+            startAnimation()
+        }
         loadPostOptions()
     }, [authorId])
 
@@ -618,6 +632,27 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         login({...user, blocked: newList})
     }
 
+    const [postAnimation] = useState(new Animated.Value(0))
+
+    const background = postAnimation.interpolate({
+        inputRange: [0, 1, 2, 3, 4, 5, 6],
+        outputRange: ["#202020", "#303030", "#404040", "#505050", "#404040", "#303030", "#202020"]
+
+    })
+
+    const startAnimation = () => {
+        postAnimation.setValue(0)
+        Animated.timing(postAnimation, {
+            useNativeDriver: false,
+            toValue: 6,
+            duration: 3000
+        }).start(() => {
+            if (post && post.id < 0) {
+                startAnimation()
+            }
+        })
+    }
+
     return (
         <>
             <PageInputModalComponent
@@ -651,19 +686,32 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 
                         {post.game.length > 0 && <Info style={styles.postDetail} label={'🎮'} value={post.game}/>}
 
-                        <Info style={{...styles.postDetail, marginTop: 4}}
-                              valueAlign={'right'}
-                              label={post.platforms.map((platform: Option) => platform.name).join(', ') || 'Language'}
-                              value={post.language.name}
-                        />
+                        {
+                            post && post.id >= 0 &&
+                            <Info style={{...styles.postDetail, marginTop: 4}}
+                                  valueAlign={'right'}
+                                  label={post.platforms.map((platform: Option) => platform.name).join(', ') || 'Language'}
+                                  value={post.language.name}
+                            />
+                        }
 
                         {
-                            post.channels && post.channels.length > 0 &&
+                            post && post.id < 0 &&
+                            <Animated.View style={[styles.placeHolderInfo, {backgroundColor: background}]}/>
+                        }
+
+                        {
+                            post.channels && post.channels.length > 0 && post && post.id >= 0 &&
                             <Info
                                 style={{...styles.postDetail, marginTop: 4}}
                                 label='Channels'
                                 value={post.channels.map((channel: Channel) => channel.name).join(', ')}
                             />
+                        }
+
+                        {
+                            post && post.id < 0 &&
+                            <Animated.View style={[styles.placeHolderInfo, {backgroundColor: background}]}/>
                         }
 
                     </View>
@@ -743,69 +791,73 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                             </View>
                         }
 
-                        {comments?.map((comment, index) =>
-                            <View key={comment.id}
-                                  style={{
-                                      marginTop: index === 0 ? 4 : 0,
-                                      marginBottom: index === comments.length - 1 ? 10 : 2
-                                  }}
-                                  onLayout={(event) => {
-                                      const layout = event.nativeEvent.layout
-                                      let data = {...dataSourceCords}
-                                      // @ts-ignore
-                                      data[comment.id] = layout.y
-                                      setDataSourceCords(data)
-                                  }}
-                            >
-                                <CommentComponent
-                                    key={comment.id}
-                                    blocked={user.blocked}
-                                    comment={comment}
-                                    checkVisible={() => loadComment(comment)}
-                                    reply={(comment) => reply(comment)}
-                                    onCommentDelete={(id: number | null) => deleteComment(id)}
-                                    editComment={(comment) => editComment(comment)}
-                                    onReport={(id) => reportComment(id)}
-                                    onBlockUser={(userToBlock: number) => {
-                                        userService.blockUser(user.id, userToBlock)
-                                            .then(result => updateBlockList(result))
-                                    }}
-                                    onUnblockUser={(userToBlock: number) => {
-                                        userService.unblockUser(user.id, userToBlock)
-                                            .then(result => updateBlockList(result))
-                                    }}
-                                    goToProfile={(email) => {
-                                        if (user.id >= 0 && user.id !== comment.author?.id) {
-                                            navigation.navigate('ProfileViewer', {
-                                                email,
-                                                origin: {
-                                                    screen: 'Detail',
-                                                    id: post?.user?.id
+                        {
+                            comments?.map(
+                                (comment, index) =>
+                                    <View key={comment.id}
+                                          style={{
+                                              marginTop: index === 0 ? 4 : 0,
+                                              marginBottom: index === comments.length - 1 ? 10 : 2
+                                          }}
+                                          onLayout={(event) => {
+                                              const layout = event.nativeEvent.layout
+                                              let data = {...dataSourceCords}
+                                              // @ts-ignore
+                                              data[comment.id] = layout.y
+                                              setDataSourceCords(data)
+                                          }}
+                                    >
+                                        <CommentComponent
+                                            key={comment.id}
+                                            blocked={user.blocked}
+                                            comment={comment}
+                                            checkVisible={() => loadComment(comment)}
+                                            reply={(comment) => reply(comment)}
+                                            onCommentDelete={(id: number | null) => deleteComment(id)}
+                                            editComment={(comment) => editComment(comment)}
+                                            onReport={(id) => reportComment(id)}
+                                            onBlockUser={(userToBlock: number) => {
+                                                userService.blockUser(user.id, userToBlock)
+                                                    .then(result => updateBlockList(result))
+                                            }}
+                                            onUnblockUser={(userToBlock: number) => {
+                                                userService.unblockUser(user.id, userToBlock)
+                                                    .then(result => updateBlockList(result))
+                                            }}
+                                            goToProfile={(email) => {
+                                                if (user.id >= 0 && user.id !== comment.author?.id) {
+                                                    navigation.navigate('ProfileViewer', {
+                                                        email,
+                                                        origin: {
+                                                            screen: 'Detail',
+                                                            id: post?.user?.id
+                                                        }
+                                                    })
                                                 }
-                                            })
-                                        }
-                                    }}
-                                />
-
-                                {
-                                    index === comments.length || index % 5 === 0 &&
-                                    <View style={{marginTop: 4, marginBottom: 1}}>
-                                        <BannerAd
-                                            unitId={AdService.getPostDetailUnitAd()}
-                                            size={BannerAdSize.ADAPTIVE_BANNER}
-                                            onAdLoaded={() => {
                                             }}
-                                            onAdFailedToLoad={(error) => {
-                                                console.error('Advert failed to load: ', error)
-                                            }}
-                                            onAdClosed={() => console.log('onAdClosed')}
-                                            onAdLeftApplication={() => console.log('onAdLeftApplication')}
-                                            onAdOpened={() => console.log('onAdOpened')}
                                         />
-                                    </View>
-                                }
 
-                            </View>)}
+                                        {
+                                            index === comments.length || index % 5 === 0 &&
+                                            <View style={{marginTop: 4, marginBottom: 1}}>
+                                                <BannerAd
+                                                    unitId={AdService.getPostDetailUnitAd()}
+                                                    size={BannerAdSize.ADAPTIVE_BANNER}
+                                                    onAdLoaded={() => {
+                                                    }}
+                                                    onAdFailedToLoad={(error) => {
+                                                        console.error('Advert failed to load: ', error)
+                                                    }}
+                                                    onAdClosed={() => console.log('onAdClosed')}
+                                                    onAdLeftApplication={() => console.log('onAdLeftApplication')}
+                                                    onAdOpened={() => console.log('onAdOpened')}
+                                                />
+                                            </View>
+                                        }
+
+                                    </View>
+                            )
+                        }
 
                         {
                             page && page.totalPages > 1 &&

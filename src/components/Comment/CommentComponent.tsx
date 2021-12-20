@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react'
 import {Comment, User} from "../../types/PostsTypes"
-import {Dimensions, StyleSheet, View} from "react-native"
+import {Animated, Dimensions, StyleSheet, View} from "react-native"
 import {Text, withTheme} from 'react-native-paper'
 import {Theme} from "react-native-paper/lib/typescript/types"
 import Time from "../../utils/Time"
@@ -73,6 +73,7 @@ const CommentComponent: React.FC<CommentProperties> = (
 
     const styles = StyleSheet.create({
         comment: {
+            minHeight: 100,
             backgroundColor: theme.colors.primary,
             paddingTop: 10,
             paddingBottom: 0,
@@ -259,7 +260,31 @@ const CommentComponent: React.FC<CommentProperties> = (
         setOptions(values)
     }
 
+    const [backgroundAnimation] = useState(new Animated.Value(0))
+
+    const background = backgroundAnimation.interpolate({
+        inputRange: [0, 1, 2, 3, 4, 5, 6],
+        outputRange: ["#202020", "#303030", "#404040", "#505050", "#404040", "#303030", "#202020"]
+
+    })
+
+    const startAnimation = () => {
+        backgroundAnimation.setValue(0)
+        Animated.timing(backgroundAnimation, {
+            useNativeDriver: false,
+            toValue: 6,
+            duration: 3000
+        }).start(() => {
+            if (comment.id && comment.id < 0) {
+                startAnimation()
+            }
+        })
+    }
+
     useEffect(() => {
+        if (comment.id && comment.id < 0) {
+            startAnimation()
+        }
         updateModalOptions()
         displayReplies(comment.reply)
     }, [])
@@ -269,6 +294,8 @@ const CommentComponent: React.FC<CommentProperties> = (
     }, [blocked])
 
     useEffect(() => updateModalOptions(), [userBlocked])
+
+    // useEffect(() => backgroundAnimation.stopAnimation(), [comment])
 
     const getQuotes = (max: number): string => {
         let quotes = '>'
@@ -366,20 +393,15 @@ const CommentComponent: React.FC<CommentProperties> = (
     }
 
     const displayReplies = (com?: Comment) => {
-        console.log('displayReplies...........................')
         if (com && com.author) {
 
-            console.log('com: ', com)
             let result = buildReplies(com)
-            console.log('result: ', JSON.stringify(result))
             if (result) {
                 let message = ''
                 result.reverse().forEach((rep: any, index) => {
                     message += getQuotes(index) + ' ![](' + REACT_APP_IMAGES_URL + rep.avatar + ') ' + rep.author + ' \n\n' + rep.text + '\n'
                 })
 
-
-                console.log('setResultReplies......................')
                 setResultReplies(
                     <Markdown
                         styles={markDownStyles}
@@ -414,53 +436,89 @@ const CommentComponent: React.FC<CommentProperties> = (
     }
 
     const getTextToShow = (value: string) => {
-        if (comment.images.length > 0) {
-            return CommentUtils.processYoutubeUrl(value)
-        } else {
-            return CommentUtils.processYoutubeUrl(value) || '💀 _Comment deleted_'
+        console.log(`comment.id: ${comment.id}`)
+        if (comment.id && comment.id >= 0) {
+            if (comment.images.length > 0) {
+                return CommentUtils.processYoutubeUrl(value)
+            } else {
+                return CommentUtils.processYoutubeUrl(value) || '💀 _Comment deleted_'
+            }
         }
     }
 
     return (
-        <View style={styles.comment} onLayout={(_) => checkVisible()}>
-            <View style={styles.details}>
-                {
-                    !comment.author &&
-                    <Text style={[{marginLeft: 8}, styles.unavailable]}>💀 User deleted</Text>
-                }
-                {
-                    comment.author &&
-                    <>
-                        <View onTouchEnd={() => goToProfile(comment.author!.email)}>
-                            <AvatarComponent
-                                borderWidth={0}
-                                size={imageSize}
-                                style={[styles.image, {marginLeft: 8}]}
-                                name={comment.author.avatar}
-                            />
-                        </View>
-                        <Text onPress={() => user.id >= 0 && goToProfile(comment.author!.email)}>
-                            {comment.author.name}
-                        </Text>
-                        <Text
-                            style={[styles.date, {color: '#959595', marginRight: showExtraOptions() ? 0 : 6}]}>
-                            {Time.diff(comment.lastUpdate)}
-                        </Text>
-                        {
-                            showExtraOptions() &&
-                            <RoundButtonComponent
-                                icon="dots-vertical"
-                                iconSize={20}
-                                containerSize={25}
-                                onPress={() => {
-                                    // @ts-ignore
-                                    refRBSheet?.current?.open()
+        <Animated.View style={styles.comment} onLayout={(_) => checkVisible()}>
+            {
+                <View style={styles.details}>
+                    {
+                        !comment.author && comment.id && comment.id >= 0 &&
+                        <Text style={[{marginLeft: 8}, styles.unavailable]}>💀 User deleted</Text>
+                    }
+                    {
+                        comment.author &&
+                        <>
+                            <View onTouchEnd={() => goToProfile(comment.author!.email)}>
+                                {
+                                    comment.id && comment.id >= 0 &&
+                                    <AvatarComponent
+                                        borderWidth={0}
+                                        size={imageSize}
+                                        style={[styles.image, {marginLeft: 8}]}
+                                        name={comment.author.avatar}
+                                    />
+                                }
+
+                                {
+                                    comment.id && comment.id < 0 &&
+                                    <Animated.View style={{
+                                        height: 60,
+                                        width: 60,
+                                        borderRadius: 30,
+                                        marginRight: 16,
+                                        backgroundColor: background
+                                    }}/>
+                                }
+                            </View>
+                            <Animated.Text
+                                style={{
+                                    minWidth: 180,
+                                    color: theme.colors.text,
+                                    backgroundColor: background
                                 }}
-                            />
-                        }
-                    </>
-                }
-            </View>
+                                onPress={() => user.id >= 0 && goToProfile(comment.author!.email)}
+                            >
+                                {comment.author.name || ''}
+                            </Animated.Text>
+                            <Animated.Text
+                                style={[
+                                    styles.date,
+                                    {
+                                        minWidth: 120,
+                                        textAlign: "right",
+                                        paddingVertical: 2,
+                                        color: '#959595',
+                                        marginRight: showExtraOptions() ? 0 : 6,
+                                        backgroundColor: background
+                                    }]}
+                            >
+                                {comment.lastUpdate && Time.diff(comment.lastUpdate)}
+                            </Animated.Text>
+                            {
+                                showExtraOptions() &&
+                                <RoundButtonComponent
+                                    icon="dots-vertical"
+                                    iconSize={20}
+                                    containerSize={25}
+                                    onPress={() => {
+                                        // @ts-ignore
+                                        refRBSheet?.current?.open()
+                                    }}
+                                />
+                            }
+                        </>
+                    }
+                </View>
+            }
 
             {resultReplies}
 
@@ -510,20 +568,40 @@ const CommentComponent: React.FC<CommentProperties> = (
 
             {
                 !userBlocked && comment.author && (comment.text.length > 0 || comment.text.length === 0 && comment.images.length === 0) &&
-                <Markdown
-                    styles={{
-                        text: {
-                            color: comment.text ? theme.colors.text : '#747474',
-                        },
-                        view: {
-                            marginBottom: 8,
-                            paddingLeft: 8,
+                <>
+                    <Markdown
+                        styles={{
+                            text: {
+                                color: comment.text ? theme.colors.text : '#747474',
+                            },
+                            view: {
+                                marginBottom: 8,
+                                paddingLeft: 8,
+                            }
+                        }}
+                        rules={{image: getCustomImage(getImageSize())}}
+                    >
+                        {
+                            getTextToShow(comment.text)
                         }
-                    }}
-                    rules={{image: getCustomImage(getImageSize())}}
-                >
-                    {getTextToShow(comment.text)}
-                </Markdown>
+
+                    </Markdown>
+
+                    {
+                        comment.id && comment.id < 0 &&
+                        <Animated.View
+                            style={{
+                                position: "absolute",
+                                bottom: 15,
+                                left: 75,
+                                minHeight: 35,
+                                minWidth: 250,
+                                backgroundColor: background
+                            }}
+                        />
+                    }
+                </>
+
             }
 
             <RBSheet
@@ -552,7 +630,7 @@ const CommentComponent: React.FC<CommentProperties> = (
                 <BottomSheetComponent options={options} sheet={refRBSheet}/>
             </RBSheet>
 
-        </View>
+        </Animated.View>
     )
 }
 

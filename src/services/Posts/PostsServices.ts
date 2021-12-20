@@ -107,6 +107,69 @@ class PostsService extends Api {
     editComment(postId: number, comment: Comment): Promise<Comment> {
         return this.http.put(`${this.getUrl(postId)}/comments/${comment.id}`, comment)
     }
+
+    getPlaceHolderPost(): PostInfo {
+        return {
+            id: -1,
+            user: {
+                id: -1,
+                name: '',
+                profiles: [],
+                blocked: [],
+                avatar: '',
+                devices: [],
+                email: '',
+                followers: [],
+                following: [],
+                languages: [],
+                postsSubscribed: [],
+                notifications: [],
+                platforms: [],
+                seenMessages: {0: 0}
+            },
+            lastUpdate: null,
+            game: '',
+            postType: PostType.GENERAL,
+            language: {id: -1, name: '', image: ''},
+            channels: [],
+            platforms: [],
+            title: '',
+            lastAuthor: null
+        }
+    }
+
+    getPlaceholderComments(): Comment[] {
+        const items: Comment[] = []
+
+        for (let i = 1; i <= 10; i++) {
+            items.push(
+                {
+                    id: i * -1,
+                    images: [],
+                    author: {
+                        id: -1,
+                        name: '',
+                        profiles: [],
+                        blocked: [],
+                        avatar: '',
+                        devices: [],
+                        email: '',
+                        followers: [],
+                        following: [],
+                        languages: [],
+                        postsSubscribed: [],
+                        notifications: [],
+                        platforms: [],
+                        seenMessages: {0: 0}
+                    },
+                    lastUpdate: null,
+                    text: ''
+                }
+            )
+        }
+
+        return items
+    }
 }
 
 export default PostsService

@@ -75,12 +75,6 @@ const ProductsScreen: React.FC<ProductsProperties> = ({theme, navigation}) => {
             })
         }
 
-        // console.log('gameProducts')
-        // console.log(JSON.stringify(gameProducts))
-
-        // console.log('products')
-        // console.log(JSON.stringify(products))
-
         setProducts(mergeGames(products, gameProducts))
     }
 

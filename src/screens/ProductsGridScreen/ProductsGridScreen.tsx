@@ -14,7 +14,7 @@ interface ProductsGridProperties {
 }
 
 const ProductsGridScreen: React.FC<ProductsGridProperties> = ({theme, navigation}) => {
-    const productService = new ProductService()
+    const productService = new ProductService(21)
 
     const columns = 3
     const width = (Dimensions.get('window').width / columns) - 10

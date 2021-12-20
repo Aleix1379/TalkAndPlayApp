@@ -3,6 +3,8 @@ import {Linking} from "react-native";
 class LinkUtils {
 
     public static open(url: string) {
+        if (!url) return
+
         if (url.startsWith('https://rogueenergy.com')) {
             url = this.buildUrl(url, 'rfsn=6281106.7d599ee&utm_source=refersion&utm_medium=affiliate&utm_campaign=6281106.7d599ee')
         } else if (url.startsWith('https://www.instant-gaming.com')) {

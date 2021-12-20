@@ -98,7 +98,7 @@ const GameItemComponent: React.FC<GameItemProperties> = (
     return (
         <>
             <View style={[styles.productGame, style]} onTouchEnd={() => LinkUtils.open(item.link)}>
-                {item.imageName.length > 0 && <Image source={imageSource} style={styles.instantGamingImage}/>}
+                {item.imageName?.length > 0 && <Image source={imageSource} style={styles.instantGamingImage}/>}
                 {!item.imageName && <Animated.View style={[styles.placeholder, {backgroundColor: color}]}/>}
             </View>
         </>
