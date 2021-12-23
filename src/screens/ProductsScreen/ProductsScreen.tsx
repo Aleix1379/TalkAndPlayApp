@@ -82,11 +82,7 @@ const ProductsScreen: React.FC<ProductsProperties> = ({theme, navigation}) => {
 
     const showAll = (product: Product) => {
         const game = product.items[0] as Game
-        if (game.platform) {
-            navigation.navigate('ProductsGrid', {product, platform: game.platform})
-        } else {
-            navigation.navigate('ProductsGrid', {product})
-        }
+        navigation.navigate('ProductsGrid', {product, platform: game.platform})
     }
 
     const mergeGames = (oldGame: Product[], newGames: Product[]) => {
