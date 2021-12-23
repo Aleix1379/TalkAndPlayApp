@@ -30,20 +30,18 @@ import {ApplicationState} from "../../store"
 import Image from "react-native-scalable-image"
 import UserService from "../../services/User"
 import SeenMessageUtils from "../../utils/SeenMessage"
-import {setLoading} from "../../store/loading/actions"
 import firebase from "react-native-firebase"
 import {DialogOption} from "../../store/dialog/types"
 import {closeDialog, openDialog} from "../../store/dialog/actions"
 import {login} from "../../store/user/actions"
 import DeviceInfo from 'react-native-device-info'
-import AdService from "../../services/AdService";
+import AdService from "../../services/AdService"
 
 export interface PostsProperties {
     navigation: any,
     theme: Theme,
     user: User
     postType: PostType
-    setLoading: (visible: boolean) => void
     openDialog: (title: string, content: string[], actions: DialogOption[]) => void
     closeDialog: () => void
     login: (user: User, token?: string) => void
@@ -251,7 +249,6 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
         if (indexSaved > 0) {
             this.updateIndex(indexSaved)
         } else {
-            console.log('this.mounted: => ' + this.mounted)
             if (this.mounted) {
                 this.loadData()
             } else {
@@ -502,27 +499,15 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                 } else {
                     this.initNotificationsListener()
                 }
-                /*           LocalStorage.getFcmToken()
-                               .then((fcmToken: string | null) => {
-                                   if (fcmToken) {
-                                       this.userService.updateFcmToken(this.props.user.id, fcmToken)
-                                           .catch(err => {
-                                               console.log('error updateFcmToken')
-                                               console.log(err.response.data)
-                                           })
-                                   }
-                               })
-                               .catch(err => {
-                                   console.log('Error getting fcm token')
-                                   console.log(err)
-                               })*/
             }
 
         }
     }
 
     fetchData = (page: number = 0, filter?: Filter) => {
-        this.props.setLoading(true)
+        const data = this.postService.getPostsResponsePlaceholder()
+        this.setState({data})
+
         this.postService.get(page, this.state.postType, filter)
             .then((response: PostsResponse) => {
                 const stateData: PostListState = {...this.state}
@@ -538,7 +523,6 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                 console.log(err)
                 this.props.navigation.navigate('Error', {err: JSON.stringify(err, null, 2)})
             })
-            .finally(() => this.props.setLoading(false))
     }
 
     goToDetail = (id: number, title: string) => {
@@ -551,7 +535,6 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     }
 
     search = async (filter: Filter) => {
-        this.props.setLoading(true)
         try {
             const response = await this.postService.get(0, this.state.postType, {
                 ...filter,
@@ -564,14 +547,11 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
         } catch (err) {
             console.log('Error searching')
             console.log(err)
-        } finally {
-            this.props.setLoading(false)
         }
     }
 
     loadMore = () => {
         if (!this.state.headerVisible && !this.state.isLast) {
-            this.props.setLoading(true)
             if (this.state.data) {
                 this.postService.get(this.state.data.number + 1, this.state.postType, this.state.form)
                     .then((response: PostsResponse) => {
@@ -589,7 +569,6 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                         console.log('error load more')
                         console.log(err)
                     })
-                    .finally(() => this.props.setLoading(false))
             }
         }
     }
@@ -668,7 +647,8 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                     <BannerAd
                         unitId={AdService.getPostsListUnitAd()}
                         size={BannerAdSize.ADAPTIVE_BANNER}
-                        onAdLoaded={() => {}}
+                        onAdLoaded={() => {
+                        }}
                         onAdFailedToLoad={(error) => {
                             console.error('Advert failed to load: ', error)
                         }}
@@ -872,21 +852,6 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                     )}
                 />
 
-                {/*                <DialogComponent
-                    visible={this.state.showDialog} onDismiss={() => this.setState({showDialog: false})}
-                    title={this.state.notification.title}
-                    content={[this.state.notification.body]}
-                    actions={[
-                        {
-                            label: 'See comment',
-                            backgroundColor: this.props.theme.colors.accent,
-                            onPress: () => {
-                                this.setState({showDialog: false})
-                                this.handleBackgroundNotification(this.state.notification.data)
-                            }
-                        }
-                    ]}
-                />*/}
             </View>
         )
     }
@@ -897,7 +862,6 @@ const mapStateToProps = (state: ApplicationState) => ({
 })
 
 export default connect(mapStateToProps, {
-    setLoading: setLoading,
     openDialog: openDialog,
     closeDialog: closeDialog,
     login: login

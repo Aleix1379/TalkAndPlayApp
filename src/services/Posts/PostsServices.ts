@@ -3,6 +3,7 @@ import {
     CommentResponse,
     Filter,
     PostInfo,
+    PostRow,
     PostsResponse,
     PostType,
     PostWithAuthor
@@ -170,6 +171,71 @@ class PostsService extends Api {
 
         return items
     }
+
+    getFakePostRow(id: number): PostRow {
+        return {
+            post: {
+                id: id,
+                title: '',
+                game: '',
+                language: {
+                    id: id,
+                    name: ''
+                },
+                platforms: [],
+                lastUpdate: '',
+                postType: PostType.GENERAL,
+                channels: [],
+            },
+            user: {
+                id: id,
+                name: '',
+                imageName: ''
+            },
+            lastAuthor: 'Aleix'
+        }
+    }
+
+    getPostsResponsePlaceholder(max: number = 10): PostsResponse | null {
+        let postsResponse: PostsResponse
+        const items: PostRow[] = []
+
+        for (let i = 1; i <= max; i++) {
+            items.push(this.getFakePostRow(i * -1))
+        }
+
+        postsResponse = {
+            content: items,
+            pageable: {
+                sort: {
+                    sorted: true,
+                    unsorted: false,
+                    empty: false
+                },
+                offset: 0,
+                pageNumber: 0,
+                pageSize: 10,
+                paged: true,
+                unpaged: false
+            },
+            totalPages: 1,
+            totalElements: items.length,
+            last: true,
+            size: 10,
+            number: 0,
+            sort: {
+                sorted: true,
+                unsorted: false,
+                empty: false
+            },
+            numberOfElements: 3,
+            first: true,
+            empty: false
+        }
+
+        return postsResponse
+    }
+
 }
 
 export default PostsService

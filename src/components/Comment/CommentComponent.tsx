@@ -436,7 +436,6 @@ const CommentComponent: React.FC<CommentProperties> = (
     }
 
     const getTextToShow = (value: string) => {
-        console.log(`comment.id: ${comment.id}`)
         if (comment.id && comment.id >= 0) {
             if (comment.images.length > 0) {
                 return CommentUtils.processYoutubeUrl(value)

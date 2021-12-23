@@ -1,5 +1,5 @@
-import React from 'react'
-import {StyleSheet, View} from "react-native"
+import React, {useEffect, useState} from 'react'
+import {Animated, StyleSheet, View} from "react-native"
 import {Text, withTheme} from 'react-native-paper'
 import Time from "../../utils/Time"
 import {Theme} from "react-native-paper/lib/typescript/types"
@@ -97,6 +97,31 @@ const PostComponent: React.FC<PostProperties> = ({
         counter: {}
     })
 
+    const [backgroundAnimation] = useState(new Animated.Value(0))
+
+    const background = backgroundAnimation.interpolate({
+        inputRange: [0, 1, 2, 3, 4, 5, 6],
+        outputRange: ["#202020", "#303030", "#404040", "#505050", "#404040", "#303030", "#202020"]
+
+    })
+
+    const startAnimation = () => {
+        backgroundAnimation.setValue(0)
+        Animated.timing(backgroundAnimation, {
+            useNativeDriver: false,
+            toValue: 6,
+            duration: 3000
+        }).start(() => {
+            startAnimation()
+        })
+    }
+
+    useEffect(() => {
+        if (post.id < 0) {
+            startAnimation()
+        }
+    }, [])
+
     return (
         <View
             key='view-post'
@@ -108,24 +133,47 @@ const PostComponent: React.FC<PostProperties> = ({
                 }
             }}>
             <View style={styles.user}>
-                <AvatarComponent
-                    borderWidth={0}
-                    size={40}
-                    style={styles.avatar}
-                    name={user.imageName}
-                />
+                {
+                    post.id >= 0 &&
+                    <AvatarComponent
+                        borderWidth={0}
+                        size={40}
+                        style={styles.avatar}
+                        name={user.imageName}
+                    />
+                }
+
+                {
+                    post.id < 0 &&
+                    <Animated.View style={{
+                        height: 60,
+                        width: 60,
+                        borderRadius: 30,
+                        marginRight: 16,
+                        backgroundColor: background
+                    }}/>
+                }
+
                 <View style={{
                     justifyContent: "center",
                     alignItems: "flex-start",
                     flex: 1
                 }}>
-                    <Text style={styles.userName}>{user.name}</Text>
+                    <Animated.Text
+                        style={[styles.userName, {
+                            minWidth: 120,
+                            minHeight: 20,
+                            backgroundColor: background
+                        }]}
+                    >
+                        {user.name}
+                    </Animated.Text>
                 </View>
 
                 <View style={{}}>
                     <View style={[styles.details, {marginLeft: 'auto'}]}>
                         {
-                            userConnected.id >= 0 && unreadMessages >= 0 &&
+                            userConnected.id >= 0 && unreadMessages >= 0 && post.id >= 0 &&
                             <MessageCounterComponent
                                 icon={'email-mark-as-unread'}
                                 color={'#c87a26'}
@@ -134,15 +182,33 @@ const PostComponent: React.FC<PostProperties> = ({
                         }
 
                         {
-                            totalMessages && <MessageCounterComponent
+                            post.id >= 0 && totalMessages &&
+                            <MessageCounterComponent
                                 icon={'email'}
                                 color={'#267a26'}
                                 value={totalMessages}
                             />
                         }
+
+                        {
+                            post.id < 0 &&
+                            <Animated.View style={{
+                                height: 20,
+                                width: 100,
+
+                                backgroundColor: background
+                            }}>
+                            </Animated.View>
+                        }
+
                     </View>
-                    <Text
-                        style={[styles.text, {fontSize: 10}]}>{lastAuthor + (lastAuthor && ' | ') + Time.diff(lastUpdate)}</Text>
+
+                    {
+                        post.id >= 0 &&
+                        <Text style={[styles.text, {fontSize: 10}]}>
+                            {lastAuthor + (lastAuthor && ' | ') + Time.diff(lastUpdate)}
+                        </Text>
+                    }
                 </View>
 
             </View>
