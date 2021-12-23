@@ -286,7 +286,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         }
     }, [post, newCommentId])
 
-
     const updateMessagesSeen = () => {
         if (user.id > 0)
             LocalStorage.getMessagesSeen().then(data => {
@@ -383,8 +382,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
         newPage?: number,
         commentId?: number
     ) => {
-        // temporalSeenMessages = 0
-        // setShowDummy(true)
+        setComments(postService.getPlaceholderComments())
         if (post) {
             if (!commentId && scrollTo === 'top') {
                 scrollToTop()
