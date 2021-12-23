@@ -182,13 +182,7 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 
                         let result: { [id: number]: number } = SeenMessageUtils.mergeSeenMessages(data, user.seenMessages)
 
-                        // console.log(`user.id: ${user.id}`)
-                        // console.log(`result: ${JSON.stringify(result)}`)
-
                         userService.getCommentsUnseen(user.id, result).then(values => {
-                            // console.log('get comments unseen: ' + JSON.stringify(values))
-                            // console.log(`id: ${id}`)
-                            // console.log(`result[id]: ${JSON.stringify(result[id])}`)
                             let lastId = result[id]
                             setLastCommentId(lastId)
                             if (id && lastId) {
@@ -289,7 +283,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
     const updateMessagesSeen = () => {
         if (user.id > 0)
             LocalStorage.getMessagesSeen().then(data => {
-                // console.log('getMessagesSeen | data => ' + JSON.stringify(data))
                 userService.updateCommentsUnseen(user.id, data)
                     .catch(err => {
                         console.log('updateCommentsUnseen')
@@ -494,9 +487,6 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
 
     const loadComment = (commentSeen: Comment) => {
         if (post && (commentSeen.id && commentSeen.id >= lastCommentId || !lastCommentId)) {
-            // console.log(`post.id: ${post.id}`)
-            // console.log(`commentSeen.id: ${commentSeen.id}`)
-            // console.log(`commentSeen.text: ${commentSeen.text}`)
             LocalStorage.addCommentSeen(post.id, commentSeen.id)
                 .catch(err => {
                     console.log('error addCommentSeen')
@@ -603,13 +593,9 @@ const PostDetailScreen: React.FC<PostDetailProperties> = ({
                 subscriptions = await userService.addPostSubscription(user.id, post.id)
             }
 
-            console.log('subscriptions: ' + JSON.stringify(subscriptions))
-
             if (following && post) {
-                console.log('DELETE post-${post.id}: ' + `post-${post.id}`)
                 firebase.messaging().unsubscribeFromTopic(`post-${post.id}`)
             } else if (post) {
-                console.log('ADD post-${post.id}: ' + `post-${post.id}`)
                 firebase.messaging().subscribeToTopic(`post-${post.id}`)
             }
 
