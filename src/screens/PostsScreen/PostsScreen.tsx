@@ -642,7 +642,7 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
                 onClick={this.goToDetail}
             />
             {
-                element.index === this.state.data?.content.length || 1 - 1 || element.index % 5 === 0 &&
+                element.index === this.state.data?.content.length || 1 - 1 || element.index % 5 === 0 && element.item.post.id >= 0 &&
                 <View style={{marginTop: 4, marginBottom: 2}}>
                     <BannerAd
                         unitId={AdService.getPostsListUnitAd()}
