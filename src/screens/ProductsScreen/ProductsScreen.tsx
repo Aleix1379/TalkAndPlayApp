@@ -67,6 +67,10 @@ const ProductsScreen: React.FC<ProductsProperties> = ({theme, navigation}) => {
         let index = 2
         for (const platform of platforms) {
             const {content} = await productService.getGames(platform)
+            console.log(JSON.stringify(content.map(pt => pt.platform)))
+            console.log()
+            console.log('----------------------------------------------------------------------------------------')
+            console.log()
             gameProducts.push({
                 id: index++,
                 name: platform,
