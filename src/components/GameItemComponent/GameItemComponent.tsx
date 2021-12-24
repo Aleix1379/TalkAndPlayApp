@@ -1,5 +1,13 @@
 import React, {useEffect, useState} from 'react'
-import {Animated, ImageSourcePropType, StyleProp, StyleSheet, View, ViewStyle} from "react-native"
+import {
+    Animated,
+    GestureResponderEvent,
+    ImageSourcePropType,
+    StyleProp,
+    StyleSheet,
+    View,
+    ViewStyle
+} from "react-native"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {Game} from "../../types/Product"
 import {withTheme} from "react-native-paper"
@@ -16,6 +24,11 @@ interface GameItemProperties {
     bottom?: number
 }
 
+interface Position {
+    x: number
+    y: number
+}
+
 const GameItemComponent: React.FC<GameItemProperties> = (
     {
         theme,
@@ -26,6 +39,10 @@ const GameItemComponent: React.FC<GameItemProperties> = (
     }
 ) => {
     const height = width * 1.466666667
+    let initialPosition: Position = {
+        x: 0,
+        y: 0
+    }
 
     const styles = StyleSheet.create({
         price: {
@@ -95,9 +112,24 @@ const GameItemComponent: React.FC<GameItemProperties> = (
         startAnimation()
     }, [])
 
+    const onGamePress = (e: GestureResponderEvent) => {
+        if (initialPosition.x === e.nativeEvent.locationX && initialPosition.y === e.nativeEvent.locationY) {
+            LinkUtils.open(item.link)
+        }
+    }
+
+    const updateInitialPosition = (x: number, y: number) => {
+        initialPosition.x = x
+        initialPosition.y = y
+    }
+
     return (
         <>
-            <View style={[styles.productGame, style]} onTouchEnd={() => LinkUtils.open(item.link)}>
+            <View
+                style={[styles.productGame, style]}
+                onTouchStart={(event => updateInitialPosition(event.nativeEvent.locationX, event.nativeEvent.locationY))}
+                onTouchEnd={onGamePress}
+            >
                 {item.imageName?.length > 0 && <Image source={imageSource} style={styles.instantGamingImage}/>}
                 {!item.imageName && <Animated.View style={[styles.placeholder, {backgroundColor: color}]}/>}
             </View>
