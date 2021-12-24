@@ -1,13 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {
-    Animated,
-    GestureResponderEvent,
-    ImageSourcePropType,
-    StyleProp,
-    StyleSheet,
-    View,
-    ViewStyle
-} from "react-native"
+import {Animated, ImageSourcePropType, StyleProp, StyleSheet, View, ViewStyle} from "react-native"
 import {Theme} from "react-native-paper/lib/typescript/types"
 import {Game} from "../../types/Product"
 import {withTheme} from "react-native-paper"
@@ -15,6 +7,7 @@ import LinkUtils from "../../utils/LinkUtils"
 import Image from "react-native-scalable-image"
 import ProductUtils from "../../utils/ProductUtils"
 import {REACT_APP_GAMES_URL} from "@env"
+import {Position} from "../../utils/LinkUtils/LinkUtils"
 
 interface GameItemProperties {
     theme: Theme
@@ -22,11 +15,6 @@ interface GameItemProperties {
     width?: number
     style?: StyleProp<ViewStyle> | undefined
     bottom?: number
-}
-
-interface Position {
-    x: number
-    y: number
 }
 
 const GameItemComponent: React.FC<GameItemProperties> = (
@@ -112,12 +100,6 @@ const GameItemComponent: React.FC<GameItemProperties> = (
         startAnimation()
     }, [])
 
-    const onGamePress = (e: GestureResponderEvent) => {
-        if (initialPosition.x === e.nativeEvent.locationX && initialPosition.y === e.nativeEvent.locationY) {
-            LinkUtils.open(item.link)
-        }
-    }
-
     const updateInitialPosition = (x: number, y: number) => {
         initialPosition.x = x
         initialPosition.y = y
@@ -128,7 +110,7 @@ const GameItemComponent: React.FC<GameItemProperties> = (
             <View
                 style={[styles.productGame, style]}
                 onTouchStart={(event => updateInitialPosition(event.nativeEvent.locationX, event.nativeEvent.locationY))}
-                onTouchEnd={onGamePress}
+                onTouchEnd={(event => LinkUtils.open(item.link, initialPosition, event))}
             >
                 {item.imageName?.length > 0 && <Image source={imageSource} style={styles.instantGamingImage}/>}
                 {!item.imageName && <Animated.View style={[styles.placeholder, {backgroundColor: color}]}/>}

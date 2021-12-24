@@ -1,9 +1,16 @@
-import {Linking} from "react-native";
+import {GestureResponderEvent, Linking} from "react-native"
+
+export interface Position {
+    x: number
+    y: number
+}
 
 class LinkUtils {
 
-    public static open(url: string) {
+    public static open(url: string, position?: Position, event?: GestureResponderEvent) {
         if (!url) return
+
+        if (!!position && !!event && !this.canOpen(position, event)) return
 
         if (url.startsWith('https://rogueenergy.com')) {
             url = this.buildUrl(url, 'rfsn=6281106.7d599ee&utm_source=refersion&utm_medium=affiliate&utm_campaign=6281106.7d599ee')
@@ -23,6 +30,11 @@ class LinkUtils {
             return `${url}&${affiliateCode}`
         }
         return `${url}?${affiliateCode}`
+    }
+
+    private static canOpen(position: Position, event: GestureResponderEvent): boolean {
+        return position.x === event.nativeEvent.locationX &&
+            position.y === event.nativeEvent.locationY
     }
 
 }
