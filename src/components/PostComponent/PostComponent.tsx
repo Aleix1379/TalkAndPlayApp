@@ -8,6 +8,7 @@ import MessageCounterComponent from "../MessageCounterComponent/MessageCounterCo
 import AvatarComponent from "../AvatarComponent/AvatarComponent"
 import {shallowEqual, useSelector} from "react-redux"
 import {ApplicationState} from "../../store"
+import styles from './styles'
 
 interface PostProperties {
     post: PostInfo,
@@ -39,63 +40,6 @@ const PostComponent: React.FC<PostProperties> = ({
         return unreadMessages > 0 ? theme.colors.text : '#959595'
     }
 
-    const styles = StyleSheet.create({
-        post: {
-            backgroundColor: theme.colors.primary,
-            display: "flex",
-            paddingTop: 10,
-            paddingBottom: 8,
-            paddingLeft: 6,
-            paddingRight: 10,
-            shadowColor: theme.colors.primary,
-            shadowOffset: {
-                width: 0,
-                height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 5,
-        },
-        user: {
-            display: "flex",
-            flexDirection: "row",
-            marginBottom: 6
-        },
-        avatar: {
-            alignSelf: "center",
-            marginRight: 12
-        },
-        game: {
-            flex: 4,
-            justifyContent: "space-between",
-            color: theme.colors.accent
-        },
-        details: {
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            marginVertical: 1
-        },
-        title: {
-            flex: 1,
-            color: getColorText(),
-            fontWeight: unreadMessages > 0 ? 'bold' : 'normal',
-        },
-        text: {
-            color: getColorText(),
-            textAlign: "right",
-            flex: 1
-        },
-        label: {
-            flex: 1,
-            color: getColorText(),
-        },
-        userName: {
-            color: getColorText(),
-        },
-        counter: {}
-    })
-
     const [backgroundAnimation] = useState(new Animated.Value(0))
 
     const background = backgroundAnimation.interpolate({
@@ -124,7 +68,7 @@ const PostComponent: React.FC<PostProperties> = ({
     return (
         <View
             key='view-post'
-            style={styles.post}
+            style={[styles.post, {backgroundColor: theme.colors.primary, shadowColor: theme.colors.primary}]}
             onTouchStart={(e) => startX = e.nativeEvent.locationX}
             onTouchEnd={(e) => {
                 if (startX === e.nativeEvent.locationX) {
@@ -159,11 +103,12 @@ const PostComponent: React.FC<PostProperties> = ({
                     flex: 1
                 }}>
                     <Animated.Text
-                        style={[styles.userName, {
+                        style={{
                             minWidth: 120,
                             minHeight: 20,
-                            backgroundColor: background
-                        }]}
+                            backgroundColor: background,
+                            color: getColorText()
+                        }}
                     >
                         {user.name}
                     </Animated.Text>
@@ -204,7 +149,7 @@ const PostComponent: React.FC<PostProperties> = ({
 
                     {
                         post.id >= 0 &&
-                        <Text style={[styles.text, {fontSize: 10}]}>
+                        <Text style={[styles.text, {fontSize: 10, color: getColorText()}]}>
                             {lastAuthor + (lastAuthor && ' | ') + Time.diff(lastUpdate)}
                         </Text>
                     }
@@ -214,20 +159,20 @@ const PostComponent: React.FC<PostProperties> = ({
 
             <View style={styles.game}>
 
-
                 <View style={[styles.details, {marginTop: 2}]}>
-                    <Text style={styles.label}>{title}</Text>
-                    <Text style={styles.text}>{language?.name}</Text>
+                    <Text style={[styles.label, {color: getColorText()}]}>{title}</Text>
+                    <Text style={[styles.text, {color: getColorText()}]}>{language?.name}</Text>
                 </View>
 
                 {
                     game?.length > 0 && platforms.length > 0 &&
                     < View style={[styles.details, {marginTop: 2}]}>
-                        <Text style={styles.label}>{game}</Text>
+                        <Text style={[styles.label, {color: getColorText()}]}>{game}</Text>
                         {
                             platforms && platforms.length > 0 && <Text style={{
                                 ...styles.text,
-                                alignSelf: 'center'
+                                alignSelf: 'center',
+                                color: getColorText()
                             }}>
                                 {platforms.map((platform: Option) => platform.name).join(', ')}
                             </Text>
