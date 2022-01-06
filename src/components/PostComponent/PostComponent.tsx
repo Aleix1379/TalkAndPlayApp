@@ -92,7 +92,6 @@ const PostComponent: React.FC<PostProperties> = ({
         },
         userName: {
             color: getColorText(),
-            textAlign: "right",
         },
         counter: {}
     })
