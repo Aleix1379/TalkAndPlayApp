@@ -20,7 +20,6 @@ interface NewCommentProperties {
     label?: string
     openDialog: (title: string, content: string[], actions: DialogOption[]) => void
     closeDialog: () => void
-    uploadPicture?: (image: any[]) => void
 }
 
 const NewCommentComponent: React.FC<NewCommentProperties> = ({
@@ -31,8 +30,7 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
                                                                  setRef,
                                                                  onImageChange,
                                                                  minLength = 1,
-                                                                 label = "Write a comment...",
-                                                                 uploadPicture
+                                                                 label = "Write a comment..."
                                                              }) => {
     const [rotationAnimation] = useState(new Animated.Value(0))
     const [colorAnimation] = useState(new Animated.Value(0))
@@ -140,41 +138,8 @@ const NewCommentComponent: React.FC<NewCommentProperties> = ({
         }
     }
 
-    const choosePicture = (): void => {
-        ImagePicker.openPicker({
-            cropping: true,
-            multiple: true,
-            maxFiles: 10,
-            showsSelectedCount: true
-        })
-            .then(response => {
-                let images: any[]
-                if (Array.isArray(response)) {
-                    images = response
-                } else {
-                    images = [response]
-                }
-                uploadPicture && uploadPicture(images)
-            })
-            .catch(err => {
-                console.log('Error image picker')
-                console.log(err)
-            })
-    }
-
     return (
         <View style={styles.newComment}>
-            {
-                uploadPicture &&
-                <View style={styles.imageIcon} onTouchEnd={() => choosePicture()}>
-                    <MaterialCommunityIcons
-                        name="image-plus"
-                        size={26}
-                        color={theme.colors.accent}
-                    />
-                </View>
-            }
-
             <TextInputComponent
                 id="new-comment"
                 setRef={ref => {

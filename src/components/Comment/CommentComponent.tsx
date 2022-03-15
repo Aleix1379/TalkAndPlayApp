@@ -372,7 +372,6 @@ const CommentComponent: React.FC<CommentProperties> = (
                     )
 
                 }
-                console.log('node.target: ', node.target)
                 return <Image
                     key={state.key}
                     source={{uri: node.target}}

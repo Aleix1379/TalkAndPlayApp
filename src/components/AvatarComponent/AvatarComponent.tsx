@@ -61,7 +61,7 @@ const AvatarComponent: React.FC<AvatarProperties> = ({
     })
 
     return (
-        <View style={[styles.container, style]} onTouchEnd={() => onPress && onPress()}>
+        <View style={[styles.container, style]}>
             {
                 image &&
                 <Image
@@ -94,7 +94,6 @@ const AvatarComponent: React.FC<AvatarProperties> = ({
                 />
             }
 
-            {!error && onPress && <Text style={styles.label}>Choose an image</Text>}
             <ErrorHelperComponent style={{marginTop: 16,}} visible={!!error} message={error}/>
         </View>
     )

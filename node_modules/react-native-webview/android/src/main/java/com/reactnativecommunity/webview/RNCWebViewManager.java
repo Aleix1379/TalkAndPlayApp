@@ -90,6 +90,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.IllegalArgumentException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -215,7 +216,13 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
 
         RNCWebViewModule module = getModule(reactContext);
 
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+        DownloadManager.Request request;
+        try {
+          request = new DownloadManager.Request(Uri.parse(url));
+        } catch (IllegalArgumentException e) {
+          Log.w(TAG, "Unsupported URI, aborting download", e);
+          return;
+        }
 
         String fileName = URLUtil.guessFileName(url, contentDisposition, mimetype);
         String downloadMessage = "Downloading " + fileName;
@@ -228,8 +235,7 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
           String cookie = CookieManager.getInstance().getCookie(baseUrl);
           request.addRequestHeader("Cookie", cookie);
         } catch (MalformedURLException e) {
-          System.out.println("Error getting cookie for DownloadManager: " + e.toString());
-          e.printStackTrace();
+          Log.w(TAG, "Error getting cookie for DownloadManager", e);
         }
 
         //Finish setting up request
@@ -646,6 +652,11 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
     }
   }
 
+  @ReactProp(name = "minimumFontSize")
+  public void setMinimumFontSize(WebView view, int fontSize) {
+    view.getSettings().setMinimumFontSize(fontSize);
+  }
+
   @Override
   protected void addEventEmitters(ThemedReactContext reactContext, WebView view) {
     // Do not register default touch emitter and let WebView implementation handle touches
@@ -759,8 +770,11 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
   }
 
   protected void setupWebChromeClient(ReactContext reactContext, WebView webView) {
-    if (mAllowsFullscreenVideo) {
-      int initialRequestedOrientation = reactContext.getCurrentActivity().getRequestedOrientation();
+    Activity activity = reactContext.getCurrentActivity();
+
+    if (mAllowsFullscreenVideo && activity != null) {
+      int initialRequestedOrientation = activity.getRequestedOrientation();
+
       mWebChromeClient = new RNCWebChromeClient(reactContext, webView) {
         @Override
         public Bitmap getDefaultVideoPoster() {
@@ -777,31 +791,32 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
           mVideoView = view;
           mCustomViewCallback = callback;
 
-          mReactContext.getCurrentActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+          activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 
           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             mVideoView.setSystemUiVisibility(FULLSCREEN_SYSTEM_UI_VISIBILITY);
-            mReactContext.getCurrentActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+            activity.getWindow().setFlags(
+              WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+              WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+            );
           }
 
           mVideoView.setBackgroundColor(Color.BLACK);
 
-          // since RN's Modals interfere with the View hierarchy
-          // we will decide which View to Hide if the hierarchy
-          // does not match (i.e., the webview is within a Modal)
-          // NOTE: We could use mWebView.getRootView() instead of getRootView()
+          // Since RN's Modals interfere with the View hierarchy
+          // we will decide which View to hide if the hierarchy
+          // does not match (i.e., the WebView is within a Modal)
+          // NOTE: We could use `mWebView.getRootView()` instead of `getRootView()`
           // but that breaks the Modal's styles and layout, so we need this to render
-          // in the main View hierarchy regardless.
+          // in the main View hierarchy regardless
           ViewGroup rootView = getRootView();
           rootView.addView(mVideoView, FULLSCREEN_LAYOUT_PARAMS);
 
           // Different root views, we are in a Modal
-          if(rootView.getRootView() != mWebView.getRootView()){
+          if (rootView.getRootView() != mWebView.getRootView()) {
             mWebView.getRootView().setVisibility(View.GONE);
-          }
-
-          // Same view hierarchy (no Modal), just hide the webview then
-          else{
+          } else {
+            // Same view hierarchy (no Modal), just hide the WebView then
             mWebView.setVisibility(View.GONE);
           }
 
@@ -814,20 +829,18 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
             return;
           }
 
-          // same logic as above
+          // Same logic as above
           ViewGroup rootView = getRootView();
 
-          if(rootView.getRootView() !=  mWebView.getRootView()){
+          if (rootView.getRootView() != mWebView.getRootView()) {
             mWebView.getRootView().setVisibility(View.VISIBLE);
-          }
-
-          // Same view hierarchy (no Modal)
-          else{
+          } else {
+            // Same view hierarchy (no Modal)
             mWebView.setVisibility(View.VISIBLE);
           }
 
           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            mReactContext.getCurrentActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+            activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
           }
 
           rootView.removeView(mVideoView);
@@ -836,22 +849,25 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
           mVideoView = null;
           mCustomViewCallback = null;
 
-          mReactContext.getCurrentActivity().setRequestedOrientation(initialRequestedOrientation);
+          activity.setRequestedOrientation(initialRequestedOrientation);
 
           mReactContext.removeLifecycleEventListener(this);
         }
       };
+
       webView.setWebChromeClient(mWebChromeClient);
     } else {
       if (mWebChromeClient != null) {
         mWebChromeClient.onHideCustomView();
       }
+
       mWebChromeClient = new RNCWebChromeClient(reactContext, webView) {
         @Override
         public Bitmap getDefaultVideoPoster() {
           return Bitmap.createBitmap(50, 50, Bitmap.Config.ARGB_8888);
         }
       };
+
       webView.setWebChromeClient(mWebChromeClient);
     }
   }
@@ -982,7 +998,7 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
 
         if (!topWindowUrl.equalsIgnoreCase(failingUrl)) {
           // If error is not due to top-level navigation, then do not call onReceivedError()
-          Log.w("RNCWebViewManager", "Resource blocked from loading due to SSL error. Blocked URL: "+failingUrl);
+          Log.w(TAG, "Resource blocked from loading due to SSL error. Blocked URL: "+failingUrl);
           return;
         }
 
@@ -1091,10 +1107,10 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
         super.onRenderProcessGone(webView, detail);
 
         if(detail.didCrash()){
-          Log.e("RNCWebViewManager", "The WebView rendering process crashed.");
+          Log.e(TAG, "The WebView rendering process crashed.");
         }
         else{
-          Log.w("RNCWebViewManager", "The WebView rendering process was killed by the system.");
+          Log.w(TAG, "The WebView rendering process was killed by the system.");
         }
 
         // if webView is null, we cannot return any event
