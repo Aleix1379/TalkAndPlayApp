@@ -5,9 +5,6 @@ import android.content.Context;
 
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
-import com.reactnativepagerview.PagerViewPackage;
-import com.oblador.vectoricons.VectorIconsPackage;
-import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -36,6 +33,7 @@ public class MainApplication extends Application implements ReactApplication {
 
                     packages.add(new RNFirebaseMessagingPackage()); // add this line
                     packages.add(new RNFirebaseNotificationsPackage()); // add this line
+
 
                     return packages;
                 }
