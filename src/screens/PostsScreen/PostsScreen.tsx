@@ -36,6 +36,8 @@ import {closeDialog, openDialog} from "../../store/dialog/actions"
 import {login} from "../../store/user/actions"
 import DeviceInfo from 'react-native-device-info'
 import AdService from "../../services/AdService"
+import { getTrackingStatus } from 'react-native-tracking-transparency'
+import { firebase as firebaseAnalytics } from '@react-native-firebase/analytics'
 
 export interface PostsProperties {
     navigation: any,
@@ -265,6 +267,16 @@ class PostsScreen extends React.Component<PostsProperties, PostListState> {
     componentDidMount() {
         this.mounted = true
         this.startAnimation(true)
+        this.appTracking().catch(error => console.error(error))
+    }
+
+    async appTracking () {
+        const trackingStatus = await getTrackingStatus()
+        console.info('trackingStatus:', trackingStatus)
+        if (trackingStatus === 'authorized' || trackingStatus === 'unavailable') {
+            // enable tracking features
+            await firebaseAnalytics.analytics().setAnalyticsCollectionEnabled(true)
+        }
     }
 
     initNotificationsListener() {
